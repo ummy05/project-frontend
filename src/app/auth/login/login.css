@@ -159,6 +159,11 @@
   color:var(--cream);
 }
 
+.btn-fgtp{
+    text-decoration: none;
+    cursor: pointer;
+}
+
 footer{
   text-align:center;
   color:white;
