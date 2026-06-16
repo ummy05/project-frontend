@@ -1,0 +1,182 @@
+:root{
+  --cyan:#14B8D4;
+  --blue:#0F4C81;
+  --cream:#FFF8E7;
+  --chocolate:#3B2416;
+  --gray:#F4F4F4;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+.page-container{
+  min-height:100vh;
+  background:
+  linear-gradient(
+  rgba(15,76,129,.85),
+  rgba(20,184,212,.75)),
+  url('/img/beach.jpeg');
+
+  background-size:cover;
+  background-position:center;
+}
+
+.navbar{
+  background:var(--blue);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 7%;
+}
+
+.logo{
+  color:var(--cream);
+  font-weight:700;
+  font-size:22px;
+}
+
+.nav-links{
+  display:flex;
+  gap:25px;
+  list-style:none;
+}
+
+.nav-links a{
+  color:var(--cream);
+  text-decoration:none;
+}
+
+.menu-toggle{
+  display:none;
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.login-section{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:85vh;
+  padding:20px;
+}
+
+.login-card{
+
+  width:100%;
+  max-width:450px;
+
+  backdrop-filter:blur(20px);
+
+  background:
+  rgba(255,255,255,.15);
+
+  border:
+  1px solid rgba(255,255,255,.3);
+
+  border-radius:25px;
+
+  padding:35px;
+
+  color:white;
+}
+
+.login-card h2{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.login-card p{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.input-group{
+  margin-bottom:20px;
+}
+
+.input-group input{
+
+  width:100%;
+  padding:14px;
+
+  border:none;
+  outline:none;
+
+  border-radius:12px;
+}
+
+.password-box{
+  position:relative;
+}
+
+.toggle-password{
+  position:absolute;
+  right:15px;
+  top:14px;
+  cursor:pointer;
+}
+
+.form-options{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+  font-size:14px;
+}
+
+.form-options a{
+  color:white;
+}
+
+.login-btn{
+
+  width:100%;
+  padding:15px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:var(--cream);
+
+  color:var(--blue);
+
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.bottom-link{
+  margin-top:20px;
+  text-align:center;
+}
+
+.bottom-link a{
+  color:var(--cream);
+}
+
+footer{
+  text-align:center;
+  color:white;
+  padding:15px;
+}
+
+@media(max-width:768px){
+
+  .menu-toggle{
+    display:block;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+  .login-card{
+    padding:25px;
+  }
+
+}

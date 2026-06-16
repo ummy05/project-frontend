@@ -1,0 +1,120 @@
+<div class="page-container">
+
+  <nav class="navbar">
+
+    <div class="logo">
+      🌊 Coastal Monitor
+    </div>
+
+    <div
+      class="menu-toggle"
+      (click)="toggleMenu()">
+
+      ☰
+
+    </div>
+
+    <ul
+      class="nav-links"
+      [class.active]="menuOpen">
+
+      <li>
+        <a routerLink="/">Home</a>
+      </li>
+
+      <li>
+        <a routerLink="/auth/register">
+          Register
+        </a>
+      </li>
+
+    </ul>
+
+  </nav>
+
+  <section class="login-section">
+
+    <div class="login-card">
+
+      <h2>Welcome Back</h2>
+
+      <p>
+        Login to access your account
+      </p>
+
+      <form>
+
+        <div class="input-group">
+
+          <input
+            type="email"
+            placeholder="Email Address">
+
+        </div>
+
+        <div class="input-group password-box">
+
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Password">
+
+          <span
+            class="toggle-password"
+            (click)="togglePassword()">
+
+            {{showPassword ? '🙈' : '👁'}}
+
+          </span>
+
+        </div>
+
+        <div class="form-options">
+
+          <label>
+
+            <input type="checkbox">
+
+            Remember Me
+
+          </label>
+
+          <a
+            routerLink="/auth/forgot-password">
+
+            Forgot Password?
+
+          </a>
+
+        </div>
+
+        <button class="login-btn">
+
+          Login
+
+        </button>
+
+      </form>
+
+      <div class="bottom-link">
+
+        Don't have an account?
+
+        <a routerLink="/auth/register">
+
+          Register
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <footer>
+
+    © 2026 Coastal Monitoring System
+
+  </footer>
+
+</div>

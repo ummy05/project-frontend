@@ -1,25 +1,61 @@
 <nav class="navbar">
+
   <div class="logo">
-    <span>🌊 Coastal Monitor</span>
+    🌊 Coastal Monitor
   </div>
 
-  <ul class="nav-links">
+  <div
+    class="menu-toggle"
+    (click)="toggleMenu()">
+
+    ☰
+
+  </div>
+
+  <ul
+    class="nav-links"
+    [class.active]="menuOpen">
+
     <li><a href="#">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#beaches">Beaches</a></li>
     <li><a href="#contact">Contact</a></li>
+
+    <li class="mobile-btn">
+      <button routerLink="/login">
+        Login
+      </button>
+    </li>
+
+    <li class="mobile-btn">
+      <button routerLink="/register">
+        Register
+      </button>
+    </li>
+
   </ul>
 
   <div class="nav-actions">
-    <button routerLink="/auth/login" class="login-btn">
+
+    <button
+      class="login-btn"
+      routerLink="/login">
+
       Login
+
     </button>
 
-    <button routerLink="/auth/register" class="register-btn">
+    <button
+      class="register-btn"
+      routerLink="/auth/register">
+
       Register
+
     </button>
+
   </div>
+
 </nav>
 
 <section class="hero">
@@ -45,11 +81,11 @@
 
     <div class="hero-buttons">
 
-      <button routerLink="/auth/register">
+      <button style="color: rgb(14, 182, 233);" routerLink="/auth/register">
         Get Started
       </button>
 
-      <button routerLink="/auth/login">
+      <button routerLink="/login">
         Sign In
       </button>
 
