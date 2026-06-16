@@ -1,0 +1,314 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+:root{
+  --cyan:#14B8D4;
+  --blue:#0F4C81;
+  --cream:#FFF8E7;
+  --chocolate:#3B2416;
+  --gray:#F4F4F4;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--gray);
+}
+
+.navbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:1000;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 7%;
+
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+
+  box-shadow:0 2px 15px rgba(0,0,0,.08);
+}
+
+.logo{
+  color:var(--blue);
+  font-size:24px;
+  font-weight:700;
+}
+
+.nav-links{
+  display:flex;
+  list-style:none;
+  gap:30px;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:var(--chocolate);
+  font-weight:600;
+}
+
+.nav-actions{
+  display:flex;
+  gap:12px;
+}
+
+.login-btn,
+.register-btn{
+  padding:10px 22px;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.login-btn{
+  border:2px solid var(--cyan);
+  background:white;
+  color:var(--cyan);
+}
+
+.register-btn{
+  background:var(--cyan);
+  color:white;
+}
+
+.hero{
+  position:relative;
+
+  height:100vh;
+
+  background:
+  url('/img/beach.jpeg');
+
+  background-size:cover;
+  background-position:center;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+
+  background:
+  linear-gradient(
+  rgba(15,76,129,.85),
+  rgba(20,184,212,.65));
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:900px;
+  color:white;
+  padding:20px;
+}
+
+.badge{
+  display:inline-block;
+  background:white;
+  color:var(--blue);
+
+  padding:10px 18px;
+  border-radius:30px;
+  margin-bottom:20px;
+  font-weight:600;
+}
+
+.hero h1{
+  font-size:60px;
+  margin-bottom:25px;
+}
+
+.hero p{
+  font-size:20px;
+  line-height:1.7;
+}
+
+.hero-buttons{
+  margin-top:30px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+}
+
+.hero-buttons button{
+  padding:15px 35px;
+  border:none;
+  border-radius:40px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:600;
+}
+
+.hero-buttons button:first-child{
+  background:white;
+  color:var(--blue);
+}
+
+.hero-buttons button:last-child{
+  background:transparent;
+  color:white;
+  border:2px solid white;
+}
+
+section{
+  padding:100px 8%;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:50px;
+}
+
+.section-title h2{
+  color:var(--blue);
+  font-size:40px;
+  margin-bottom:15px;
+}
+
+.about{
+  background:var(--cream);
+}
+
+.about-grid,
+.service-grid,
+.beach-grid{
+  display:grid;
+  gap:25px;
+  grid-template-columns:
+  repeat(auto-fit,minmax(260px,1fr));
+}
+
+.about-card,
+.service-card,
+.beach-card{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  transition:.3s;
+
+  box-shadow:
+  0 10px 30px rgba(0,0,0,.08);
+}
+
+.about-card:hover,
+.service-card:hover,
+.beach-card:hover{
+  transform:translateY(-10px);
+}
+
+.about-card h3,
+.service-card h3,
+.beach-card h3{
+  color:var(--blue);
+  margin-bottom:15px;
+}
+
+.stats{
+  display:grid;
+  gap:20px;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(220px,1fr));
+
+  background:var(--blue);
+}
+
+.stat-card{
+  background:white;
+  border-radius:20px;
+  padding:30px;
+  text-align:center;
+}
+
+.stat-card h2{
+  color:var(--cyan);
+  font-size:40px;
+}
+
+.cta{
+  text-align:center;
+  background:var(--cream);
+}
+
+.cta h2{
+  color:var(--blue);
+  margin-bottom:15px;
+}
+
+.cta p{
+  margin-bottom:25px;
+}
+
+.cta button{
+  padding:15px 35px;
+  border:none;
+  border-radius:40px;
+  background:var(--cyan);
+  color:white;
+  cursor:pointer;
+}
+
+.contact-box{
+  display:grid;
+  gap:25px;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(250px,1fr));
+}
+
+.contact-box div{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+}
+
+footer{
+  background:var(--chocolate);
+  color:white;
+  padding:40px;
+  text-align:center;
+}
+
+.footer-content h3{
+  margin-bottom:15px;
+}
+
+.footer-content p{
+  margin-bottom:15px;
+}
+
+@media(max-width:900px){
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .hero p{
+    font-size:16px;
+  }
+
+  .hero-buttons{
+    flex-direction:column;
+  }
+
+}
