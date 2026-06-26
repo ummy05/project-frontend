@@ -1,0 +1,215 @@
+<div class="profile-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>My Profile</h2>
+            <p>
+                Manage your personal information and account settings.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="profile-grid">
+
+        <!-- LEFT -->
+
+        <div class="profile-card">
+
+            <div class="profile-image">
+
+                <img [src]="selectedImage">
+
+                <label for="profileUpload">
+
+                    <i class="fas fa-camera"></i>
+
+                </label>
+
+                <input type="file"
+                       hidden
+                       id="profileUpload"
+                       (change)="onImageChange($event)">
+
+            </div>
+
+            <h3>{{user.fullName}}</h3>
+
+            <span>Tourist</span>
+
+            <div class="profile-stats">
+
+                <div>
+
+                    <h4>12</h4>
+                    <p>Reports</p>
+
+                </div>
+
+                <div>
+
+                    <h4>8</h4>
+                    <p>Resolved</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="details-card">
+
+            <h3>Personal Information</h3>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Full Name</label>
+
+                    <input type="text"
+                           [(ngModel)]="user.fullName">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Email Address</label>
+
+                    <input type="email"
+                           [(ngModel)]="user.email">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Phone Number</label>
+
+                    <input type="text"
+                           [(ngModel)]="user.phone">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Gender</label>
+
+                    <select [(ngModel)]="user.gender">
+
+                        <option>Male</option>
+                        <option>Female</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRAVEL INFORMATION -->
+
+    <div class="details-card">
+
+        <h3>Travel Information</h3>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Nationality</label>
+
+                <input type="text"
+                       [(ngModel)]="user.nationality">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Passport Number</label>
+
+                <input type="text"
+                       [(ngModel)]="user.passportNumber">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Current Location</label>
+
+                <input type="text"
+                       [(ngModel)]="user.currentLocation">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHANGE PASSWORD -->
+
+    <div class="details-card">
+
+        <h3>Change Password</h3>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Current Password</label>
+
+                <input type="password">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>New Password</label>
+
+                <input type="password">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Confirm Password</label>
+
+                <input type="password">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="actions">
+
+        <button class="cancel-btn">
+
+            Cancel
+
+        </button>
+
+        <button class="save-btn">
+
+            <i class="fas fa-save"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</div>

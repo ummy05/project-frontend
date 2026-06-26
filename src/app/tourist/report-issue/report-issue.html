@@ -1,0 +1,218 @@
+<div class="report-page">
+
+    <!-- SUCCESS MESSAGE -->
+
+    <div class="success-alert"
+         *ngIf="submitted">
+
+        <i class="fas fa-check-circle"></i>
+
+        Environmental issue reported successfully.
+
+    </div>
+
+
+    <!-- ================= HEADER CAROUSEL ================= -->
+
+<div class="report-header">
+
+    <div class="header-top">
+
+        <div>
+
+            <h2>Report Environmental Issue</h2>
+
+            <p>
+                Help us protect our beautiful coastline.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="carousel-wrapper">
+
+        <button class="nav-btn left"
+                (click)="prevSlide()">
+
+            <i class="fas fa-chevron-left"></i>
+
+        </button>
+
+        <div class="slides-container">
+
+            <div class="slides-track"
+     [style.transform]="'translateX(-' + (currentSlide * 25) + '%)'">
+
+    <div class="slide-card"
+         *ngFor="let slide of slides"
+         [style.background-image]="'url(' + slide.image + ')'">
+
+        <div class="overlay"></div>
+
+        <div class="slide-number">
+            {{slide.number}}
+        </div>
+
+        <div class="slide-content">
+            <h3>{{slide.title}}</h3>
+            <p>{{slide.description}}</p>
+        </div>
+
+    </div>
+
+</div>
+        </div>
+
+        <button class="nav-btn right"
+                (click)="nextSlide()">
+
+            <i class="fas fa-chevron-right"></i>
+
+        </button>
+
+    </div>
+
+    <div class="dots">
+
+        <span *ngFor="let slide of slides; let i=index"
+              [class.active-dot]="i===currentSlide"
+              (click)="goToSlide(i)">
+        </span>
+
+    </div>
+
+</div>
+
+
+    <!-- FORM -->
+
+    <div class="form-card">
+
+        <h3>Issue Information</h3>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Issue Type</label>
+
+                <select>
+
+                    <option>Select Issue Type</option>
+
+                    <option>Beach Pollution</option>
+
+                    <option>Illegal Fishing</option>
+
+                    <option>Waste Disposal</option>
+
+                    <option>Coral Reef Damage</option>
+
+                    <option>Oil Spill</option>
+
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Priority Level</label>
+
+                <select>
+
+                    <option>Low</option>
+
+                    <option>Medium</option>
+
+                    <option>High</option>
+
+                    <option>Critical</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Location</label>
+
+                <input type="text"
+                       placeholder="Example: Nungwi Beach">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Date Observed</label>
+
+                <input type="date">
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Description</label>
+
+            <textarea rows="6"
+                      placeholder="Provide detailed description about the issue...">
+            </textarea>
+
+        </div>
+
+
+        <!-- IMAGE -->
+
+        <div class="upload-card">
+
+            <i class="fas fa-cloud-upload-alt"></i>
+
+            <h4>Upload Evidence</h4>
+
+            <p>
+                Upload photo evidence if available.
+            </p>
+
+            <input type="file"
+                   hidden
+                   id="fileUpload"
+                   (change)="onFileChange($event)">
+
+            <label for="fileUpload">
+
+                Choose Image
+
+            </label>
+
+            <span *ngIf="selectedFile">
+
+                {{selectedFile}}
+
+            </span>
+
+        </div>
+
+
+        <button class="submit-btn"
+                (click)="submitReport()">
+
+            <i class="fas fa-paper-plane"></i>
+
+            Submit Report
+
+        </button>
+
+    </div>
+
+</div>

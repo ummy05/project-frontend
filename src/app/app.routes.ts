@@ -13,6 +13,17 @@ import { AdminNotifications } from './admin/admin-notifications/admin-notificati
 import { Reports } from './admin/reports/reports';
 import { OwnerLayout } from './owner/owner-layout/owner-layout';
 import { OwnerDashboard } from './owner/owner-dashboard/owner-dashboard';
+import { ApplyLicense } from './owner/apply-license/apply-license';
+import { MyLicenses } from './owner/my-licenses/my-licenses';
+import { OwnerPayment } from './owner/owner-payment/owner-payment';
+import { OwnerNotifications } from './owner/owner-notifications/owner-notifications';
+import { OwnerProfile } from './owner/owner-profile/owner-profile';
+import { TouristLayout } from './tourist/tourist-layout/tourist-layout';
+import { TouristDashboard } from './tourist/tourist-dashboard/tourist-dashboard';
+import { ReportIssue } from './tourist/report-issue/report-issue';
+import { MyReports } from './tourist/my-reports/my-reports';
+import { TouristNotifictions } from './tourist/tourist-notifictions/tourist-notifictions';
+import { MyProfile } from './tourist/my-profile/my-profile';
 
 export const routes: Routes = [
     {path: '',component:Home},
@@ -33,44 +44,35 @@ export const routes: Routes = [
       {path: 'reports',component: Reports},
       {path: 'notifications',component: AdminNotifications}
     ]
-  },
+   },
    
     //BUSINESS OWNER
     {path: 'businessman',component: OwnerLayout,
     children: [
       {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
       {path: 'dashboard',component: OwnerDashboard},
-
-    //   {
-    //     path: 'apply-license',
-    //     component: ApplyLicenseComponent
-    //   },
-
-    //   {
-    //     path: 'my-licenses',
-    //     component: MyLicensesComponent
-    //   },
-
-    //   {
-    //     path: 'payments',
-    //     component: BusinessPaymentsComponent
-    //   },
-
-    //   {
-    //     path: 'notifications',
-    //     component: BusinessNotificationsComponent
-    //   },
-
-    //   {
-    //     path: 'profile',
-    //     component: BusinessProfileComponent
-    //   }
+      {path: 'apply-license',component: ApplyLicense},
+      {path: 'my-licenses',component: MyLicenses},
+      {path: 'payments',component: OwnerPayment},
+      {path: 'notifications',component: OwnerNotifications},
+      {path: 'profile',component: OwnerProfile}
 
     ]
-
-  }
+   },
 
     //TOURIST/CITIZEN
+     {
+    path: 'tourist',
+    component: TouristLayout,
+    children: [
+      {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
+      {path: 'dashboard',component: TouristDashboard},
+      {path: 'report-issue',component: ReportIssue},
+      {path: 'my-reports',component: MyReports},
+      {path: 'notifications',component: TouristNotifictions},
+       {path: 'profile',component: MyProfile}
+    ]
+  }
 ];
 
 

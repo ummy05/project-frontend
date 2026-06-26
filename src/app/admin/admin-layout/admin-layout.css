@@ -9,7 +9,8 @@ body{font-family:'Poppins',sans-serif;}
 
 .layout-container{
     display:flex;
-    min-height:100vh;
+    height: 100vh;
+    overflow: hidden;
     background:#f8f8fb;
 }
 
@@ -19,7 +20,8 @@ body{font-family:'Poppins',sans-serif;}
     width:280px;
     background:#4B2E83;
     color:white;
-
+    height: 100vh;
+    overflow: hidden;
     display:flex;
     flex-direction:column;
 
@@ -96,6 +98,8 @@ nav a.active{
 
 .main-content{
     flex:1;
+    height: 100%;
+    overflow: scroll;
 }
 
 .topbar{

@@ -1,6 +1,6 @@
 <div class="layout-container">
 
-    <!-- MOBILE OVERLAY -->
+    <!-- OVERLAY -->
 
     <div class="overlay"
          *ngIf="sidebarOpen"
@@ -12,16 +12,12 @@
     <aside class="sidebar"
            [class.active]="sidebarOpen">
 
-        <!-- CLOSE BUTTON -->
-
         <button class="close-btn"
                 (click)="toggleSidebar()">
 
             <i class="fas fa-times"></i>
 
         </button>
-
-        <!-- LOGO -->
 
         <div class="logo">
 
@@ -31,17 +27,15 @@
             <div>
 
                 <h2>Coastal Monitor</h2>
-                <span>Business Owner</span>
+                <span>Tourist Portal</span>
 
             </div>
 
         </div>
 
-        <!-- NAVIGATION -->
-
         <nav>
 
-            <a routerLink="/businessman/dashboard"
+            <a routerLink="/tourist/dashboard"
                routerLinkActive="active">
 
                 <i class="fas fa-home"></i>
@@ -49,31 +43,23 @@
 
             </a>
 
-            <a routerLink="/businessman/apply-license"
+            <a routerLink="/tourist/report-issue"
                routerLinkActive="active">
 
-                <i class="fas fa-file-signature"></i>
-                Apply License
+                <i class="fas fa-triangle-exclamation"></i>
+                Report Issue
 
             </a>
 
-            <a routerLink="/businessman/my-licenses"
+            <a routerLink="/tourist/my-reports"
                routerLinkActive="active">
 
-                <i class="fas fa-id-card"></i>
-                My Licenses
+                <i class="fas fa-file-lines"></i>
+                My Reports
 
             </a>
 
-            <a routerLink="/businessman/payments"
-               routerLinkActive="active">
-
-                <i class="fas fa-credit-card"></i>
-                Payments
-
-            </a>
-
-            <a routerLink="/businessman/notifications"
+            <a routerLink="/tourist/notifications"
                routerLinkActive="active">
 
                 <i class="fas fa-bell"></i>
@@ -81,7 +67,7 @@
 
             </a>
 
-            <a routerLink="/businessman/profile"
+            <a routerLink="/tourist/profile"
                routerLinkActive="active">
 
                 <i class="fas fa-user"></i>
@@ -98,16 +84,14 @@
 
         </nav>
 
-        <!-- USER CARD -->
-
         <div class="profile-card">
 
-            <img src="/img/businessman.jpg">
+            <img src="/img/tourist.jpg">
 
             <div>
 
-                <h4>Ali Hassan</h4>
-                <span>Beach Business Owner</span>
+                <h4>John Smith</h4>
+                <span>Tourist</span>
 
             </div>
 
@@ -116,11 +100,9 @@
     </aside>
 
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
 
     <div class="main-content">
-
-        <!-- TOPBAR -->
 
         <header class="topbar">
 
@@ -135,28 +117,24 @@
 
                 <div class="welcome">
 
-                    <h3>Welcome Back 👋</h3>
-                    <span>Manage your coastal business</span>
+                    <h3>Welcome 👋</h3>
+                    <span>Protect our coastal environment</span>
 
                 </div>
 
                 <div class="top-actions">
 
                     <button>
-
                         <i class="fas fa-bell"></i>
-
                     </button>
 
-                    <img src="/img/businessman.jpg">
+                    <img src="/img/tourist.jpg">
 
                 </div>
 
             </div>
 
         </header>
-
-        <!-- CHILD PAGES -->
 
         <router-outlet></router-outlet>
 

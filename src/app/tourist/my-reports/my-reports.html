@@ -1,0 +1,205 @@
+<div class="reports-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>My Reports</h2>
+            <p>
+                Track all environmental issues you have reported.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-file-alt"></i>
+
+            <div>
+                <h3>12</h3>
+                <span>Total Reports</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+                <h3>3</h3>
+                <span>Pending</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-check-circle"></i>
+
+            <div>
+                <h3>8</h3>
+                <span>Resolved</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTER -->
+
+    <div class="filter-card">
+
+        <div class="search-box">
+
+            <i class="fas fa-search"></i>
+
+            <input type="text"
+                   placeholder="Search report...">
+
+        </div>
+
+        <select>
+
+            <option>All Status</option>
+            <option>Pending</option>
+            <option>Under Review</option>
+            <option>Resolved</option>
+
+        </select>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>Report ID</th>
+                <th>Issue</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr *ngFor="let report of reports">
+
+                <td>{{report.id}}</td>
+                <td>{{report.issue}}</td>
+                <td>{{report.location}}</td>
+                <td>{{report.date}}</td>
+
+                <td>
+
+                    <span class="priority"
+                          [ngClass]="{
+                          'critical': report.priority === 'Critical',
+                          'high': report.priority === 'High',
+                          'medium': report.priority === 'Medium'
+                          }">
+
+                        {{report.priority}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span class="status"
+                          [ngClass]="{
+                          'resolved': report.status === 'Resolved',
+                          'review': report.status === 'Under Review',
+                          'pending': report.status === 'Pending'
+                          }">
+
+                        {{report.status}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button class="view-btn"
+                                (click)="viewReport(report)">
+
+                            <i class="fas fa-eye"></i>
+
+                        </button>
+
+                        <button class="delete-btn">
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- VIEW MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Report Details</h3>
+
+            <button (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="details">
+
+            <p><strong>ID:</strong> {{selectedReport?.id}}</p>
+
+            <p><strong>Issue:</strong> {{selectedReport?.issue}}</p>
+
+            <p><strong>Location:</strong> {{selectedReport?.location}}</p>
+
+            <p><strong>Date:</strong> {{selectedReport?.date}}</p>
+
+            <p><strong>Priority:</strong> {{selectedReport?.priority}}</p>
+
+            <p><strong>Status:</strong> {{selectedReport?.status}}</p>
+
+        </div>
+
+    </div>
+
+</div>

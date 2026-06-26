@@ -1,0 +1,256 @@
+.licenses-page{
+    padding:30px;
+}
+
+/* HEADER */
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.page-header h2{
+    font-size:2rem;
+    color:#222;
+}
+
+.page-header p{
+    color:#777;
+}
+
+.apply-btn{
+    border:none;
+    padding:14px 22px;
+    border-radius:12px;
+    cursor:pointer;
+    background:#4B2E83;
+    color:#fff;
+}
+
+/* FILTERS */
+
+.filter-card{
+    background:#fff;
+    padding:20px;
+    border-radius:20px;
+
+    display:flex;
+    gap:20px;
+
+    margin-bottom:30px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+.search-box{
+    flex:1;
+    position:relative;
+}
+
+.search-box i{
+    position:absolute;
+    left:18px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#999;
+}
+
+.search-box input{
+    width:100%;
+    height:50px;
+
+    border:1px solid #ddd;
+    border-radius:12px;
+
+    padding-left:50px;
+}
+
+.filter-card select{
+    width:220px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:0 15px;
+}
+
+/* GRID */
+
+.licenses-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
+}
+
+.license-card{
+    background:#fff;
+    border-radius:24px;
+    padding:25px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+    transition:.3s;
+}
+
+.license-card:hover{
+    transform:translateY(-5px);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.license-icon{
+    width:60px;
+    height:60px;
+
+    border-radius:18px;
+
+    background:#F5E6D3;
+    color:#4B2E83;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:1.5rem;
+}
+
+.business{
+    color:#777;
+    margin:10px 0 25px;
+}
+
+.license-info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:25px;
+}
+
+.license-info small{
+    display:block;
+    color:#999;
+    margin-bottom:5px;
+}
+
+.status{
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:13px;
+}
+
+.active{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#b78103;
+}
+
+.expired{
+    background:#fde2e2;
+    color:#dc2626;
+}
+
+/* ACTIONS */
+
+.actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.actions button{
+    flex:1;
+    border:none;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.view-btn{
+    background:#ede9fe;
+    color:#6d28d9;
+}
+
+.download-btn{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.renew-btn{
+    background:#F7BFA6;
+    color:#222;
+}
+
+/* MODAL */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.5);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:1000;
+}
+
+.modal{
+    width:90%;
+    max-width:500px;
+
+    background:white;
+
+    border-radius:20px;
+    padding:30px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.modal-header button{
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:20px;
+}
+
+.details p{
+    margin-bottom:18px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .licenses-page{
+        padding:20px;
+    }
+
+    .page-header{
+        flex-direction:column;
+        gap:20px;
+        align-items:flex-start;
+    }
+
+    .filter-card{
+        flex-direction:column;
+    }
+
+    .filter-card select{
+        width:100%;
+        height:50px;
+    }
+
+}

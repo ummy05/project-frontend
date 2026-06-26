@@ -1,0 +1,176 @@
+<div class="licenses-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>My Licenses</h2>
+            <p>
+                View and manage all your business licenses.
+            </p>
+        </div>
+
+        <button class="apply-btn">
+
+            <i class="fas fa-plus"></i>
+
+            Apply New License
+
+        </button>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filter-card">
+
+        <div class="search-box">
+
+            <i class="fas fa-search"></i>
+
+            <input type="text"
+                   placeholder="Search license...">
+
+        </div>
+
+        <select>
+
+            <option>All Status</option>
+            <option>Active</option>
+            <option>Pending</option>
+            <option>Expired</option>
+
+        </select>
+
+    </div>
+
+
+    <!-- LICENSE CARDS -->
+
+    <div class="licenses-grid">
+
+        <div class="license-card"
+             *ngFor="let license of licenses">
+
+            <div class="card-top">
+
+                <div class="license-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+
+                <span class="status"
+                      [ngClass]="{
+                        'active': license.status === 'Active',
+                        'pending': license.status === 'Pending',
+                        'expired': license.status === 'Expired'
+                      }">
+
+                    {{license.status}}
+
+                </span>
+
+            </div>
+
+            <h3>{{license.type}}</h3>
+
+            <p class="business">
+                {{license.business}}
+            </p>
+
+            <div class="license-info">
+
+                <div>
+                    <small>Issued Date</small>
+                    <strong>{{license.issuedDate}}</strong>
+                </div>
+
+                <div>
+                    <small>Expiry Date</small>
+                    <strong>{{license.expiryDate}}</strong>
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <button class="view-btn"
+                        (click)="openView(license)">
+
+                    <i class="fas fa-eye"></i>
+                    View
+
+                </button>
+
+                <button class="download-btn">
+
+                    <i class="fas fa-download"></i>
+                    Download
+
+                </button>
+
+                <button class="renew-btn">
+
+                    <i class="fas fa-sync"></i>
+                    Renew
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- VIEW MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>License Details</h3>
+
+            <button (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="details">
+
+            <p><strong>License ID:</strong>
+                {{selectedLicense?.id}}
+            </p>
+
+            <p><strong>License Type:</strong>
+                {{selectedLicense?.type}}
+            </p>
+
+            <p><strong>Business:</strong>
+                {{selectedLicense?.business}}
+            </p>
+
+            <p><strong>Issued Date:</strong>
+                {{selectedLicense?.issuedDate}}
+            </p>
+
+            <p><strong>Expiry Date:</strong>
+                {{selectedLicense?.expiryDate}}
+            </p>
+
+            <p><strong>Status:</strong>
+                {{selectedLicense?.status}}
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

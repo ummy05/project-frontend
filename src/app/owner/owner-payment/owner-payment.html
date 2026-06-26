@@ -1,0 +1,261 @@
+<div class="payments-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Payments</h2>
+            <p>
+                Manage all license payments and receipts.
+            </p>
+        </div>
+
+        <button class="payment-btn"
+                (click)="showPaymentModal=true">
+
+            <i class="fas fa-plus"></i>
+            Make Payment
+
+        </button>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="icon total">
+                <i class="fas fa-coins"></i>
+            </div>
+
+            <div>
+                <h3>TZS 1.3M</h3>
+                <span>Total Paid</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon pending">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <div>
+                <h3>1</h3>
+                <span>Pending Payments</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon receipts">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+
+            <div>
+                <h3>8</h3>
+                <span>Receipts</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>Reference</th>
+                <th>License</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr *ngFor="let payment of payments">
+
+                <td>{{payment.id}}</td>
+                <td>{{payment.license}}</td>
+                <td>{{payment.amount}}</td>
+                <td>{{payment.method}}</td>
+                <td>{{payment.date}}</td>
+
+                <td>
+
+                    <span class="status"
+                          [ngClass]="{
+                          'paid': payment.status==='Paid',
+                          'pending-status': payment.status==='Pending',
+                          'failed': payment.status==='Failed'
+                          }">
+
+                        {{payment.status}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button class="view-btn"
+                                (click)="openReceipt(payment)">
+
+                            <i class="fas fa-eye"></i>
+
+                        </button>
+
+                        <button class="download-btn">
+
+                            <i class="fas fa-download"></i>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- MAKE PAYMENT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showPaymentModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Make Payment</h3>
+
+            <button (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>License</label>
+
+            <select>
+
+                <option>Tourism License</option>
+                <option>Boat Service License</option>
+                <option>Water Sports License</option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Payment Method</label>
+
+            <select>
+
+                <option>Mobile Money</option>
+                <option>Bank Transfer</option>
+                <option>Cash</option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Amount</label>
+
+            <input type="text"
+                   placeholder="Enter amount">
+
+        </div>
+
+        <button class="submit-btn">
+
+            Proceed Payment
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- RECEIPT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showReceiptModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Payment Receipt</h3>
+
+            <button (click)="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="receipt">
+
+            <h4>{{selectedPayment?.id}}</h4>
+
+            <p>
+                <strong>License:</strong>
+                {{selectedPayment?.license}}
+            </p>
+
+            <p>
+                <strong>Amount:</strong>
+                {{selectedPayment?.amount}}
+            </p>
+
+            <p>
+                <strong>Method:</strong>
+                {{selectedPayment?.method}}
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                {{selectedPayment?.date}}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {{selectedPayment?.status}}
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

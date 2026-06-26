@@ -1,0 +1,108 @@
+<div class="notifications-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Notifications</h2>
+            <p>
+                Stay updated with your reports and environmental alerts.
+            </p>
+        </div>
+
+        <button class="mark-btn">
+
+            <i class="fas fa-check-double"></i>
+            Mark All as Read
+
+        </button>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-bell"></i>
+
+            <div>
+                <h3>15</h3>
+                <span>Total Notifications</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-envelope"></i>
+
+            <div>
+                <h3>5</h3>
+                <span>Unread</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-triangle-exclamation"></i>
+
+            <div>
+                <h3>2</h3>
+                <span>Alerts</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LIST -->
+
+    <div class="notifications-list">
+
+        <div class="notification-card"
+             *ngFor="let notification of notifications"
+             [class.unread]="notification.unread">
+
+            <div class="icon"
+                 [ngClass]="notification.type">
+
+                <i class="fas fa-check-circle"
+                   *ngIf="notification.type === 'success'"></i>
+
+                <i class="fas fa-hourglass-half"
+                   *ngIf="notification.type === 'review'"></i>
+
+                <i class="fas fa-triangle-exclamation"
+                   *ngIf="notification.type === 'alert'"></i>
+
+                <i class="fas fa-bullhorn"
+                   *ngIf="notification.type === 'system'"></i>
+
+                <i class="fas fa-heart"
+                   *ngIf="notification.type === 'thanks'"></i>
+
+            </div>
+
+            <div class="content">
+
+                <div class="top-row">
+
+                    <h4>{{notification.title}}</h4>
+
+                    <span>{{notification.time}}</span>
+
+                </div>
+
+                <p>{{notification.message}}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

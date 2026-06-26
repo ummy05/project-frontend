@@ -1,0 +1,185 @@
+<div class="dashboard-page">
+
+    <!-- HERO -->
+
+    <div class="hero-card">
+
+        <div class="hero-content">
+
+            <h2>Protect Our Coastline 🌊</h2>
+
+            <p>
+                Help preserve Zanzibar's coastal environment by reporting
+                environmental issues and supporting conservation efforts.
+            </p>
+
+            <button>
+                <i class="fas fa-triangle-exclamation"></i>
+                Report Environmental Issue
+            </button>
+
+        </div>
+
+        <img src="/img/beach-1.jpg" alt="Beach">
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="icon reports">
+                <i class="fas fa-file-lines"></i>
+            </div>
+
+            <div>
+                <h3>12</h3>
+                <span>My Reports</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon resolved">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <div>
+                <h3>8</h3>
+                <span>Resolved</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon alerts">
+                <i class="fas fa-bell"></i>
+            </div>
+
+            <div>
+                <h3>3</h3>
+                <span>Notifications</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section-card">
+
+        <h3>Quick Actions</h3>
+
+        <div class="actions-grid">
+
+            <button>
+                <i class="fas fa-triangle-exclamation"></i>
+                Report Issue
+            </button>
+
+            <button>
+                <i class="fas fa-file-lines"></i>
+                My Reports
+            </button>
+
+            <button>
+                <i class="fas fa-bell"></i>
+                Notifications
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CONTENT GRID -->
+
+    <div class="content-grid">
+
+        <!-- RECENT REPORTS -->
+
+        <div class="section-card">
+
+            <h3>Recent Reports</h3>
+
+            <div class="report-item"
+                 *ngFor="let report of reports">
+
+                <div>
+
+                    <h4>{{report.title}}</h4>
+
+                    <span>{{report.location}}</span>
+
+                </div>
+
+                <div>
+
+                    <span class="status"
+                          [ngClass]="{
+                          'resolved-status': report.status==='Resolved',
+                          'review-status': report.status==='Under Review',
+                          'pending-status': report.status==='Pending'
+                          }">
+
+                        {{report.status}}
+
+                    </span>
+
+                    <small>{{report.date}}</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CONSERVATION TIPS -->
+
+        <div class="section-card">
+
+            <h3>Conservation Tips</h3>
+
+            <div class="tip-card">
+                ♻️ Dispose waste in designated bins.
+            </div>
+
+            <div class="tip-card">
+                🐠 Avoid disturbing marine wildlife.
+            </div>
+
+            <div class="tip-card">
+                🌊 Keep beaches clean and plastic-free.
+            </div>
+
+            <div class="tip-card">
+                🚫 Report illegal coastal activities.
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ALERT CARD -->
+
+    <div class="alert-card">
+
+        <i class="fas fa-circle-info"></i>
+
+        <div>
+
+            <h4>Environmental Alert</h4>
+
+            <p>
+                High tide warning has been issued for some coastal areas.
+                Please follow local safety guidelines.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,117 @@
+<p>owner-notifications works!</p>
+<div class="notifications-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Notifications</h2>
+            <p>
+                Stay updated with your business activities and system alerts.
+            </p>
+        </div>
+
+        <button class="mark-btn">
+
+            <i class="fas fa-check-double"></i>
+            Mark All as Read
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="icon total">
+                <i class="fas fa-bell"></i>
+            </div>
+
+            <div>
+                <h3>15</h3>
+                <span>Total Notifications</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon unread">
+                <i class="fas fa-envelope"></i>
+            </div>
+
+            <div>
+                <h3>5</h3>
+                <span>Unread</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon alerts">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <h3>3</h3>
+                <span>Important Alerts</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATION LIST -->
+
+    <div class="notification-list">
+
+        <div class="notification-card"
+             *ngFor="let notification of notifications"
+             [class.unread-card]="notification.unread">
+
+            <div class="notification-icon"
+                 [ngClass]="notification.type">
+
+                <i class="fas fa-check-circle"
+                   *ngIf="notification.type === 'success'"></i>
+
+                <i class="fas fa-credit-card"
+                   *ngIf="notification.type === 'payment'"></i>
+
+                <i class="fas fa-clock"
+                   *ngIf="notification.type === 'warning'"></i>
+
+                <i class="fas fa-info-circle"
+                   *ngIf="notification.type === 'info'"></i>
+
+                <i class="fas fa-bullhorn"
+                   *ngIf="notification.type === 'system'"></i>
+
+            </div>
+
+            <div class="notification-content">
+
+                <div class="top-row">
+
+                    <h4>{{notification.title}}</h4>
+
+                    <span>{{notification.time}}</span>
+
+                </div>
+
+                <p>{{notification.message}}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
