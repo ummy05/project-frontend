@@ -1,0 +1,165 @@
+<div class="layout-container">
+
+    <!-- MOBILE OVERLAY -->
+
+    <div class="overlay"
+         *ngIf="sidebarOpen"
+         (click)="toggleSidebar()">
+    </div>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar"
+           [class.active]="sidebarOpen">
+
+        <!-- CLOSE BUTTON -->
+
+        <button class="close-btn"
+                (click)="toggleSidebar()">
+
+            <i class="fas fa-times"></i>
+
+        </button>
+
+        <!-- LOGO -->
+
+        <div class="logo">
+
+            <img src="/img/logo-1.png"
+                 alt="Logo">
+
+            <div>
+
+                <h2>Coastal Monitor</h2>
+                <span>Business Owner</span>
+
+            </div>
+
+        </div>
+
+        <!-- NAVIGATION -->
+
+        <nav>
+
+            <a routerLink="/businessman/dashboard"
+               routerLinkActive="active">
+
+                <i class="fas fa-home"></i>
+                Dashboard
+
+            </a>
+
+            <a routerLink="/business/apply-license"
+               routerLinkActive="active">
+
+                <i class="fas fa-file-signature"></i>
+                Apply License
+
+            </a>
+
+            <a routerLink="/business/my-licenses"
+               routerLinkActive="active">
+
+                <i class="fas fa-id-card"></i>
+                My Licenses
+
+            </a>
+
+            <a routerLink="/business/payments"
+               routerLinkActive="active">
+
+                <i class="fas fa-credit-card"></i>
+                Payments
+
+            </a>
+
+            <a routerLink="/business/notifications"
+               routerLinkActive="active">
+
+                <i class="fas fa-bell"></i>
+                Notifications
+
+            </a>
+
+            <a routerLink="/business/profile"
+               routerLinkActive="active">
+
+                <i class="fas fa-user"></i>
+                Profile
+
+            </a>
+
+            <a routerLink="/login">
+
+                <i class="fas fa-right-from-bracket"></i>
+                Logout
+
+            </a>
+
+        </nav>
+
+        <!-- USER CARD -->
+
+        <div class="profile-card">
+
+            <img src="https://i.pravatar.cc/150?img=15">
+
+            <div>
+
+                <h4>Ali Hassan</h4>
+                <span>Beach Business Owner</span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button class="menu-btn"
+                    (click)="toggleSidebar()">
+
+                <i class="fas fa-bars"></i>
+
+            </button>
+
+            <div class="top-right">
+
+                <div class="welcome">
+
+                    <h3>Welcome Back 👋</h3>
+                    <span>Manage your coastal business</span>
+
+                </div>
+
+                <div class="top-actions">
+
+                    <button>
+
+                        <i class="fas fa-bell"></i>
+
+                    </button>
+
+                    <img src="https://i.pravatar.cc/150?img=15">
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- CHILD PAGES -->
+
+        <router-outlet></router-outlet>
+
+    </div>
+
+</div>

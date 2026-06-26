@@ -1,287 +1,386 @@
+<!-- ================= NAVBAR ================= -->
+
 <nav class="navbar">
 
-  <div class="logo">
-    🌊 Coastal Monitor
-  </div>
+    <div class="logo">
 
-  <div
-    class="menu-toggle"
-    (click)="toggleMenu()">
+        <img src="/img/logo-1.png" alt="logo">
 
-    ☰
+        <div class="logo-text">
+            <h2>COASTAL</h2>
+            <span>MONITOR</span>
+        </div>
 
-  </div>
+    </div>
 
-  <ul
-    class="nav-links"
-    [class.active]="menuOpen">
+    <div class="menu-btn" (click)="toggleMenu()">
 
-    <li><a href="#">Home</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#beaches">Beaches</a></li>
-    <li><a href="#contact">Contact</a></li>
+        <i class="fa-solid"
+           [ngClass]="isMenuOpen ? 'fa-xmark' : 'fa-bars'">
+        </i>
 
-    <li class="mobile-btn">
-      <button routerLink="/login">
-        Login
-      </button>
-    </li>
+    </div>
 
-    <li class="mobile-btn">
-      <button routerLink="/register">
-        Register
-      </button>
-    </li>
+    <ul class="nav-links" [class.active]="isMenuOpen">
 
-  </ul>
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Licenses</a></li>
+        <li><a href="#">Payments</a></li>
+        <li><a href="#">Reports</a></li>
+        <li><a href="#">Contact</a></li>
 
-  <div class="nav-actions">
+        <div class="nav-buttons">
 
-    <button
-      class="login-btn"
-      routerLink="/login">
+            <button class="login-btn" routerLink="/login">
+                Login
+            </button>
 
-      Login
+            <button class="register-btn">
+                Register
+            </button>
 
-    </button>
+        </div>
 
-    <button
-      class="register-btn"
-      routerLink="/register">
-
-      Register
-
-    </button>
-
-  </div>
+    </ul>
 
 </nav>
 
+
+<!-- ================= HERO ================= -->
+
 <section class="hero">
 
-  <div class="overlay"></div>
+    <div class="hero-content">
 
-  <div class="hero-content">
+        <span class="tag">ICT-BASED</span>
 
-    <span class="badge">
-      Smart Coastal Management Platform
+        <h1>
+            Coastal Conservation
+            <br>
+            & Revenue
+            <span>Monitoring</span>
+            <br>
+            System
+        </h1>
+
+        <div class="line"></div>
+
+        <p>
+            A smart digital platform for managing coastal resources,
+            monitoring activities, collecting revenue and protecting
+            our beautiful beaches for a sustainable future.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button class="btn-primary">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                Apply for License
+            </button>
+
+            <button class="btn-outline">
+                <i class="fa-solid fa-credit-card"></i>
+                Make a Payment
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="hero-image">
+
+        <img src="img/beach.png" alt="Beach">
+
+        <div class="stats">
+
+            <!-- <div class="card">
+
+                <div class="icon orange">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+
+                <h4>Digital Licenses</h4>
+
+                <h2>1,248+</h2>
+
+                <small>Issued this year</small>
+
+            </div> -->
+
+
+            <!-- <div class="card">
+
+                <div class="icon beige">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+
+                <h4>Revenue Collected</h4>
+
+                <h2>TZS 2.4B+</h2>
+
+                <small>This year</small>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon beige">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <h4>Enforcement Actions</h4>
+
+                <h2>320+</h2>
+
+                <small>This year</small>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon orange">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+
+                <h4>Reports Resolved</h4>
+
+                <h2>560+</h2>
+
+                <small>This year</small>
+
+            </div> -->
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SERVICES ================= -->
+
+<section class="services">
+
+    <span class="section-tag">
+        WHAT WE DO
     </span>
 
-    <h1>
-      ICT-Based Coastal Conservation &
-      Revenue Monitoring System
-    </h1>
+    <h2>
+        Building a sustainable and thriving coastal environment
+    </h2>
 
-    <p>
-      Transforming Zanzibar beach management through
-      digital licensing, revenue monitoring and
-      environmental conservation.
-    </p>
+    <div class="service-grid">
 
-    <div class="hero-buttons">
+        <div class="service-card">
 
-      <button style="color: rgb(14, 182, 233);" routerLink="/auth/register">
-        Get Started
-      </button>
+            <div class="service-icon">
+                <i class="fa-solid fa-file-lines"></i>
+            </div>
 
-      <button routerLink="/login">
-        Sign In
-      </button>
+            <h3>Digital Licenses</h3>
+
+            <p>
+                Apply, track and manage business licenses online with ease.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-credit-card"></i>
+            </div>
+
+            <h3>Online Payments</h3>
+
+            <p>
+                Make secure payments for permits, fees and services.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+
+            <h3>Revenue Monitoring</h3>
+
+            <p>
+                Track revenue collection in real-time with accurate reports.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <h3>Enforcement</h3>
+
+            <p>
+                Monitor and manage compliance and enforcement actions.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-flag"></i>
+            </div>
+
+            <h3>Report Issues</h3>
+
+            <p>
+                Report pollution, illegal activities and environmental issues.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <h3>Public Awareness</h3>
+
+            <p>
+                Promoting conservation and responsible use of coastal resources.
+            </p>
+
+        </div>
 
     </div>
-
-  </div>
 
 </section>
 
-<section class="about" id="about">
 
-  <div class="section-title">
-    <h2>About The System</h2>
-    <p>
-      A digital solution designed to improve transparency,
-      environmental protection and revenue collection
-      across Zanzibar coastal areas.
-    </p>
-  </div>
+<!-- ================= FOOTER ================= -->
 
-  <div class="about-grid">
+<footer class="footer">
 
-    <div class="about-card">
-      <h3>Revenue Monitoring</h3>
-      <p>
-        Track business payments and improve government
-        revenue transparency.
-      </p>
+    <div class="footer-container">
+
+        <div class="footer-section">
+
+            <div class="footer-logo">
+
+                <img src="/img/logo-1.png" alt="logo">
+
+                <div>
+                    <h2>COASTAL</h2>
+                    <span>MONITOR</span>
+                </div>
+
+            </div>
+
+            <p>
+                Coastal Conservation and Revenue Monitoring System is
+                a smart digital platform for sustainable coastal
+                resource management and revenue collection.
+            </p>
+
+            <div class="social-links">
+
+                <a href="#">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-section">
+
+            <h3>Quick Links</h3>
+
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Licenses</a></li>
+                <li><a href="#">Payments</a></li>
+            </ul>
+
+        </div>
+
+
+        <div class="footer-section">
+
+            <h3>Services</h3>
+
+            <ul>
+                <li><a href="#">Digital Licenses</a></li>
+                <li><a href="#">Revenue Monitoring</a></li>
+                <li><a href="#">Issue Reporting</a></li>
+                <li><a href="#">Environmental Protection</a></li>
+            </ul>
+
+        </div>
+
+
+        <div class="footer-section">
+
+            <h3>Contact Info</h3>
+
+            <ul>
+
+                <li>
+                    <i class="fa-solid fa-location-dot"></i>
+                    Zanzibar, Tanzania
+                </li>
+
+                <li>
+                    <i class="fa-solid fa-phone"></i>
+                    +255 700 000 000
+                </li>
+
+                <li>
+                    <i class="fa-solid fa-envelope"></i>
+                    info@coastalmonitor.com
+                </li>
+
+            </ul>
+
+        </div>
+
     </div>
 
-    <div class="about-card">
-      <h3>Digital Licensing</h3>
-      <p>
-        Business owners can apply and obtain licenses online.
-      </p>
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Coastal Monitor. All Rights Reserved.
+        </p>
+
     </div>
-
-    <div class="about-card">
-      <h3>Environmental Protection</h3>
-      <p>
-        Citizens and tourists can report pollution and
-        illegal activities.
-      </p>
-    </div>
-
-  </div>
-
-</section>
-
-<section class="services" id="services">
-
-  <div class="section-title">
-    <h2>Our Services</h2>
-  </div>
-
-  <div class="service-grid">
-
-    <div class="service-card">
-      <h3>Business Registration</h3>
-      <p>Register coastal businesses online.</p>
-    </div>
-
-    <div class="service-card">
-      <h3>License Applications</h3>
-      <p>Apply, renew and manage licenses.</p>
-    </div>
-
-    <div class="service-card">
-      <h3>Revenue Tracking</h3>
-      <p>Monitor payments and transactions.</p>
-    </div>
-
-    <div class="service-card">
-      <h3>Environmental Reports</h3>
-      <p>Submit conservation and pollution reports.</p>
-    </div>
-
-  </div>
-
-</section>
-
-<section class="beaches" id="beaches">
-
-  <div class="section-title">
-    <h2>Featured Beaches</h2>
-  </div>
-
-  <div class="beach-grid">
-
-    <div class="beach-card">
-      <h3>Paje Beach</h3>
-      <p>Tourism and water sports hub.</p>
-    </div>
-
-    <div class="beach-card">
-      <h3>Nungwi Beach</h3>
-      <p>Popular tourism destination.</p>
-    </div>
-
-    <div class="beach-card">
-      <h3>Kendwa Beach</h3>
-      <p>Famous for sunsets and tourism.</p>
-    </div>
-
-    <div class="beach-card">
-      <h3>Kiwengwa Beach</h3>
-      <p>Conservation and hospitality center.</p>
-    </div>
-
-  </div>
-
-</section>
-
-<section class="stats">
-
-  <div class="stat-card">
-    <h2>500+</h2>
-    <p>Registered Businesses</p>
-  </div>
-
-  <div class="stat-card">
-    <h2>1000+</h2>
-    <p>Licenses Issued</p>
-  </div>
-
-  <div class="stat-card">
-    <h2>300+</h2>
-    <p>Environmental Reports</p>
-  </div>
-
-  <div class="stat-card">
-    <h2>4</h2>
-    <p>Major Beaches Covered</p>
-  </div>
-
-</section>
-
-<section class="cta">
-
-  <h2>
-    Join The Future Of Coastal Management
-  </h2>
-
-  <p>
-    Register your business and contribute to
-    sustainable coastal development.
-  </p>
-
-  <button routerLink="/register">
-    Register Now
-  </button>
-
-</section>
-
-<section class="contact" id="contact">
-
-  <div class="section-title">
-    <h2>Contact Us</h2>
-  </div>
-
-  <div class="contact-box">
-
-    <div>
-      <h4>Email</h4>
-      <p>info@coastalmonitor.com</p>
-    </div>
-
-    <div>
-      <h4>Phone</h4>
-      <p>+255 777 000 000</p>
-    </div>
-
-    <div>
-      <h4>Location</h4>
-      <p>Zanzibar, Tanzania</p>
-    </div>
-
-  </div>
-
-</section>
-
-<footer>
-
-  <div class="footer-content">
-
-    <h3>Coastal Conservation & Revenue Monitoring System</h3>
-
-    <p>
-      Promoting sustainable tourism and environmental
-      conservation through technology.
-    </p>
-
-    <span>
-      © 2026 All Rights Reserved
-    </span>
-
-  </div>
 
 </footer>

@@ -1,0 +1,319 @@
+<div class="page-container">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Payments Management</h2>
+            <p>
+                Manage and monitor all payment transactions.
+            </p>
+        </div>
+
+        <div class="header-actions">
+
+            <button class="add-btn"
+                    (click)="showAddModal=true">
+
+                <i class="fas fa-plus"></i>
+                Add Payment
+
+            </button>
+
+            <button class="export-btn">
+
+                <i class="fas fa-download"></i>
+                Export
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-coins"></i>
+
+            <div>
+                <h3>TZS 25.4M</h3>
+                <span>Total Revenue</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-check-circle"></i>
+
+            <div>
+                <h3>425</h3>
+                <span>Completed</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+                <h3>18</h3>
+                <span>Pending</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-times-circle"></i>
+
+            <div>
+                <h3>5</h3>
+                <span>Failed</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FILTERS -->
+
+    <div class="filter-section">
+
+        <div class="search-box">
+
+            <i class="fas fa-search"></i>
+
+            <input type="text"
+                   placeholder="Search payment...">
+
+        </div>
+
+        <select>
+            <option>All Status</option>
+            <option>Completed</option>
+            <option>Pending</option>
+            <option>Failed</option>
+        </select>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Payer</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr *ngFor="let payment of payments">
+
+                <td>{{payment.id}}</td>
+                <td>{{payment.payer}}</td>
+                <td>{{payment.amount}}</td>
+                <td>{{payment.method}}</td>
+                <td>{{payment.date}}</td>
+
+                <td>
+
+                    <span class="status"
+                          [ngClass]="{
+                            'completed': payment.status === 'Completed',
+                            'pending': payment.status === 'Pending',
+                            'failed': payment.status === 'Failed'
+                          }">
+
+                        {{payment.status}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button class="view-btn"
+                                (click)="openView(payment)">
+
+                            <i class="fas fa-eye"></i>
+
+                        </button>
+
+                        <button class="edit-btn"
+                                (click)="openEdit(payment)">
+
+                            <i class="fas fa-edit"></i>
+
+                        </button>
+
+                        <button class="delete-btn">
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- VIEW MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Payment Details</h3>
+
+            <button (click)="closeModals()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="details">
+
+            <p><strong>ID:</strong> {{selectedPayment?.id}}</p>
+            <p><strong>Payer:</strong> {{selectedPayment?.payer}}</p>
+            <p><strong>Amount:</strong> {{selectedPayment?.amount}}</p>
+            <p><strong>Method:</strong> {{selectedPayment?.method}}</p>
+            <p><strong>Status:</strong> {{selectedPayment?.status}}</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EDIT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showEditModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Edit Payment</h3>
+
+            <button (click)="closeModals()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+            <label>Payer</label>
+            <input type="text"
+                   [(ngModel)]="selectedPayment.payer">
+        </div>
+
+        <div class="form-group">
+            <label>Amount</label>
+            <input type="text"
+                   [(ngModel)]="selectedPayment.amount">
+        </div>
+
+        <div class="form-group">
+            <label>Method</label>
+
+            <select [(ngModel)]="selectedPayment.method">
+                <option>Cash</option>
+                <option>Bank Transfer</option>
+                <option>Mobile Money</option>
+            </select>
+
+        </div>
+
+        <button class="save-btn">
+            Save Changes
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ADD MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showAddModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Add Payment</h3>
+
+            <button (click)="closeModals()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+            <label>Payer</label>
+            <input type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Amount</label>
+            <input type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Payment Method</label>
+
+            <select>
+                <option>Cash</option>
+                <option>Bank Transfer</option>
+                <option>Mobile Money</option>
+            </select>
+
+        </div>
+
+        <button class="save-btn">
+
+            <i class="fas fa-save"></i>
+            Save Payment
+
+        </button>
+
+    </div>
+
+</div>

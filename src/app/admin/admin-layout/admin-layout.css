@@ -1,0 +1,189 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    
+}
+
+body{font-family:'Poppins',sans-serif;}
+
+.layout-container{
+    display:flex;
+    min-height:100vh;
+    background:#f8f8fb;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:280px;
+    background:#4B2E83;
+    color:white;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:25px 20px;
+
+    transition:.3s;
+}
+
+.logo{
+    display:flex;
+    gap:15px;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.logo img{
+    width:55px;
+    height:55px;
+}
+
+.logo h2{
+    font-size:20px;
+}
+
+.logo span{
+    color:#ddd;
+}
+
+nav{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+nav a{
+    text-decoration:none;
+    color:white;
+
+    padding:15px;
+    border-radius:12px;
+
+    display:flex;
+    gap:15px;
+    align-items:center;
+
+    transition:.3s;
+}
+
+nav a:hover,
+nav a.active{
+    background:#F7BFA6;
+    color:#222;
+}
+
+.profile-card{
+    margin-top:auto;
+
+    display:flex;
+    gap:15px;
+
+    background:rgba(255,255,255,.1);
+
+    padding:15px;
+    border-radius:15px;
+}
+
+.profile-card img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+}
+
+/* CONTENT */
+
+.main-content{
+    flex:1;
+}
+
+.topbar{
+    height:80px;
+    background:white;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 30px;
+
+    border-bottom:1px solid #eee;
+}
+
+.menu-btn{
+    border:none;
+    background:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.top-actions{
+    display:flex;
+    gap:15px;
+}
+
+.top-actions button{
+    width:45px;
+    height:45px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#f4f4f4;
+    cursor:pointer;
+}
+
+.overlay{
+    display:none;
+}
+
+/* MOBILE */
+
+@media(max-width:992px){
+
+    .sidebar{
+        position:fixed;
+        left:-300px;
+        top:0;
+        bottom:0;
+        z-index:1000;
+    }
+
+    .sidebar.active{
+        left:0;
+    }
+
+    .overlay{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.4);
+        z-index:999;
+    }
+}
+
+.close-btn{
+    display:none;
+}
+
+@media(max-width:992px){
+
+    .close-btn{
+        display:block;
+
+        position:absolute;
+        right:15px;
+        top:15px;
+
+        width:40px;
+        height:40px;
+
+        border:none;
+        border-radius:50%;
+
+        background:rgba(255,255,255,.15);
+        color:white;
+        cursor:pointer;
+    }
+}

@@ -1,0 +1,255 @@
+<div class="reports-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Reports & Analytics</h2>
+            <p>
+                Analyze system performance, revenue trends and coastal statistics.
+            </p>
+        </div>
+
+        <div class="header-actions">
+
+            <button class="export-btn">
+                <i class="fas fa-file-pdf"></i>
+                Export PDF
+            </button>
+
+            <button class="excel-btn">
+                <i class="fas fa-file-excel"></i>
+                Export Excel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filter-card">
+
+        <div class="filter-group">
+            <label>From Date</label>
+            <input type="date">
+        </div>
+
+        <div class="filter-group">
+            <label>To Date</label>
+            <input type="date">
+        </div>
+
+        <button class="generate-btn">
+            <i class="fas fa-chart-line"></i>
+            Generate Report
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="icon revenue">
+                <i class="fas fa-coins"></i>
+            </div>
+
+            <div>
+                <h3>TZS 25.4M</h3>
+                <span>Total Revenue</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon licenses">
+                <i class="fas fa-file-signature"></i>
+            </div>
+
+            <div>
+                <h3>458</h3>
+                <span>Licenses Issued</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon complaints">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+
+            <div>
+                <h3>120</h3>
+                <span>Total Complaints</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon resolved">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <div>
+                <h3>90%</h3>
+                <span>Resolution Rate</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts-grid">
+
+        <!-- REVENUE CHART -->
+
+        <div class="chart-card">
+
+            <div class="card-header">
+                <h3>Revenue Trend</h3>
+
+                <select>
+                    <option>Monthly</option>
+                    <option>Weekly</option>
+                </select>
+            </div>
+
+            <div class="chart-placeholder">
+
+                <div class="chart-line"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PIE CHART -->
+
+        <div class="chart-card">
+
+            <h3>License Distribution</h3>
+
+            <div class="pie-section">
+
+                <div class="pie-chart"></div>
+
+                <div class="legend">
+
+                    <div>
+                        <span class="dot tourism"></span>
+                        Tourism
+                    </div>
+
+                    <div>
+                        <span class="dot fishing"></span>
+                        Fishing
+                    </div>
+
+                    <div>
+                        <span class="dot marine"></span>
+                        Marine Activities
+                    </div>
+
+                    <div>
+                        <span class="dot others"></span>
+                        Others
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SECOND ROW -->
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+
+            <h3>Complaints Statistics</h3>
+
+            <div class="bar-chart">
+
+                <div class="bar">
+                    <span>Water Pollution</span>
+                    <div class="progress">
+                        <div class="fill fill1"></div>
+                    </div>
+                </div>
+
+                <div class="bar">
+                    <span>Illegal Fishing</span>
+                    <div class="progress">
+                        <div class="fill fill2"></div>
+                    </div>
+                </div>
+
+                <div class="bar">
+                    <span>Waste Disposal</span>
+                    <div class="progress">
+                        <div class="fill fill3"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PERFORMANCE TABLE -->
+
+    <div class="table-card">
+
+        <div class="card-header">
+            <h3>Monthly Performance</h3>
+        </div>
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>Month</th>
+                <th>Revenue</th>
+                <th>Licenses</th>
+                <th>Complaints</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr *ngFor="let item of performance">
+
+                <td>{{item.month}}</td>
+                <td>{{item.revenue}}</td>
+                <td>{{item.licenses}}</td>
+                <td>{{item.complaints}}</td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

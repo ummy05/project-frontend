@@ -1,0 +1,251 @@
+<div class="dashboard-page">
+
+    <!-- HERO -->
+
+    <div class="hero-card">
+
+        <div>
+
+            <h2>Welcome Back, Ali Hassan 👋</h2>
+
+            <p>
+                Manage licenses, monitor payments and
+                track your coastal business activities.
+            </p>
+
+            <button>
+                <i class="fas fa-plus"></i>
+                Apply New License
+            </button>
+
+        </div>
+
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+             alt="Beach">
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="icon active">
+                <i class="fas fa-id-card"></i>
+            </div>
+
+            <div>
+                <h3>3</h3>
+                <span>Active Licenses</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon pending">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <div>
+                <h3>1</h3>
+                <span>Pending Applications</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon payment">
+                <i class="fas fa-credit-card"></i>
+            </div>
+
+            <div>
+                <h3>TZS 2.5M</h3>
+                <span>Total Payments</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="icon notification">
+                <i class="fas fa-bell"></i>
+            </div>
+
+            <div>
+                <h3>5</h3>
+                <span>Notifications</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+            <h3>Quick Actions</h3>
+        </div>
+
+        <div class="actions-grid">
+
+            <button>
+                <i class="fas fa-file-signature"></i>
+                Apply License
+            </button>
+
+            <button>
+                <i class="fas fa-credit-card"></i>
+                Make Payment
+            </button>
+
+            <button>
+                <i class="fas fa-download"></i>
+                Download License
+            </button>
+
+            <button>
+                <i class="fas fa-user"></i>
+                Update Profile
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MIDDLE -->
+
+    <div class="middle-grid">
+
+        <!-- LICENSE STATUS -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <h3>License Status</h3>
+            </div>
+
+            <div class="license-status">
+
+                <div class="status-item">
+
+                    <span>Tourism License</span>
+
+                    <span class="badge active-badge">
+                        Active
+                    </span>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Boat Service License</span>
+
+                    <span class="badge pending-badge">
+                        Pending
+                    </span>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Water Sports License</span>
+
+                    <span class="badge active-badge">
+                        Active
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT ACTIVITIES -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <h3>Recent Activities</h3>
+            </div>
+
+            <div class="activity-item"
+                 *ngFor="let activity of activities">
+
+                <div class="activity-icon">
+                    <i [class]="activity.icon"></i>
+                </div>
+
+                <div>
+                    <h4>{{activity.title}}</h4>
+                    <span>{{activity.time}}</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PAYMENTS -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+            <h3>Recent Payments</h3>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                    <td>PAY-2026-001</td>
+                    <td>TZS 500,000</td>
+                    <td>20 Jun 2026</td>
+                    <td>
+                        <span class="badge success">
+                            Paid
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>PAY-2026-002</td>
+                    <td>TZS 250,000</td>
+                    <td>15 Jun 2026</td>
+                    <td>
+                        <span class="badge success">
+                            Paid
+                        </span>
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

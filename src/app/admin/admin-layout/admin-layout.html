@@ -1,0 +1,131 @@
+<div class="layout-container">
+
+    <!-- MOBILE OVERLAY -->
+
+    <div class="overlay"
+         *ngIf="sidebarOpen"
+         (click)="toggleSidebar()">
+    </div>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar"
+       [class.active]="sidebarOpen" >
+
+    <button class="close-btn"
+            (click)="toggleSidebar()" >
+
+        <i class="fas fa-times" style="display: none;"></i>
+
+    </button>
+
+    <!-- LOGO -->
+
+    <div class="logo">
+
+        <img src="/img/logo-1.png">
+
+        <div>
+            <h2>Coastal Monitor</h2>
+            <span>Administrator</span>
+        </div>
+
+    </div>
+
+    <!-- MENU -->
+
+    <nav>
+
+        <a routerLink="/admin/dashboard"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact:true}">
+
+            <i class="fas fa-home"></i>
+            Dashboard
+
+        </a>
+
+        <a routerLink="/admin/licenses"
+           routerLinkActive="active">
+
+            <i class="fas fa-file-signature"></i>
+            Licenses
+
+        </a>
+
+        <a routerLink="/admin/payments"
+           routerLinkActive="active">
+
+            <i class="fas fa-credit-card"></i>
+            Payments
+
+        </a>
+
+        <a routerLink="/admin/Complaints"
+           routerLinkActive="active">
+
+            <i class="fas fa-earth-africa"></i>
+            Complaints
+
+        </a>
+
+        <a routerLink="/admin/users"
+           routerLinkActive="active">
+
+            <i class="fas fa-users"></i>
+            Users
+
+        </a>
+
+        <a routerLink="/admin/reports"
+           routerLinkActive="active">
+           <i class="fas fa-chart-column"></i>
+        Reports
+        </a>
+
+        <a routerLink="/admin/notifications"
+           routerLinkActive="active">
+           <i class="fas fa-bell"></i>
+            Notifications
+        </a>
+
+    </nav>
+
+</aside>
+
+
+    <!-- CONTENT -->
+
+    <div class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button class="menu-btn"
+                    (click)="toggleSidebar()">
+
+                <i class="fas fa-bars"></i>
+
+            </button>
+
+            <div class="top-actions">
+
+                <button>
+                    <i class="fas fa-bell"></i>
+                </button>
+
+                <button>
+                    <i class="fas fa-right-from-bracket"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+        <router-outlet></router-outlet>
+
+    </div>
+
+</div>

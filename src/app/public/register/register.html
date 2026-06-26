@@ -1,1 +1,266 @@
-<p>register works!</p>
+<div class="register-container">
+
+    <!-- LEFT PANEL -->
+
+    <div class="left-panel">
+
+        <div class="overlay"></div>
+
+        <div class="left-content">
+
+            <div class="brand">
+
+                <div class="brand-logo">
+                    <img src="/images/logo-1.png"
+                         alt="Logo">
+                </div>
+
+                <div>
+                    <h1>COASTAL</h1>
+                    <h2>MONITOR</h2>
+                </div>
+
+            </div>
+
+            <p class="tagline">
+                MONITOR. CONSERVE. SUSTAIN.
+            </p>
+
+            <div class="line"></div>
+
+            <h3>
+                Join the future of
+                sustainable coastal
+                management
+            </h3>
+
+            <div class="small-line"></div>
+
+            <p class="description">
+                Register to access digital licensing,
+                environmental reporting and coastal
+                management services.
+            </p>
+
+            <div class="info-card">
+
+                <i class="fas fa-leaf"></i>
+
+                <div>
+                    <h4>Protect Our Coastlines</h4>
+
+                    <p>
+                        Together we can ensure a cleaner
+                        and sustainable environment.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT PANEL -->
+
+    <div class="right-panel">
+
+        <div class="register-card">
+
+            <h2>Create Account</h2>
+
+            <p class="subtitle">
+                Register to continue using the platform
+            </p>
+
+            <form>
+
+                <div class="form-grid">
+
+                    <!-- FULL NAME -->
+
+                    <div class="input-group">
+                        <label>Full Name</label>
+
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+
+                            <input type="text"
+                                   placeholder="Enter full name">
+                        </div>
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="input-group">
+                        <label>Email Address</label>
+
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+
+                            <input type="email"
+                                   placeholder="Enter email">
+                        </div>
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="input-group">
+                        <label>Phone Number</label>
+
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+
+                            <input type="text"
+                                   placeholder="+255 7XX XXX XXX">
+                        </div>
+                    </div>
+
+
+                    <!-- AGE -->
+
+                    <div class="input-group">
+                        <label>Age</label>
+
+                        <div class="input-wrapper">
+                            <i class="fas fa-calendar"></i>
+
+                            <input type="number"
+                                   placeholder="Enter age">
+                        </div>
+                    </div>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="input-group">
+                        <label>Address</label>
+
+                        <div class="input-wrapper">
+                            <i class="fas fa-map-marker-alt"></i>
+
+                            <input type="text"
+                                   placeholder="Enter address">
+                        </div>
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="input-group">
+                        <label>Gender</label>
+
+                        <div class="input-wrapper select-wrapper">
+
+                            <i class="fas fa-venus-mars"></i>
+
+                            <select>
+                                <option>Select Gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+
+                    <!-- ROLE -->
+
+                    <div class="input-group">
+                        <label>Role</label>
+
+                        <div class="input-wrapper select-wrapper">
+
+                            <i class="fas fa-user-tag"></i>
+
+                            <select>
+                                <option>Select Role</option>
+                                <option>Business Owner</option>
+                                <option>Tourist</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="input-group">
+                        <label>Password</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fas fa-lock"></i>
+
+                            <input
+                              [type]="showPassword ? 'text' : 'password'"
+                              placeholder="Enter password">
+
+                            <button type="button"
+                                    class="eye-btn"
+                                    (click)="togglePassword()">
+
+                                <i class="fas"
+                                   [class.fa-eye]="!showPassword"
+                                   [class.fa-eye-slash]="showPassword">
+                                </i>
+
+                            </button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <label class="terms">
+
+                    <input type="checkbox">
+
+                    <span>
+                        I agree to the Terms and Conditions
+                    </span>
+
+                </label>
+
+
+                <button class="register-btn">
+
+                    <i class="fas fa-user-plus"></i>
+
+                    Create Account
+
+                </button>
+
+            </form>
+
+
+            <div class="login-link">
+
+                Already have an account?
+
+                <a routerLink="/login">
+                    Sign In
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="page-footer">
+
+            © 2026
+
+            <span>
+                Coastal Conservation and Revenue Monitoring System
+            </span>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,292 @@
+<div class="page-container">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Complaints Management</h2>
+            <p>
+                Manage environmental complaints and public reports.
+            </p>
+        </div>
+
+        <button class="export-btn">
+
+            <i class="fas fa-download"></i>
+
+            Export
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-exclamation-circle"></i>
+
+            <div>
+                <h3>120</h3>
+                <span>Total Complaints</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+                <h3>18</h3>
+                <span>Pending</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-search"></i>
+
+            <div>
+                <h3>12</h3>
+                <span>Investigating</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-check-circle"></i>
+
+            <div>
+                <h3>90</h3>
+                <span>Resolved</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filter-section">
+
+        <div class="search-box">
+
+            <i class="fas fa-search"></i>
+
+            <input type="text"
+                   placeholder="Search complaint...">
+
+        </div>
+
+        <select>
+            <option>All Status</option>
+            <option>Pending</option>
+            <option>Investigating</option>
+            <option>Resolved</option>
+        </select>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Reporter</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr *ngFor="let complaint of complaints">
+
+                <td>{{complaint.id}}</td>
+                <td>{{complaint.reporter}}</td>
+                <td>{{complaint.location}}</td>
+                <td>{{complaint.category}}</td>
+                <td>{{complaint.date}}</td>
+
+                <td>
+
+                    <span class="priority"
+                          [ngClass]="{
+                          'high': complaint.priority === 'High',
+                          'medium': complaint.priority === 'Medium',
+                          'low': complaint.priority === 'Low'
+                          }">
+
+                        {{complaint.priority}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span class="status"
+                          [ngClass]="{
+                          'pending': complaint.status === 'Pending',
+                          'investigating': complaint.status === 'Investigating',
+                          'resolved': complaint.status === 'Resolved'
+                          }">
+
+                        {{complaint.status}}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button class="view-btn"
+                                (click)="openView(complaint)">
+
+                            <i class="fas fa-eye"></i>
+
+                        </button>
+
+                        <button class="reply-btn"
+                                (click)="openResponse(complaint)">
+
+                            <i class="fas fa-reply"></i>
+
+                        </button>
+
+                        <button class="delete-btn">
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- VIEW MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Complaint Details</h3>
+
+            <button (click)="closeModals()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="details">
+
+            <p><strong>ID:</strong> {{selectedComplaint?.id}}</p>
+
+            <p><strong>Reporter:</strong> {{selectedComplaint?.reporter}}</p>
+
+            <p><strong>Location:</strong> {{selectedComplaint?.location}}</p>
+
+            <p><strong>Category:</strong> {{selectedComplaint?.category}}</p>
+
+            <p><strong>Priority:</strong> {{selectedComplaint?.priority}}</p>
+
+            <p>
+                <strong>Description:</strong><br><br>
+
+                Plastic waste and pollution observed
+                along the shoreline causing environmental damage.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- RESPONSE MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showResponseModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>Respond to Complaint</h3>
+
+            <button (click)="closeModals()">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Status</label>
+
+            <select>
+
+                <option>Pending</option>
+                <option>Investigating</option>
+                <option>Resolved</option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Response Message</label>
+
+            <textarea rows="5"
+                      placeholder="Write response..."></textarea>
+
+        </div>
+
+        <button class="save-btn">
+
+            <i class="fas fa-paper-plane"></i>
+
+            Send Response
+
+        </button>
+
+    </div>
+
+</div>

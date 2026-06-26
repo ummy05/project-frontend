@@ -1,120 +1,199 @@
-<div class="page-container">
+<div class="login-container">
 
-  <nav class="navbar">
+    <!-- LEFT PANEL -->
 
-    <div class="logo">
-      🌊 Coastal Monitor
-    </div>
+    <div class="left-panel">
 
-    <div
-      class="menu-toggle"
-      (click)="toggleMenu()">
+        <div class="overlay"></div>
 
-      ☰
+        <div class="left-content">
 
-    </div>
+            <div class="brand">
 
-    <ul
-      class="nav-links"
-      [class.active]="menuOpen">
+              <img src="/img/logo-1.png"
+                alt="Coastal Monitor Logo"
+                class="logo-img">
 
-      <li>
-        <a routerLink="/">Home</a>
-      </li>
-
-      <li>
-        <a routerLink="/register">
-          Register
-        </a>
-      </li>
-
-    </ul>
-
-  </nav>
-
-  <section class="login-section">
-
-    <div class="login-card">
-
-      <h2>Welcome Back</h2>
-
-      <p>
-        Login to access your account
-      </p>
-
-      <form>
-
-        <div class="input-group">
-
-          <input
-            type="email"
-            placeholder="Email Address">
+            <div>
+            <h1>COASTAL</h1>
+            <h2>MONITOR</h2>
+          </div>
 
         </div>
 
-        <div class="input-group password-box">
+            <p class="tagline">
+                MONITOR. CONSERVE. SUSTAIN.
+            </p>
 
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            placeholder="Password">
+            <div class="line"></div>
 
-          <span
-            class="toggle-password"
-            (click)="togglePassword()">
+            <h3>
+                Smart solutions for
+                sustainable coasts
+            </h3>
 
-            {{showPassword ? '🙈' : '👁'}}
+            <div class="small-line"></div>
 
-          </span>
+            <p class="description">
+                A digital platform for monitoring coastal
+                activities, managing revenue and protecting
+                our environment for future generations.
+            </p>
+
+            <div class="info-card">
+
+                <i class="fas fa-shield-alt"></i>
+
+                <div>
+                    <h4>Secure. Transparent. Sustainable.</h4>
+                    <p>
+                        Working together for better
+                        coastal management.
+                    </p>
+                </div>
+
+            </div>
 
         </div>
-
-        <div class="form-options">
-
-          <label>
-
-            <input type="checkbox">
-
-            Remember Me
-
-          </label>
-
-          <a class="btn-fgtp"
-            routerLink="/forgot-password">
-
-            Forgot Password?
-
-          </a>
-
-        </div>
-
-        <button class="login-btn">
-
-          Login
-
-        </button>
-
-      </form>
-
-      <div class="bottom-link">
-
-        Don't have an account?
-
-        <a routerLink="/register">
-
-          Register
-
-        </a>
-
-      </div>
 
     </div>
 
-  </section>
 
-  <footer>
+    <!-- RIGHT PANEL -->
 
-    © 2026 Coastal Monitoring System
+    <div class="right-panel">
 
-  </footer>
+        <div class="login-card">
+
+            <h2>Welcome back!</h2>
+
+            <p class="subtitle">
+                Sign in to continue to your account
+            </p>
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label>Email Address</label>
+
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+
+                    <input type="email"
+                           placeholder="Enter your email">
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label>Password</label>
+
+                <div class="input-wrapper">
+
+                    <i class="fas fa-lock"></i>
+
+                    <input
+                            [type]="showPassword ? 'text' : 'password'"
+                            placeholder="Enter your password">
+
+                    <button type="button"
+                            class="eye-btn"
+                            (click)="togglePassword()">
+
+                        <i class="fas"
+                           [class.fa-eye]="!showPassword"
+                           [class.fa-eye-slash]="showPassword">
+                        </i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- OPTIONS -->
+
+            <div class="options">
+
+                <label class="remember">
+
+                    <input type="checkbox">
+
+                    <span>Remember me</span>
+
+                </label>
+
+                <a routerLink="/forgot-password">
+                    Forgot password?
+                </a>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button class="login-btn">
+
+                <i class="fas fa-sign-in-alt"></i>
+
+                Sign In
+
+            </button>
+
+
+            <!-- DIVIDER -->
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+
+            <!-- GOOGLE BUTTON -->
+
+            <button class="google-btn">
+
+                <i class="fab fa-google"></i>
+
+                Sign in with Google
+
+            </button>
+
+
+            <!-- REGISTER -->
+
+            <div class="register-link">
+
+                Don't have an account?
+
+                <a routerLink="/register">
+                    Register here
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="page-footer">
+
+            © 2026
+            <span>
+                Coastal Conservation and Revenue Monitoring System
+            </span>
+
+            . All rights reserved.
+
+        </div>
+
+    </div>
 
 </div>
