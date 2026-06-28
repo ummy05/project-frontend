@@ -1,1 +1,135 @@
-<p>forgot-pssword works!</p>
+<div class="forgot-container">
+
+    <!-- LEFT PANEL -->
+
+    <div class="left-panel">
+
+        <div class="overlay"></div>
+
+        <div class="left-content">
+
+            <div class="brand">
+
+                <div class="brand-logo">
+                    <img src="/img/logo-1.png" alt="">
+                </div>
+
+                <div>
+                    <h1>COASTAL</h1>
+                    <h2>MONITOR</h2>
+                </div>
+
+            </div>
+
+            <p class="tagline">
+                COASTAL CONSERVATION DIGITAL PORTAL
+            </p>
+
+            <div class="line"></div>
+
+            <h3>Recover Your Account Securely</h3>
+
+            <div class="small-line"></div>
+
+            <p class="description">
+                Enter your registered email address and
+                we will send you instructions to reset your password.
+            </p>
+
+            <div class="info-card">
+
+                <i class="fas fa-shield-alt"></i>
+
+                <div>
+                    <h4>Secure Recovery</h4>
+
+                    <p>
+                        Your account security is our priority.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT PANEL -->
+
+    <div class="right-panel">
+
+        <div class="forgot-card">
+
+            <h2>Forgot Password?</h2>
+
+            <p class="subtitle">
+                Enter your email to receive password reset instructions.
+            </p>
+
+            <div class="success-message"
+                 *ngIf="emailSent">
+
+                <i class="fas fa-check-circle"></i>
+
+                Reset link has been sent successfully.
+
+            </div>
+
+
+            <form>
+
+                <div class="input-group">
+
+                    <label>Email Address</label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fas fa-envelope"></i>
+
+                        <input
+                                type="email"
+                                placeholder="Enter your email"
+                                [(ngModel)]="email"
+                                name="email">
+
+                    </div>
+
+                </div>
+
+                <button
+                        type="button"
+                        class="reset-btn"
+                        (click)="sendResetLink()">
+
+                    Send Reset Link
+
+                </button>
+
+            </form>
+
+
+            <div class="back-link">
+
+                <a routerLink="/login">
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    Back to Login
+
+                </a>
+
+            </div>
+
+            <div class="page-footer">
+
+                © 2026 <span>Coastal Monitor</span> |
+                All Rights Reserved
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
