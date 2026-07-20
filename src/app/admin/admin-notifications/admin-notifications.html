@@ -11,9 +11,14 @@
             </p>
         </div>
 
-        <button class="mark-btn">
+        <button
+            class="mark-btn"
+            (click)="markAll()">
+
             <i class="fas fa-check-double"></i>
-            Mark All as Read
+
+             Mark All as Read
+
         </button>
 
     </div>
@@ -27,7 +32,7 @@
             <i class="fas fa-bell"></i>
 
             <div>
-                <h3>25</h3>
+                <h3>{{summary.total}}</h3>
                 <span>Total Notifications</span>
             </div>
 
@@ -38,7 +43,7 @@
             <i class="fas fa-envelope"></i>
 
             <div>
-                <h3>8</h3>
+                <h3>{{summary.unread}}</h3>
                 <span>Unread</span>
             </div>
 
@@ -49,7 +54,7 @@
             <i class="fas fa-exclamation-circle"></i>
 
             <div>
-                <h3>3</h3>
+                <h3>{{summary.alerts}}</h3>
                 <span>Alerts</span>
             </div>
 
@@ -62,25 +67,39 @@
     <div class="notifications-wrapper">
 
         <div class="notification-card"
-             *ngFor="let notification of notifications"
-             [class.unread]="notification.unread">
+
+            *ngFor="let notification of notifications"
+
+            [class.unread]="!notification.read"
+
+            (click)="markRead(notification)">
 
             <div class="notification-icon">
 
-                <i class="fas fa-file-alt"
-                   *ngIf="notification.type === 'license'"></i>
+                <i
+class="fas fa-file-alt"
+*ngIf="notification.type=='LICENSE'">
+</i>
 
-                <i class="fas fa-credit-card"
-                   *ngIf="notification.type === 'payment'"></i>
+<i
+class="fas fa-credit-card"
+*ngIf="notification.type=='PAYMENT'">
+</i>
 
-                <i class="fas fa-exclamation-triangle"
-                   *ngIf="notification.type === 'complaint'"></i>
+<i
+class="fas fa-exclamation-circle"
+*ngIf="notification.type=='COMPLAINT'">
+</i>
 
-                <i class="fas fa-triangle-exclamation"
-                   *ngIf="notification.type === 'alert'"></i>
+<i
+class="fas fa-triangle-exclamation"
+*ngIf="notification.type=='ALERT'">
+</i>
 
-                <i class="fas fa-user"
-                   *ngIf="notification.type === 'user'"></i>
+<i
+class="fas fa-user"
+*ngIf="notification.type=='USER'">
+</i>
 
             </div>
 
@@ -90,11 +109,26 @@
 
                     <h4>{{notification.title}}</h4>
 
-                    <span>{{notification.time}}</span>
+                    <span>{{notification.createdAt | date:'dd MMM yyyy HH:mm'}}</span>
 
                 </div>
 
                 <p>{{notification.message}}</p>
+
+                <div class="notification-actions">
+
+<button
+
+class="delete-btn"
+
+(click)="delete(notification);
+$event.stopPropagation()">
+
+<i class="fas fa-trash"></i>
+
+</button>
+
+</div>
 
             </div>
 

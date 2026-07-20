@@ -213,7 +213,7 @@ body{font-family:'Poppins',sans-serif;}
 
 .eye-btn{
     position:absolute;
-    right:18px;
+    right: 54px;
     top:50%;
     transform:translateY(-50%);
 

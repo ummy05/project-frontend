@@ -1,57 +1,139 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-admin-notifications',
-  imports: [CommonModule,FormsModule],
-  templateUrl: './admin-notifications.html',
-  styleUrl: './admin-notifications.css',
+  standalone:true,
+  imports:[
+    CommonModule,
+    DatePipe
+  ],
+  templateUrl:'./admin-notifications.html',
+  styleUrl:'./admin-notifications.css'
 })
-export class AdminNotifications {
+export class AdminNotifications implements OnInit{
 
-  notifications = [
+  constructor(
+    private notificationService:NotificationService,
+    private cdr:ChangeDetectorRef
+  ){}
 
-    {
-      title: 'New License Application',
-      message: 'Paje Beach Resort submitted a new license application.',
-      time: '5 minutes ago',
-      type: 'license',
-      unread: true
-    },
+  notifications:any[]=[];
 
-    {
-      title: 'New Complaint Received',
-      message: 'Water pollution complaint reported at Nungwi Beach.',
-      time: '20 minutes ago',
-      type: 'complaint',
-      unread: true
-    },
+  summary={
 
-    {
-      title: 'Payment Completed',
-      message: 'Payment of TZS 450,000 has been successfully completed.',
-      time: '1 hour ago',
-      type: 'payment',
-      unread: false
-    },
+    total:0,
 
-    {
-      title: 'System Alert',
-      message: 'High erosion risk detected at Kendwa Beach.',
-      time: '2 hours ago',
-      type: 'alert',
-      unread: false
-    },
+    unread:0,
 
-    {
-      title: 'User Registration',
-      message: 'A new business owner account has been created.',
-      time: 'Yesterday',
-      type: 'user',
-      unread: false
+    alerts:0
+
+  };
+
+  ngOnInit(){
+
+    this.loadNotifications();
+
+  }
+
+  loadNotifications(){
+
+    this.notificationService
+
+    .getAll()
+
+    .subscribe({
+
+      next:(res)=>{
+
+        this.notifications=res;
+
+        this.calculateSummary();
+        
+        this.cdr.detectChanges();
+
+
+      }
+
+    });
+
+  }
+
+  calculateSummary(){
+
+    this.summary.total=this.notifications.length;
+
+    this.summary.unread=
+
+    this.notifications.filter(
+
+      x=>!x.read
+
+    ).length;
+
+    this.summary.alerts=
+
+    this.notifications.filter(
+
+      x=>x.type=="ALERT"
+
+    ).length;
+
+  }
+
+  markAll(){
+
+    this.notificationService
+
+    .markAllRead()
+
+    .subscribe(()=>{
+
+      this.loadNotifications();
+
+    });
+
+  }
+
+  markRead(notification:any){
+
+    if(notification.read){
+
+      return;
+
     }
 
-  ];
+    this.notificationService
+
+    .markRead(notification.id)
+
+    .subscribe(()=>{
+
+      this.loadNotifications();
+
+    });
+
+  }
+
+  delete(notification:any){
+
+    if(!confirm("Delete notification?")){
+
+      return;
+
+    }
+
+    this.notificationService
+
+    .delete(notification.id)
+
+    .subscribe(()=>{
+
+      this.loadNotifications();
+
+    });
+
+  }
 
 }

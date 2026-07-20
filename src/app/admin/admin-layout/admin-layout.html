@@ -10,8 +10,10 @@
 
     <!-- SIDEBAR -->
 
-    <aside class="sidebar"
-       [class.active]="sidebarOpen" >
+    <aside
+       class="sidebar"
+       [class.active]="sidebarOpen"
+       [class.collapsed]="sidebarCollapsed">
 
     <button class="close-btn"
             (click)="toggleSidebar()" >
@@ -24,14 +26,17 @@
 
     <div class="logo">
 
-        <img src="/img/logo-1.png">
+    <img src="/img/logo-1.png">
 
-        <div>
-            <h2>Coastal Monitor</h2>
-            <span>Administrator</span>
-        </div>
+    <div class="logo-text">
+
+        <h2>Coastal Monitor</h2>
+
+        <span>Administrator</span>
 
     </div>
+
+</div>
 
     <!-- MENU -->
 
@@ -42,7 +47,7 @@
            [routerLinkActiveOptions]="{exact:true}">
 
             <i class="fas fa-home"></i>
-            Dashboard
+            <span>Dashboard</span>
 
         </a>
 
@@ -50,7 +55,7 @@
            routerLinkActive="active">
 
             <i class="fas fa-users"></i>
-            Users
+            <span>Users</span>
 
         </a>
 
@@ -58,7 +63,7 @@
            routerLinkActive="active">
 
             <i class="fas fa-file-signature"></i>
-            Licenses
+            <span>Licenses</span>
 
         </a>
 
@@ -66,14 +71,14 @@
            routerLinkActive="active">
 
             <i class="fas fa-credit-card"></i>
-            Payments
+            <span>Payments</span>
 
         </a>
         <a routerLink="/admin/inspections"
            routerLinkActive="active">
 
             <i class="fas fa-clipboard-check"></i>
-            Inspections
+            <span>Inspections</span>
 
         </a>
 
@@ -81,7 +86,7 @@
            routerLinkActive="active">
 
             <i class="fas fa-earth-africa"></i>
-            Complaints
+            <span>Complaints</span>
 
         </a>
 
@@ -89,13 +94,13 @@
         <a routerLink="/admin/reports"
            routerLinkActive="active">
            <i class="fas fa-chart-column"></i>
-        Reports
+            <span>Reports</span>
         </a>
 
         <a routerLink="/admin/notifications"
            routerLinkActive="active">
            <i class="fas fa-bell"></i>
-            Notifications
+           <span> Notifications</span>
         </a>
 
     </nav>
@@ -119,12 +124,194 @@
             </button>
 
             <div class="top-actions">
+                <div class="notification-wrapper">
 
-                <button>
-                    <i class="fas fa-bell"></i>
-                </button>
+    <button
+        class="notification-btn"
+        (click)="toggleNotifications()">
 
-                <button>
+        <i class="fas fa-bell"></i>
+
+    </button>
+
+    <div class="notification-badge">
+
+        {{ unreadCount }}
+
+    </div>
+
+    <div
+        class="notification-dropdown"
+        *ngIf="showNotifications">
+
+        <div class="dropdown-header">
+
+
+
+            <h4>Notifications</h4>
+
+
+
+            <button
+
+                class="mark-all"
+
+                (click)="markAllRead()">
+
+
+
+                Mark all
+
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+        <div
+
+            class="notification-item"
+
+            *ngFor="let n of latestNotifications"
+
+            [class.unread]="!n.read"
+
+            (click)="openNotification(n)">
+
+
+
+            <div class="icon">
+
+
+
+                <i
+
+                class="fas fa-file-signature"
+
+                *ngIf="n.type=='LICENSE'">
+
+
+
+                </i>
+
+
+
+                <i
+
+                class="fas fa-credit-card"
+
+                *ngIf="n.type=='PAYMENT'">
+
+
+
+                </i>
+
+
+
+                <i
+
+                class="fas fa-earth-africa"
+
+                *ngIf="n.type=='COMPLAINT'">
+
+
+
+                </i>
+
+
+
+                <i
+
+                class="fas fa-bell"
+
+                *ngIf="n.type=='ALERT'">
+
+
+
+                </i>
+
+
+
+            </div>
+
+
+
+            <div class="content">
+
+
+
+                <h5>
+
+
+
+                    {{n.title}}
+
+
+
+                </h5>
+
+
+
+                <p>
+
+
+
+                    {{n.message}}
+
+
+
+                </p>
+
+
+
+                <small>
+
+
+
+                    {{n.createdAt | date:'dd MMM HH:mm'}}
+
+
+
+                </small>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <div class="view-all">
+
+
+
+            <a
+
+                routerLink="/admin/notifications">
+
+
+
+                View All Notifications
+
+
+
+            </a>
+
+
+
+        </div>
+    </div>
+
+</div>
+
+                <button (click)="logout()">
                     <i class="fas fa-right-from-bracket"></i>
                 </button>
 
@@ -135,5 +322,55 @@
         <router-outlet></router-outlet>
 
     </div>
+
+</div>
+
+<!-- LOGOUT MODAL -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showLogoutModal">
+
+  <div class="logout-modal">
+
+    <div class="logout-icon">
+
+      <i class="fas fa-right-from-bracket"></i>
+
+    </div>
+
+    <h3>Sign Out</h3>
+
+    <p>
+
+      Are you sure you want to sign out of your account?
+
+      You will need to log in again to continue using the system.
+
+    </p>
+
+    <div class="logout-actions">
+
+      <button
+        class="cancel-btn"
+        (click)="showLogoutModal=false">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="logout-btn"
+        (click)="confirmLogout()">
+
+        <i class="fas fa-right-from-bracket"></i>
+
+        Sign Out
+
+      </button>
+
+    </div>
+
+  </div>
 
 </div>

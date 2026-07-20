@@ -27,6 +27,8 @@ import { MyProfile } from './tourist/my-profile/my-profile';
 import { VerifyOtp } from './auth/verify-otp/verify-otp';
 import { ResetPassword } from './auth/reset-password/reset-password';
 import { Inspections } from './admin/inspections/inspections';
+import { authGuard } from './auth/guards/auth.guard';
+import { roleGuard } from './auth/guards/role.guard';
 
 export const routes: Routes = [
     {path: '',component:Home},
@@ -38,7 +40,9 @@ export const routes: Routes = [
 
     //ADMIN
     {
-    path: 'admin',component: AdminLayout,
+    path:'admin',component:AdminLayout,
+    canActivate:[authGuard,roleGuard],
+    data:{role:'ADMIN'},
     children: [
       {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
       {path: 'dashboard',component: AdminDashboard},
@@ -53,7 +57,9 @@ export const routes: Routes = [
    },
    
     //BUSINESS OWNER
-    {path: 'owner',component: OwnerLayout,
+    {path:'owner',component:OwnerLayout,
+    canActivate:[authGuard,roleGuard],
+    data:{role:'BUSINESS_OWNER'},
     children: [
       {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
       {path: 'dashboard',component: OwnerDashboard},
@@ -67,9 +73,11 @@ export const routes: Routes = [
    },
 
     //TOURIST/CITIZEN
-     {
-    path: 'tourist',
-    component: TouristLayout,
+    {path:'tourist',
+    component:TouristLayout,
+    canActivate:[
+    authGuard,roleGuard],
+    data:{role:'TOURIST'},
     children: [
       {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
       {path: 'dashboard',component: TouristDashboard},

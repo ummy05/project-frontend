@@ -216,7 +216,7 @@ a{
 
 .eye-btn{
     position:absolute;
-    right:18px;
+    right: 56px;
     top:50%;
     transform:translateY(-50%);
     border:none;
