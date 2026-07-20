@@ -367,3 +367,81 @@ td{
     background:#e8f1ff;
     color:#2563eb;
 }
+
+.progress-btn{
+
+    flex:1;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+}
+
+.approve-btn{
+
+    flex:1;
+
+    background:#16a34a;
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+}
+
+.reject-btn{
+
+    flex:1;
+
+    background:#dc2626;
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+}
+
+.progress-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+.approve-btn:hover{
+
+    background:#15803d;
+
+}
+
+.reject-btn:hover{
+
+    background:#b91c1c;
+
+}

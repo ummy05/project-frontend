@@ -503,3 +503,29 @@ body{font-family:'Poppins',sans-serif;}
         padding:0 15px;
     }
 }
+
+.error-message{
+
+    background:#ffe5e5;
+
+    color:#d63031;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    margin-bottom:18px;
+
+    font-size:14px;
+
+    border-left:4px solid #d63031;
+
+}
+
+.login-btn:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
+
+}

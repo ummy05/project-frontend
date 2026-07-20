@@ -1,67 +1,235 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ComplaintService } from '../../services/complaint.service';
 
 @Component({
   selector: 'app-complaints',
-  imports: [CommonModule,FormsModule],
-  templateUrl: './complaints.html',
-  styleUrl: './complaints.css',
+  standalone:true,
+  imports:[
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl:'./complaints.html',
+  styleUrl:'./complaints.css'
 })
-export class Complaints {
 
-  showViewModal = false;
-  showResponseModal = false;
+export class Complaints implements OnInit{
 
-  selectedComplaint: any = null;
+  private complaintService=inject(ComplaintService);
 
-  complaints = [
 
-    {
-      id: 'CMP-001',
-      reporter: 'John Smith',
-      location: 'Nungwi Beach',
-      category: 'Water Pollution',
-      date: '24 Jun 2026',
-      priority: 'High',
-      status: 'Pending'
-    },
+  constructor(private cdr:ChangeDetectorRef){}
 
-    {
-      id: 'CMP-002',
-      reporter: 'Amina Omar',
-      location: 'Paje Beach',
-      category: 'Illegal Fishing',
-      date: '23 Jun 2026',
-      priority: 'Medium',
-      status: 'Investigating'
-    },
+  complaints:any[]=[];
 
-    {
-      id: 'CMP-003',
-      reporter: 'David James',
-      location: 'Kendwa Beach',
-      category: 'Waste Disposal',
-      date: '22 Jun 2026',
-      priority: 'Low',
-      status: 'Resolved'
-    }
+  filteredComplaints:any[]=[];
 
-  ];
+  selectedComplaint:any;
 
-  openView(complaint: any) {
-    this.selectedComplaint = { ...complaint };
-    this.showViewModal = true;
+  search='';
+
+  status='ALL';
+
+  response='';
+
+  showViewModal=false;
+
+  showResponseModal=false;
+
+  total=0;
+
+  pending=0;
+
+  progress=0;
+
+  resolved=0;
+
+  ngOnInit(){
+
+    this.load();
+
   }
 
-  openResponse(complaint: any) {
-    this.selectedComplaint = { ...complaint };
-    this.showResponseModal = true;
+  load(){
+
+    this.complaintService
+
+    .getAll()
+
+    .subscribe({
+
+      next:(data:any)=>{
+
+        this.complaints=data;
+
+        this.filteredComplaints=data;
+
+        this.calculate();
+        this.cdr.detectChanges();
+
+      }
+
+    });
+
   }
 
-  closeModals() {
-    this.showViewModal = false;
-    this.showResponseModal = false;
+  calculate(){
+
+    this.total=this.complaints.length;
+
+    this.pending=this.complaints
+
+      .filter(x=>x.status=='PENDING')
+
+      .length;
+
+    this.progress=this.complaints
+
+      .filter(x=>x.status=='IN_PROGRESS')
+
+      .length;
+
+    this.resolved=this.complaints
+
+      .filter(x=>x.status=='RESOLVED')
+
+      .length;
+
+  }
+
+  filter(){
+
+    this.filteredComplaints=this.complaints.filter(c=>{
+
+      const text=
+
+      c.complaintNumber.toLowerCase().includes(this.search.toLowerCase())
+
+      ||
+
+      c.title.toLowerCase().includes(this.search.toLowerCase())
+
+      ||
+
+      c.location.toLowerCase().includes(this.search.toLowerCase());
+
+      const state=
+
+      this.status=='ALL'
+
+      ||
+
+      c.status==this.status;
+
+      return text && state;
+
+    });
+
+  }
+
+  openView(c:any){
+
+    this.selectedComplaint=c;
+
+    this.showViewModal=true;
+
+  }
+
+  openResponse(c:any){
+
+    this.selectedComplaint=c;
+
+    this.response='';
+
+    this.showResponseModal=true;
+
+  }
+
+  progressComplaint(){
+
+    this.complaintService
+
+    .progress(this.selectedComplaint.id)
+
+    .subscribe(()=>{
+
+      this.close();
+
+      this.load();
+
+    });
+
+  }
+
+  resolveComplaint(){
+
+    this.complaintService
+
+    .resolve(
+
+      this.selectedComplaint.id,
+
+      this.response
+
+    )
+
+    .subscribe(()=>{
+
+      this.close();
+
+      this.load();
+
+    });
+
+  }
+
+  rejectComplaint(){
+
+    this.complaintService
+
+    .reject(
+
+      this.selectedComplaint.id,
+
+      this.response
+
+    )
+
+    .subscribe(()=>{
+
+      this.close();
+
+      this.load();
+
+    });
+
+  }
+
+  delete(c:any){
+
+    if(!confirm('Delete complaint?'))
+
+    return;
+
+    this.complaintService
+
+    .delete(c.id)
+
+    .subscribe(()=>{
+
+      this.load();
+
+    });
+
+  }
+
+  close(){
+
+    this.showViewModal=false;
+
+    this.showResponseModal=false;
+
   }
 
 }

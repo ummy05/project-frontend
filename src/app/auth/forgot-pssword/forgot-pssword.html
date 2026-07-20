@@ -97,14 +97,47 @@
 
                 </div>
 
+                <div
+                   class="success-message"
+                   *ngIf="success">
+
+                   {{success}}
+
+                </div>
+
+                <div
+                    class="error-message"
+                    *ngIf="error">
+
+                    {{error}}
+
+                </div>
+
                 <button
-                        type="button"
-                        class="reset-btn"
-                        (click)="sendResetLink()">
 
-                    Send Reset Link
+                    type="button"
 
-                </button>
+                    class="reset-btn"
+
+                    (click)="sendResetLink()"
+
+                    [disabled]="loading">
+
+                    <span *ngIf="!loading">
+
+                    Send Verification Code
+
+                </span>
+
+                <span *ngIf="loading">
+
+                <i class="fas fa-spinner fa-spin"></i>
+
+                Sending...
+
+               </span>
+
+            </button>
 
             </form>
 

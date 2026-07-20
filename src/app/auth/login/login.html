@@ -81,9 +81,19 @@
                 <div class="input-wrapper">
                     <i class="fas fa-envelope"></i>
 
-                    <input type="email"
-                           placeholder="Enter your email">
+                    <input
+
+                     type="email"
+
+                    name="email"
+
+                    [(ngModel)]="loginData.email"
+
+                    placeholder="Enter your email">
+
                 </div>
+
+                
 
             </div>
 
@@ -99,8 +109,15 @@
                     <i class="fas fa-lock"></i>
 
                     <input
-                            [type]="showPassword ? 'text' : 'password'"
-                            placeholder="Enter your password">
+
+                       [type]="showPassword ? 'text':'password'"
+
+                       name="password"
+
+                       [(ngModel)]="loginData.password"
+
+                       placeholder="Enter your password">
+
 
                     <button type="button"
                             class="eye-btn"
@@ -138,14 +155,27 @@
 
 
             <!-- LOGIN BUTTON -->
+             <div
+                class="error-message"
+                *ngIf="errorMessage">
 
-            <button class="login-btn">
+               {{errorMessage}}
+
+            </div>
+
+            <button
+
+                class="login-btn"
+
+                (click)="login()"
+
+                [disabled]="loading">
 
                 <i class="fas fa-sign-in-alt"></i>
 
-                Sign In
+                {{loading ? 'Signing In...' : 'Sign In'}}
 
-            </button>
+           </button>
 
 
             <!-- DIVIDER -->

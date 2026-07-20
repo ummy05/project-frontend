@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-owner-layout',
@@ -15,9 +16,12 @@ import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angul
 export class OwnerLayout {
 
 sidebarOpen = false;
+private authService = inject(AuthService);
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
+
+  
 }

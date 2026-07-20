@@ -1,0 +1,259 @@
+<div class="page-container">
+
+<div class="page-header">
+
+<div>
+
+<h2>Inspection Management</h2>
+
+<p>
+
+Manage all business inspections.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="filter-section">
+
+<div class="search-box">
+
+<i class="fas fa-search"></i>
+
+<input
+
+type="text"
+
+[(ngModel)]="search"
+
+(input)="filter()"
+
+placeholder="Search inspection">
+
+</div>
+
+<select
+
+[(ngModel)]="status"
+
+(change)="filter()">
+
+<option value="">
+
+All Status
+
+</option>
+
+<option value="PENDING">
+
+Pending
+
+</option>
+
+<option value="PASSED">
+
+Passed
+
+</option>
+
+<option value="FAILED">
+
+Failed
+
+</option>
+
+</select>
+
+</div>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>Inspection</th>
+
+<th>Date</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr *ngFor="let inspection of filteredInspections">
+
+<td>
+
+{{inspection.id}}
+
+</td>
+
+<td>
+
+{{inspection.inspectionNumber}}
+
+</td>
+
+<td>
+
+{{inspection.inspectionDate | date}}
+
+</td>
+
+<td>
+
+<span
+
+class="status"
+
+[ngClass]="{
+
+'approved':inspection.status=='PASSED',
+
+'pending':inspection.status=='PENDING',
+
+'rejected':inspection.status=='FAILED'
+
+}">
+
+{{inspection.status}}
+
+</span>
+
+</td>
+
+<td>
+
+<div class="actions">
+
+<button
+
+class="view-btn"
+
+(click)="view(inspection)">
+
+<i class="fas fa-eye"></i>
+
+</button>
+
+<button
+
+class="edit-btn"
+
+*ngIf="inspection.status=='PENDING'"
+
+(click)="passInspection(inspection.id)">
+
+<i class="fas fa-check"></i>
+
+</button>
+
+<button
+
+class="delete-btn"
+
+*ngIf="inspection.status=='PENDING'"
+
+(click)="failInspection(inspection.id)">
+
+<i class="fas fa-times"></i>
+
+</button>
+
+<button
+
+class="delete-btn"
+
+(click)="deleteInspection(inspection.id)">
+
+<i class="fas fa-trash"></i>
+
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div
+
+class="modal-overlay"
+
+*ngIf="showModal">
+
+<div class="modal">
+
+<div class="modal-header">
+
+<h3>
+
+Inspection Details
+
+</h3>
+
+<button
+
+(click)="showModal=false">
+
+<i class="fas fa-times"></i>
+
+</button>
+
+</div>
+
+<p>
+
+<b>Inspection Number:</b>
+
+{{selected?.inspectionNumber}}
+
+</p>
+
+<p>
+
+<b>Date:</b>
+
+{{selected?.inspectionDate|date}}
+
+</p>
+
+<p>
+
+<b>Status:</b>
+
+{{selected?.status}}
+
+</p>
+
+<p>
+
+<b>Remarks:</b>
+
+{{selected?.remarks}}
+
+</p>
+
+</div>
+
+</div>
+
+</div>

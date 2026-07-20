@@ -74,7 +74,7 @@
                 Register to continue using the platform
             </p>
 
-            <form>
+            <form #f="ngForm">
 
                 <div class="form-grid">
 
@@ -87,7 +87,9 @@
                             <i class="fas fa-user"></i>
 
                             <input type="text"
-                                   placeholder="Enter full name">
+                            name="fullName"
+                            [(ngModel)]="registerData.fullName"
+                                placeholder="Enter full name">
                         </div>
                     </div>
 
@@ -101,7 +103,9 @@
                             <i class="fas fa-envelope"></i>
 
                             <input type="email"
-                                   placeholder="Enter email">
+                            name="email"
+                                [(ngModel)]="registerData.email"
+                                placeholder="Enter email">
                         </div>
                     </div>
 
@@ -115,7 +119,9 @@
                             <i class="fas fa-phone"></i>
 
                             <input type="text"
-                                   placeholder="+255 7XX XXX XXX">
+                                name="phoneNumber"
+                                [(ngModel)]="registerData.phoneNumber"
+                                placeholder="+255 7XX XXX XXX">
                         </div>
                     </div>
 
@@ -129,7 +135,9 @@
                             <i class="fas fa-calendar"></i>
 
                             <input type="number"
-                                   placeholder="Enter age">
+                                name="age"
+                                placeholder="Enter age"
+                                [(ngModel)]="registerData.age">
                         </div>
                     </div>
 
@@ -143,7 +151,9 @@
                             <i class="fas fa-map-marker-alt"></i>
 
                             <input type="text"
-                                   placeholder="Enter address">
+                                name="address"
+                                placeholder="Enter address"
+                                [(ngModel)]="registerData.address">
                         </div>
                     </div>
 
@@ -157,10 +167,11 @@
 
                             <i class="fas fa-venus-mars"></i>
 
-                            <select>
-                                <option>Select Gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
+                            <select name="gender"
+                               [(ngModel)]="registerData.gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
                             </select>
 
                         </div>
@@ -176,10 +187,20 @@
 
                             <i class="fas fa-user-tag"></i>
 
-                            <select>
-                                <option>Select Role</option>
-                                <option>Business Owner</option>
-                                <option>Tourist</option>
+                            <select
+                                name="role"
+                                [(ngModel)]="registerData.role">
+
+                                 <option value="">Select Role</option>
+
+                                 <option value="BUSINESS_OWNER">
+                                    Business Owner
+                                </option>
+
+                                 <option value="TOURIST">
+                                 Tourist
+                                </option>
+
                             </select>
 
                         </div>
@@ -197,7 +218,9 @@
 
                             <input
                               [type]="showPassword ? 'text' : 'password'"
-                              placeholder="Enter password">
+                              name="password"
+                              placeholder="Enter password"
+                              [(ngModel)]="registerData.password">
 
                             <button type="button"
                                     class="eye-btn"
@@ -218,7 +241,9 @@
 
                 <label class="terms">
 
-                    <input type="checkbox">
+                    <input type="checkbox" name="terms"
+
+                     [(ngModel)]="acceptedTerms">
 
                     <span>
                         I agree to the Terms and Conditions
@@ -226,12 +251,30 @@
 
                 </label>
 
+                <div class="success-message" *ngIf="success">
+                   {{ success }}
+                </div>
 
-                <button class="register-btn">
+               <div class="error-message" *ngIf="error">
+                  {{ error }}
+                </div>
 
-                    <i class="fas fa-user-plus"></i>
 
-                    Create Account
+                <button
+                    type="button"
+                    class="register-btn"
+                    (click)="register()"
+                    [disabled]="loading">
+
+                    <span *ngIf="!loading">
+                       <i class="fas fa-user-plus"></i>
+                       Create Account
+                    </span>
+
+                    <span *ngIf="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Creating account...
+                    </span>
 
                 </button>
 

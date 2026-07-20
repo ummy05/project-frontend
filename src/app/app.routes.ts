@@ -24,12 +24,17 @@ import { ReportIssue } from './tourist/report-issue/report-issue';
 import { MyReports } from './tourist/my-reports/my-reports';
 import { TouristNotifictions } from './tourist/tourist-notifictions/tourist-notifictions';
 import { MyProfile } from './tourist/my-profile/my-profile';
+import { VerifyOtp } from './auth/verify-otp/verify-otp';
+import { ResetPassword } from './auth/reset-password/reset-password';
+import { Inspections } from './admin/inspections/inspections';
 
 export const routes: Routes = [
     {path: '',component:Home},
     {path: 'login',component:Login},
     {path: 'forgot-password',component:ForgotPssword},
     {path: 'register',component:Register},
+    {path: 'verify-otp',component:VerifyOtp},
+    {path: 'reset-password',component:ResetPassword},
 
     //ADMIN
     {
@@ -42,12 +47,13 @@ export const routes: Routes = [
       {path: 'Complaints',component: Complaints},
       {path: 'users',component: Users},
       {path: 'reports',component: Reports},
-      {path: 'notifications',component: AdminNotifications}
+      {path: 'notifications',component: AdminNotifications},
+      {path: 'inspections',component: Inspections}
     ]
    },
    
     //BUSINESS OWNER
-    {path: 'businessman',component: OwnerLayout,
+    {path: 'owner',component: OwnerLayout,
     children: [
       {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
       {path: 'dashboard',component: OwnerDashboard},

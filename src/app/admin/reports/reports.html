@@ -5,50 +5,75 @@
     <div class="page-header">
 
         <div>
+
             <h2>Reports & Analytics</h2>
+
             <p>
                 Analyze system performance, revenue trends and coastal statistics.
             </p>
+
         </div>
 
         <div class="header-actions">
 
-            <button class="export-btn">
-                <i class="fas fa-file-pdf"></i>
-                Export PDF
-            </button>
+            <button
+                class="export-btn"
+                (click)="exportPdf()">
 
-            <button class="excel-btn">
+                <i class="fas fa-file-pdf"></i>
+
+                Export PDF
+
+            </button>
+            <button
+                class="excel-btn"
+                (click)="exportExcel()">
+
                 <i class="fas fa-file-excel"></i>
-                Export Excel
+
+                    Export Excel
+
             </button>
 
         </div>
 
     </div>
-
 
     <!-- FILTERS -->
 
     <div class="filter-card">
 
         <div class="filter-group">
+
             <label>From Date</label>
-            <input type="date">
+
+            <input
+                type="date"
+                [(ngModel)]="fromDate">
+
         </div>
 
         <div class="filter-group">
+
             <label>To Date</label>
-            <input type="date">
+
+            <input
+                type="date"
+                [(ngModel)]="toDate">
+
         </div>
 
-        <button class="generate-btn">
+        <button
+            class="generate-btn"
+            (click)="generateReport()">
+
             <i class="fas fa-chart-line"></i>
+
             Generate Report
+
         </button>
 
     </div>
-
 
     <!-- SUMMARY -->
 
@@ -57,12 +82,21 @@
         <div class="summary-card">
 
             <div class="icon revenue">
+
                 <i class="fas fa-coins"></i>
+
             </div>
 
             <div>
-                <h3>TZS 25.4M</h3>
+
+                <h3>
+
+                    TZS {{report.totalRevenue | number}}
+
+                </h3>
+
                 <span>Total Revenue</span>
+
             </div>
 
         </div>
@@ -70,12 +104,21 @@
         <div class="summary-card">
 
             <div class="icon licenses">
+
                 <i class="fas fa-file-signature"></i>
+
             </div>
 
             <div>
-                <h3>458</h3>
-                <span>Licenses Issued</span>
+
+                <h3>
+
+                    {{report.approvedLicenses}}
+
+                </h3>
+
+                <span>Approved Licenses</span>
+
             </div>
 
         </div>
@@ -83,12 +126,21 @@
         <div class="summary-card">
 
             <div class="icon complaints">
+
                 <i class="fas fa-exclamation-circle"></i>
+
             </div>
 
             <div>
-                <h3>120</h3>
-                <span>Total Complaints</span>
+
+                <h3>
+
+                    {{report.pendingComplaints}}
+
+                </h3>
+
+                <span>Pending Complaints</span>
+
             </div>
 
         </div>
@@ -96,130 +148,95 @@
         <div class="summary-card">
 
             <div class="icon resolved">
+
                 <i class="fas fa-check-circle"></i>
+
             </div>
 
             <div>
-                <h3>90%</h3>
-                <span>Resolution Rate</span>
+
+                <h3>
+
+                    {{report.resolvedComplaints}}
+
+                </h3>
+
+                <span>Resolved Complaints</span>
+
             </div>
 
         </div>
 
     </div>
 
-
-    <!-- CHARTS -->
+    <!-- FIRST ROW -->
 
     <div class="charts-grid">
-
-        <!-- REVENUE CHART -->
 
         <div class="chart-card">
 
             <div class="card-header">
+
                 <h3>Revenue Trend</h3>
 
-                <select>
-                    <option>Monthly</option>
-                    <option>Weekly</option>
-                </select>
             </div>
 
-            <div class="chart-placeholder">
+            <div class="chart-container">
 
-                <div class="chart-line"></div>
+                <canvas id="revenueChart"></canvas>
 
             </div>
 
         </div>
 
-
-        <!-- PIE CHART -->
-
         <div class="chart-card">
 
-            <h3>License Distribution</h3>
+            <div class="card-header">
 
-            <div class="pie-section">
+                <h3>License Distribution</h3>
 
-                <div class="pie-chart"></div>
+            </div>
 
-                <div class="legend">
+            <div class="chart-container">
 
-                    <div>
-                        <span class="dot tourism"></span>
-                        Tourism
-                    </div>
-
-                    <div>
-                        <span class="dot fishing"></span>
-                        Fishing
-                    </div>
-
-                    <div>
-                        <span class="dot marine"></span>
-                        Marine Activities
-                    </div>
-
-                    <div>
-                        <span class="dot others"></span>
-                        Others
-                    </div>
-
-                </div>
+                <canvas id="licenseChart"></canvas>
 
             </div>
 
         </div>
 
     </div>
-
 
     <!-- SECOND ROW -->
 
     <div class="charts-grid">
 
-        <div class="chart-card">
+        <div class="chart-card full-width">
 
-            <h3>Complaints Statistics</h3>
+            <div class="card-header">
 
-            <div class="bar-chart">
+                <h3>Complaint Statistics</h3>
 
-                <div class="bar">
-                    <span>Water Pollution</span>
-                    <div class="progress">
-                        <div class="fill fill1"></div>
-                    </div>
-                </div>
+            </div>
 
-                <div class="bar">
-                    <span>Illegal Fishing</span>
-                    <div class="progress">
-                        <div class="fill fill2"></div>
-                    </div>
-                </div>
+            <div class="chart-container complaint-chart">
 
-                <div class="bar">
-                    <span>Waste Disposal</span>
-                    <div class="progress">
-                        <div class="fill fill3"></div>
-                    </div>
-                </div>
+                <canvas id="complaintChart"></canvas>
 
             </div>
 
         </div>
 
     </div>
-
 
     <!-- PERFORMANCE TABLE -->
 
     <div class="table-card">
 
         <div class="card-header">
-            <h3>Monthly Performance</h3>
+
+            <h3>Performance Summary</h3>
+
         </div>
 
         <table>
@@ -227,10 +244,15 @@
             <thead>
 
             <tr>
-                <th>Month</th>
-                <th>Revenue</th>
+
+                <th>Status</th>
+
+                <th>Total Revenue</th>
+
                 <th>Licenses</th>
+
                 <th>Complaints</th>
+
             </tr>
 
             </thead>
@@ -239,10 +261,39 @@
 
             <tr *ngFor="let item of performance">
 
-                <td>{{item.month}}</td>
-                <td>{{item.revenue}}</td>
-                <td>{{item.licenses}}</td>
-                <td>{{item.complaints}}</td>
+                <td>
+
+                    {{item.month}}
+
+                </td>
+
+                <td>
+
+                    <ng-container *ngIf="item.revenue!='-'">
+
+                        TZS {{item.revenue | number}}
+
+                    </ng-container>
+
+                    <ng-container *ngIf="item.revenue=='-'">
+
+                        -
+
+                    </ng-container>
+
+                </td>
+
+                <td>
+
+                    {{item.licenses}}
+
+                </td>
+
+                <td>
+
+                    {{item.complaints}}
+
+                </td>
 
             </tr>
 

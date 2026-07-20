@@ -38,15 +38,29 @@
         <div class="search-box">
             <i class="fas fa-search"></i>
 
-            <input type="text"
-                   placeholder="Search license...">
+            <input
+
+              [(ngModel)]="search"
+
+              (input)="filter()"
+
+              placeholder="Search License">
         </div>
 
-        <select>
-            <option>All Status</option>
-            <option>Approved</option>
-            <option>Pending</option>
-            <option>Rejected</option>
+        <select
+
+            [(ngModel)]="status"
+
+            (change)="filter()">
+
+            <option value="">All Status</option>
+
+            <option value="APPROVED">Approved</option>
+
+            <option value="PENDING">Pending</option>
+
+            <option value="REJECTED">Rejected</option>
+
         </select>
 
     </div>
@@ -74,26 +88,30 @@
 
             <tbody>
 
-            <tr *ngFor="let license of licenses">
+            <tr *ngFor="let license of filteredLicenses">
 
-                <td>{{license.id}}</td>
+                <td>{{license.licenseNumber}}</td>
 
-                <td>{{license.business}}</td>
+                <td>{{license.businessName}}</td>
 
-                <td>{{license.owner}}</td>
+                <td>{{license.ownerName}}</td>
 
-                <td>{{license.type}}</td>
+                <td>{{license.licenseType}}</td>
 
-                <td>{{license.date}}</td>
+                <td>{{license.createdAt | date:'dd MMM yyyy'}}</td>
 
                 <td>
 
                     <span class="status"
                           [ngClass]="{
-                          'approved': license.status === 'Approved',
-                          'pending': license.status === 'Pending',
-                          'rejected': license.status === 'Rejected'
-                          }">
+
+'approved':license.status==='APPROVED',
+
+'pending':license.status==='PENDING',
+
+'rejected':license.status==='REJECTED'
+
+}">
 
                         {{license.status}}
 
@@ -105,28 +123,41 @@
 
                     <div class="actions">
 
-    <button class="view-btn"
-            (click)="openView(license)">
+<button
+class="view-btn"
+(click)="openView(license)">
 
-        <i class="fas fa-eye"></i>
+<i class="fas fa-eye"></i>
 
-    </button>
+</button>
 
-    <button class="edit-btn"
-            (click)="openEdit(license)">
+<button
+class="edit-btn"
+(click)="approve(license.id)"
+*ngIf="license.status=='PENDING'">
 
-        <i class="fas fa-edit"></i>
+<i class="fas fa-check"></i>
 
-    </button>
+</button>
 
-    <button class="delete-btn">
+<button
+class="delete-btn"
+(click)="reject(license.id)"
+*ngIf="license.status=='PENDING'">
 
-        <i class="fas fa-trash"></i>
+<i class="fas fa-times"></i>
 
-    </button>
+</button>
+
+<button
+class="delete-btn"
+(click)="delete(license.id)">
+
+<i class="fas fa-trash"></i>
+
+</button>
 
 </div>
-
                 </td>
 
             </tr>
@@ -158,15 +189,27 @@
 
         <div class="details">
 
-            <p><strong>ID:</strong> {{selectedLicense?.id}}</p>
+            <p><strong>License No:</strong> {{selectedLicense.licenseNumber}}</p>
 
-            <p><strong>Business:</strong> {{selectedLicense?.business}}</p>
+<p><strong>Business:</strong> {{selectedLicense.businessName}}</p>
 
-            <p><strong>Owner:</strong> {{selectedLicense?.owner}}</p>
+<p><strong>Owner:</strong> {{selectedLicense.ownerName}}</p>
 
-            <p><strong>Type:</strong> {{selectedLicense?.type}}</p>
+<p><strong>Email:</strong> {{selectedLicense.ownerEmail}}</p>
 
-            <p><strong>Status:</strong> {{selectedLicense?.status}}</p>
+<p><strong>Phone:</strong> {{selectedLicense.phoneNumber}}</p>
+
+<p><strong>Type:</strong> {{selectedLicense.licenseType}}</p>
+
+<p><strong>District:</strong> {{selectedLicense.district}}</p>
+
+<p><strong>Location:</strong> {{selectedLicense.location}}</p>
+
+<p><strong>Fee:</strong> {{selectedLicense.licenseFee | number}}</p>
+
+<p><strong>Status:</strong> {{selectedLicense.status}}</p>
+
+<p><strong>Applied:</strong> {{selectedLicense.createdAt | date}}</p>
 
         </div>
 
@@ -194,7 +237,7 @@
             <label>Business Name</label>
 
             <input type="text"
-                   [(ngModel)]="selectedLicense.business">
+                   [(ngModel)]="selectedLicense.businessName">
 
         </div>
 
@@ -203,7 +246,7 @@
             <label>Owner Name</label>
 
             <input type="text"
-                   [(ngModel)]="selectedLicense.owner">
+                   [(ngModel)]="selectedLicense.ownerName">
 
         </div>
 
@@ -212,7 +255,7 @@
             <label>License Type</label>
 
             <input type="text"
-                   [(ngModel)]="selectedLicense.type">
+                   [(ngModel)]="selectedLicense.licenseType">
 
         </div>
 

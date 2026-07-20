@@ -323,3 +323,21 @@ a{
         padding:25px 20px;
     }
 }
+
+.success-message{
+    margin:15px 0;
+    padding:14px 18px;
+    background:#e9f9ef;
+    color:#15803d;
+    border-left:5px solid #22c55e;
+    border-radius:10px;
+}
+
+.error-message{
+    margin:15px 0;
+    padding:14px 18px;
+    background:#fff2f2;
+    color:#dc2626;
+    border-left:5px solid #ef4444;
+    border-radius:10px;
+}

@@ -1,63 +1,180 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { LicenseService } from '../../services/license.service';
+import { License } from '../../models/license.model';
+
 @Component({
-  selector: 'app-licenses',
-  imports: [CommonModule,FormsModule
-  ],
-  templateUrl: './licenses.html',
-  styleUrl: './licenses.css',
+
+selector:'app-licenses',
+
+standalone:true,
+
+imports:[CommonModule,FormsModule],
+
+templateUrl:'./licenses.html',
+
+styleUrl:'./licenses.css'
+
 })
-export class Licenses {
 
-  showAddModal = false;
-  showViewModal = false;
-  showEditModal = false;
+export class Licenses implements OnInit{
 
-  selectedLicense: any = null;
+private service=inject(LicenseService);
 
-  licenses = [
-    {
-      id: 'LIC-2026-001',
-      business: 'Paje Beach Resort',
-      owner: 'Ali Hassan',
-      type: 'Tourism License',
-      date: '12 Jun 2026',
-      status: 'Approved'
-    },
-    {
-      id: 'LIC-2026-002',
-      business: 'Nungwi Sea Foods',
-      owner: 'Asha Omar',
-      type: 'Fishing License',
-      date: '14 Jun 2026',
-      status: 'Pending'
-    },
-    {
-      id: 'LIC-2026-003',
-      business: 'Kendwa Water Sports',
-      owner: 'John Salum',
-      type: 'Water Activity License',
-      date: '15 Jun 2026',
-      status: 'Rejected'
-    }
-  ];
+constructor(private cdr:ChangeDetectorRef){}
 
-  openView(license: any) {
-    this.selectedLicense = { ...license };
-    this.showViewModal = true;
-  }
+licenses:License[]=[];
 
-  openEdit(license: any) {
-    this.selectedLicense = { ...license };
-    this.showEditModal = true;
-  }
+filteredLicenses:License[]=[];
 
-  closeModals() {
-    this.showAddModal = false;
-    this.showViewModal = false;
-    this.showEditModal = false;
-  }
+search='';
+
+status='';
+
+loading=false;
+
+selectedLicense!:License;
+
+showViewModal=false;
+
+showEditModal=false;
+
+showAddModal=false;
+
+ngOnInit(){
+
+this.loadLicenses();
+
+}
+
+loadLicenses(){
+
+this.loading=true;
+
+this.service.getAll().subscribe({
+
+next:(res)=>{
+
+this.licenses=res;
+
+this.filteredLicenses=res;
+
+this.cdr.detectChanges();
+
+this.loading=false;
+
+},
+
+error:()=>{
+
+this.loading=false;
+
+}
+
+});
+
+}
+
+filter(){
+
+this.filteredLicenses=this.licenses.filter(l=>{
+
+const searchMatch=
+
+l.businessName.toLowerCase().includes(
+
+this.search.toLowerCase()
+
+)
+
+||
+
+l.ownerName.toLowerCase().includes(
+
+this.search.toLowerCase()
+
+)
+
+||
+
+l.licenseNumber.toLowerCase().includes(
+
+this.search.toLowerCase()
+
+);
+
+const statusMatch=
+
+!this.status||
+
+l.status==this.status;
+
+return searchMatch&&statusMatch;
+
+});
+
+}
+
+openView(item:License){
+
+this.selectedLicense=item;
+
+this.showViewModal=true;
+
+}
+
+openEdit(item:License){
+
+this.selectedLicense={...item};
+
+this.showEditModal=true;
+
+}
+
+approve(id:number){
+
+this.service.approve(id).subscribe(()=>{
+
+this.loadLicenses();
+
+});
+
+}
+
+reject(id:number){
+
+this.service.reject(id).subscribe(()=>{
+
+this.loadLicenses();
+
+});
+
+}
+
+delete(id:number){
+
+if(confirm('Delete this license?')){
+
+this.service.delete(id).subscribe(()=>{
+
+this.loadLicenses();
+
+});
+
+}
+
+}
+
+closeModals(){
+
+this.showAddModal=false;
+
+this.showViewModal=false;
+
+this.showEditModal=false;
+
+}
 
 }
