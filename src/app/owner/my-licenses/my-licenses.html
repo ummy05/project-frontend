@@ -11,7 +11,8 @@
             </p>
         </div>
 
-        <button class="apply-btn">
+        <button class="apply-btn" 
+        routerLink="/owner/apply-license">
 
             <i class="fas fa-plus"></i>
 
@@ -30,17 +31,47 @@
 
             <i class="fas fa-search"></i>
 
-            <input type="text"
-                   placeholder="Search license...">
+            <input
+
+               type="text"
+
+               [(ngModel)]="search"
+
+              (input)="filterLicenses()"
+
+               placeholder="Search license...">
 
         </div>
 
-        <select>
+        <select
 
-            <option>All Status</option>
-            <option>Active</option>
-            <option>Pending</option>
-            <option>Expired</option>
+           [(ngModel)]="status"
+
+           (change)="filterLicenses()">
+
+            <option value="ALL">
+
+               All Status
+
+            </option>
+
+            <option value="APPROVED">
+
+               Approved
+
+            </option>
+
+            <option value="PENDING">
+
+                Pending
+
+            </option>
+
+            <option value="REJECTED">
+
+                Rejected
+
+            </option>
 
         </select>
 
@@ -52,7 +83,7 @@
     <div class="licenses-grid">
 
         <div class="license-card"
-             *ngFor="let license of licenses">
+             *ngFor="let license of filteredLicenses">
 
             <div class="card-top">
 
@@ -62,10 +93,14 @@
 
                 <span class="status"
                       [ngClass]="{
-                        'active': license.status === 'Active',
-                        'pending': license.status === 'Pending',
-                        'expired': license.status === 'Expired'
-                      }">
+
+                      'active':license.status==='APPROVED',
+
+                      'pending':license.status==='PENDING',
+
+                       'expired':license.status==='REJECTED'
+
+                    }">
 
                     {{license.status}}
 
@@ -73,22 +108,22 @@
 
             </div>
 
-            <h3>{{license.type}}</h3>
+            <h3>{{license.licenseType}}</h3>
 
             <p class="business">
-                {{license.business}}
+                {{license.businessName}}
             </p>
 
             <div class="license-info">
 
                 <div>
                     <small>Issued Date</small>
-                    <strong>{{license.issuedDate}}</strong>
+                    <strong>{{license.issueDate | date:'dd MMM yyyy'}}</strong>
                 </div>
 
                 <div>
                     <small>Expiry Date</small>
-                    <strong>{{license.expiryDate}}</strong>
+                    <strong>{{license.expiryDate | date:'dd MMM yyyy'}}</strong>
                 </div>
 
             </div>
@@ -146,23 +181,23 @@
         <div class="details">
 
             <p><strong>License ID:</strong>
-                {{selectedLicense?.id}}
+                {{selectedLicense?.licenseNumber}}
             </p>
 
             <p><strong>License Type:</strong>
-                {{selectedLicense?.type}}
+                {{selectedLicense?.licenseType}}
             </p>
 
             <p><strong>Business:</strong>
-                {{selectedLicense?.business}}
+                {{selectedLicense?.businessName}}
             </p>
 
             <p><strong>Issued Date:</strong>
-                {{selectedLicense?.issuedDate}}
+                {{selectedLicense?.issueDate | date:'dd MMM yyyy'}}
             </p>
 
             <p><strong>Expiry Date:</strong>
-                {{selectedLicense?.expiryDate}}
+                {{selectedLicense?.expiryDate | date:'dd MMM yyyy'}}
             </p>
 
             <p><strong>Status:</strong>

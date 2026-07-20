@@ -63,6 +63,16 @@ export class LicenseService{
 
   }
 
+  myLicenses(){
+
+  return this.http.get<any[]>(
+
+    `${this.api}/my`
+
+  );
+
+}
+
   delete(id:number){
 
     return this.http.delete(

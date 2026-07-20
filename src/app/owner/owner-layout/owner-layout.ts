@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from "@angular/router";
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -16,12 +16,34 @@ import { AuthService } from '../../services/auth.service';
 export class OwnerLayout {
 
 sidebarOpen = false;
-private authService = inject(AuthService);
+
+showLogoutModal = false;
+
+latestNotifications:any[]=[];
+
+  constructor(
+   private auth:AuthService,
+   private router:Router
+  ){}
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
+  logout(){
 
+  this.showLogoutModal = true;
+
+}
+
+confirmLogout(){
+
+  this.showLogoutModal = false;
+
+  this.auth.logout();
+
+  this.router.navigate(['/login']);
+
+}
   
 }
