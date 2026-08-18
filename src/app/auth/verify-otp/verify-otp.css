@@ -1,87 +1,483 @@
-.auth-container{
+/* =========================================================
+   AUTH CONTAINER
+========================================================= */
 
-    min-height:100vh;
+.auth-container {
+    min-height: 100vh;
+    width: 100%;
 
-    display:flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    justify-content:center;
+    padding: 30px 20px;
 
-    align-items:center;
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(75, 46, 131, .08),
+            transparent 35%
+        ),
+        #faf8f6;
 
-    background:#faf8f6;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* =========================================================
+   AUTH CARD
+========================================================= */
+
+.auth-card {
+    width: 100%;
+    max-width: 460px;
+
+    background: #ffffff;
+
+    padding: 45px 40px;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, .08);
+
+    text-align: center;
+
+    animation: cardAppear .45s ease;
+}
+
+@keyframes cardAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
 }
 
-.auth-card{
 
-    width:430px;
+/* =========================================================
+   ICON
+========================================================= */
 
-    background:#fff;
+.icon-wrapper {
 
-    padding:40px;
+    width: 82px;
+    height: 82px;
 
-    border-radius:20px;
+    margin: 0 auto 22px;
 
-    box-shadow:0 20px 50px rgba(0,0,0,.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    text-align:center;
+    border-radius: 50%;
+
+    background: rgba(75, 46, 131, .08);
+
+    border: 1px solid rgba(75, 46, 131, .12);
+}
+
+.icon {
+
+    font-size: 36px;
+
+    color: #4B2E83;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.auth-card h2 {
+
+    margin: 0;
+
+    font-size: 25px;
+
+    font-weight: 600;
+
+    color: #222;
+}
+
+
+/* =========================================================
+   SUBTITLE
+========================================================= */
+
+.subtitle {
+
+    margin: 12px auto 32px;
+
+    max-width: 360px;
+
+    color: #777;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   INPUT GROUP
+========================================================= */
+
+.input-group {
+
+    width: 100%;
+
+    margin-bottom: 20px;
+
+    text-align: left;
+}
+
+.input-group label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    color: #333;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.input-wrapper {
+
+    position: relative;
+
+    width: 100%;
+}
+
+
+/* LEFT ICON */
+
+.input-wrapper > i {
+
+    position: absolute;
+
+    left: 17px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #999;
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.input-wrapper input {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin: 0;
+
+    padding: 0 18px 0 48px;
+
+    border: 1px solid #e1e1e1;
+
+    border-radius: 13px;
+
+    background: #fff;
+
+    color: #333;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+
+    box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+
+    border-color: #4B2E83;
+
+    box-shadow:
+        0 0 0 4px rgba(75, 46, 131, .09);
+
+    background: #fff;
+}
+
+.input-wrapper input:disabled {
+
+    background: #f6f6f6;
+
+    cursor: not-allowed;
+
+    opacity: .75;
+}
+
+
+/* OTP SPECIFIC */
+
+.input-wrapper input[inputmode="numeric"] {
+
+    text-align: center;
+
+    padding-left: 48px;
+
+    letter-spacing: 7px;
+
+    font-size: 22px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    width: 100%;
+
+    margin: 5px 0 18px;
+
+    padding: 12px 14px;
+
+    box-sizing: border-box;
+
+    border-radius: 10px;
+
+    background: #fff0f0;
+
+    border-left: 4px solid #d63031;
+
+    color: #d63031;
+
+    font-size: 13px;
+
+    text-align: left;
+
+    line-height: 1.5;
+}
+
+.error i {
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   VERIFY BUTTON
+========================================================= */
+
+button {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background: #F28B65;
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        opacity .25s ease;
+}
+
+button:hover:not(:disabled) {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(242, 139, 101, .28);
+}
+
+button:active:not(:disabled) {
+
+    transform: translateY(0);
+}
+
+button:disabled {
+
+    opacity: .65;
+
+    cursor: not-allowed;
+}
+
+button i {
+
+    margin-right: 8px;
+}
+
+
+/* =========================================================
+   BACK LINK
+========================================================= */
+
+.auth-card > a {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 25px;
+
+    color: #4B2E83;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition: .25s ease;
+}
+
+.auth-card > a:hover {
+
+    color: #F28B65;
+
+    transform: translateX(-2px);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .auth-container {
+
+        padding: 20px 15px;
+
+        align-items: center;
+    }
+
+    .auth-card {
+
+        padding: 35px 25px;
+
+        border-radius: 20px;
+    }
+
+    .icon-wrapper {
+
+        width: 72px;
+        height: 72px;
+
+        margin-bottom: 18px;
+    }
+
+    .icon {
+
+        font-size: 31px;
+    }
+
+    .auth-card h2 {
+
+        font-size: 22px;
+    }
+
+    .subtitle {
+
+        font-size: 13px;
+
+        margin-bottom: 26px;
+    }
+
+    .input-wrapper input {
+
+        height: 52px;
+    }
+
+    .input-wrapper input[inputmode="numeric"] {
+
+        font-size: 20px;
+
+        letter-spacing: 5px;
+    }
+
+    button {
+
+        height: 52px;
+    }
 
 }
 
-.icon{
 
-    font-size:50px;
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
 
-    color:#4B2E83;
+@media (max-width: 380px) {
 
-    margin-bottom:20px;
+    .auth-card {
 
-}
+        padding: 30px 20px;
+    }
 
-input{
+    .auth-card h2 {
 
-    width:100%;
+        font-size: 20px;
+    }
 
-    height:55px;
+    .subtitle {
 
-    margin-top:25px;
+        font-size: 12px;
+    }
 
-    border:1px solid #ddd;
+    .input-wrapper input[inputmode="numeric"] {
 
-    border-radius:12px;
+        letter-spacing: 4px;
 
-    text-align:center;
-
-    font-size:28px;
-
-    letter-spacing:10px;
-
-}
-
-button{
-
-    width:100%;
-
-    height:55px;
-
-    margin-top:25px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:#F28B65;
-
-    color:white;
-
-    cursor:pointer;
-
-}
-
-.error{
-
-    color:red;
-
-    margin-top:15px;
+        font-size: 18px;
+    }
 
 }

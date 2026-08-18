@@ -155,27 +155,19 @@
 
 
             <!-- LOGIN BUTTON -->
-             <div
-                class="error-message"
-                *ngIf="errorMessage">
-
-               {{errorMessage}}
-
-            </div>
+             
 
             <button
+               class="login-btn"
+               type="button"
+               (click)="login()"
+               [disabled]="loading">
 
-                class="login-btn"
+               <i class="fas fa-sign-in-alt"></i>
 
-                (click)="login()"
+               Sign In
 
-                [disabled]="loading">
-
-                <i class="fas fa-sign-in-alt"></i>
-
-                {{loading ? 'Signing In...' : 'Sign In'}}
-
-           </button>
+            </button>
 
 
             <!-- DIVIDER -->

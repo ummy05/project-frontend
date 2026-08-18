@@ -1,83 +1,165 @@
-import { Component, inject } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink
+} from '@angular/router';
+
+import { AuthService } from '../../services/auth.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-verify-otp',
-  imports: [CommonModule,FormsModule,RouterLink,RouterModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink
+  ],
   templateUrl: './verify-otp.html',
-  styleUrl: './verify-otp.css',
+  styleUrl: './verify-otp.css'
 })
 export class VerifyOtp {
-   private authService=inject(AuthService);
 
-  private router=inject(Router);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private alertService = inject(AlertService);
 
-  private route=inject(ActivatedRoute);
+  email = '';
+  otp = '';
 
-  email='';
+  loading = false;
+  error = '';
 
-  otp='';
 
-  loading=false;
+  ngOnInit(): void {
 
-  error='';
+    this.route.queryParams.subscribe(params => {
 
-  ngOnInit(){
+      this.email = params['email'] || '';
 
-    this.route.queryParams.subscribe(
-
-      params=>{
-
-        this.email=params['email'];
-
-      }
-
-    );
+    });
 
   }
 
-  verifyOtp(){
 
-    this.loading=true;
+  verifyOtp(): void {
+
+    this.error = '';
+
+    const otp = this.otp.trim();
+
+
+    // ==========================================
+    // VALIDATION
+    // ==========================================
+
+    if (!this.email) {
+
+      this.alertService.error(
+        'Invalid Request',
+        'Email address is missing.'
+      );
+
+      return;
+
+    }
+
+
+    if (!otp) {
+
+      this.alertService.warning(
+        'OTP Required',
+        'Please enter the verification code.'
+      );
+
+      return;
+
+    }
+
+
+    if (otp.length !== 6) {
+
+      this.alertService.warning(
+        'Invalid OTP',
+        'Please enter the complete 6-digit verification code.'
+      );
+
+      return;
+
+    }
+
+
+    this.loading = true;
+
+    this.alertService.loading(
+      'Verifying code...'
+    );
+
+
+    // ==========================================
+    // API
+    // ==========================================
 
     this.authService.verifyOtp({
 
-      email:this.email,
+      email: this.email,
 
-      otp:this.otp
+      otp: otp
 
     }).subscribe({
 
-      next:()=>{
+      next: () => {
 
-        this.router.navigate(
+        this.loading = false;
 
-          ['/reset-password'],
+        this.alertService.close();
 
-          {
 
-            queryParams:{
-
-              email:this.email,
-
-              otp:this.otp
-
-            }
-
-          }
-
+        this.alertService.success(
+          'OTP Verified',
+          'Your verification code is correct.'
         );
+
+
+        setTimeout(() => {
+
+          this.router.navigate(
+            ['/reset-password'],
+            {
+              queryParams: {
+                email: this.email,
+                otp: otp
+              }
+            }
+          );
+
+        }, 1200);
 
       },
 
-      error:(err)=>{
 
-        this.loading=false;
+      error: (err) => {
 
-        this.error=err.error;
+        this.loading = false;
+
+        this.alertService.close();
+
+
+        this.error =
+          typeof err.error === 'string'
+            ? err.error
+            : err.error?.message ||
+              'Invalid verification code.';
+
+
+        this.alertService.error(
+          'Verification Failed',
+          this.error
+        );
 
       }
 

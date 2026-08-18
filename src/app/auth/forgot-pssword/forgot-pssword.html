@@ -79,68 +79,38 @@
 
             <form>
 
-                <div class="input-group">
+    <div class="input-group">
 
-                    <label>Email Address</label>
+        <label>Email Address</label>
 
-                    <div class="input-wrapper">
+        <div class="input-wrapper">
 
-                        <i class="fas fa-envelope"></i>
+            <i class="fas fa-envelope"></i>
 
-                        <input
-                                type="email"
-                                placeholder="Enter your email"
-                                [(ngModel)]="email"
-                                name="email">
+            <input
+                type="email"
+                placeholder="Enter your email"
+                [(ngModel)]="email"
+                name="email"
+                autocomplete="email">
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-                <div
-                   class="success-message"
-                   *ngIf="success">
 
-                   {{success}}
+    <button
+        type="button"
+        class="reset-btn"
+        (click)="sendResetLink()">
 
-                </div>
+        <i class="fas fa-paper-plane"></i>
 
-                <div
-                    class="error-message"
-                    *ngIf="error">
+        Send Verification Code
 
-                    {{error}}
+    </button>
 
-                </div>
-
-                <button
-
-                    type="button"
-
-                    class="reset-btn"
-
-                    (click)="sendResetLink()"
-
-                    [disabled]="loading">
-
-                    <span *ngIf="!loading">
-
-                    Send Verification Code
-
-                </span>
-
-                <span *ngIf="loading">
-
-                <i class="fas fa-spinner fa-spin"></i>
-
-                Sending...
-
-               </span>
-
-            </button>
-
-            </form>
-
+</form>
 
             <div class="back-link">
 

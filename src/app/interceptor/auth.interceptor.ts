@@ -4,19 +4,35 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = localStorage.getItem('token');
 
-  if (token) {
 
-    req = req.clone({
+  // ==========================================
+  // PUBLIC AUTH ENDPOINTS
+  // ==========================================
 
-      setHeaders: {
+  const isPublicAuthEndpoint =
+    req.url.includes('/api/auth/login') ||
+    req.url.includes('/api/auth/register') ||
+    req.url.includes('/api/auth/forgot-password') ||
+    req.url.includes('/api/auth/verify-otp') ||
+    req.url.includes('/api/auth/reset-password');
 
-        Authorization: `Bearer ${token}`
 
-      }
+  // ==========================================
+  // ATTACH TOKEN ONLY TO PROTECTED REQUESTS
+  // ==========================================
 
-    });
+  if (token && !isPublicAuthEndpoint) {
+
+    return next(
+      req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    );
 
   }
+
 
   return next(req);
 

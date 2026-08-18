@@ -181,6 +181,7 @@
 .download-btn{
     background:#dbeafe;
     color:#2563eb;
+    background-color: #FAF8F6;
 }
 
 .renew-btn{
@@ -252,5 +253,25 @@
         width:100%;
         height:50px;
     }
+
+}
+
+.pending{
+
+background:#ddd !important;
+
+color:#666 !important;
+
+cursor:not-allowed;
+
+opacity:.8;
+
+}
+
+.actions button:disabled{
+
+opacity:.7;
+
+cursor:not-allowed;
 
 }

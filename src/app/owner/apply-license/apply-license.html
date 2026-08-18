@@ -66,15 +66,59 @@
 
                 <label>Business Type</label>
 
-                <select>
+                <select
 
-                    <option>Select business type</option>
+                 [(ngModel)]="application.licenseType"
 
-                    <option>Hotel / Resort</option>
-                    <option>Beach Vendor</option>
-                    <option>Water Sports</option>
-                    <option>Boat Services</option>
-                    <option>Fishing Business</option>
+(change)="calculateFee()">
+
+                    <option value="BEACH_HOTEL">
+
+Beach Hotel
+
+</option>
+
+<option value="TOUR_OPERATOR">
+
+Tour Operator
+
+</option>
+
+<option value="BOAT_OPERATOR">
+
+Boat Operator
+
+</option>
+
+<option value="FISHING">
+
+Fishing
+
+</option>
+
+<option value="BEACH_RESTAURANT">
+
+Beach Restaurant
+
+</option>
+
+<option value="WATER_SPORTS">
+
+Water Sports
+
+</option>
+
+<option value="BEACH_EVENT">
+
+Beach Event
+
+</option>
+
+<option value="OTHER">
+
+Other
+
+</option>
 
                 </select>
 

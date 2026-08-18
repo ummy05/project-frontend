@@ -2,41 +2,84 @@
 
     <div class="auth-card">
 
-        <i class="fas fa-shield-alt icon"></i>
+        <div class="icon-wrapper">
 
-        <h2>Email Verification</h2>
-
-        <p>
-            Enter the 6-digit verification code sent to your email.
-        </p>
-
-        <input
-
-            type="text"
-
-            maxlength="6"
-
-            [(ngModel)]="otp"
-
-            placeholder="Enter OTP">
-
-        <div class="error" *ngIf="error">
-
-            {{error}}
+            <i class="fas fa-shield-alt icon"></i>
 
         </div>
 
+
+        <h2>
+            Email Verification
+        </h2>
+
+
+        <p class="subtitle">
+
+            Enter the 6-digit verification code
+            sent to your email.
+
+        </p>
+
+
+        <div class="input-group">
+
+            <label>
+                Verification Code
+            </label>
+
+            <div class="input-wrapper">
+
+                <i class="fas fa-key"></i>
+
+                <input
+                    type="text"
+                    maxlength="6"
+                    inputmode="numeric"
+                    placeholder="Enter 6-digit code"
+                    [(ngModel)]="otp"
+                    [disabled]="loading">
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="error"
+            *ngIf="error">
+
+            <i class="fas fa-circle-exclamation"></i>
+
+            {{ error }}
+
+        </div>
+
+
         <button
-
+            type="button"
             (click)="verifyOtp()"
-
             [disabled]="loading">
 
-            {{loading ? 'Verifying...' : 'Verify OTP'}}
+            <i
+                class="fas"
+                [ngClass]="loading
+                    ? 'fa-spinner fa-spin'
+                    : 'fa-check'">
+            </i>
+
+            {{ loading
+                ? 'Verifying...'
+                : 'Verify OTP'
+            }}
 
         </button>
 
-        <a routerLink="/forgot-password">
+
+        <a
+            routerLink="/forgot-password">
+
+            <i class="fas fa-arrow-left"></i>
 
             Back
 

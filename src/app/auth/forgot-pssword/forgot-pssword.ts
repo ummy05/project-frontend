@@ -2,79 +2,185 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterModule } from '@angular/router';
+
 import { AuthService } from '../../services/auth.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-forgot-pssword',
-  imports: [CommonModule,FormsModule,RouterLink,RouterModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RouterModule
+  ],
   templateUrl: './forgot-pssword.html',
   styleUrl: './forgot-pssword.css',
 })
 export class ForgotPssword {
 
-  email = '';
-  emailSent = false;
-  loading=false;
-   success='';
-   error='';
-
   private authService = inject(AuthService);
+  private router = inject(Router);
+  private alertService = inject(AlertService);
 
-private router = inject(Router);
+  email = '';
 
-  sendResetLink(){
+  emailSent = false;
 
-this.loading=true;
-this.error='';
-this.success='';
+  loading = false;
 
-this.authService.forgotPassword({
+  success = '';
 
-email:this.email
+  error = '';
 
-}).subscribe({
 
-next: () => {
+  // ==========================================
+  // SEND OTP
+  // ==========================================
 
-    this.emailSent = true;
+  sendResetLink(): void {
 
-    setTimeout(() => {
+    // ------------------------------------------
+    // BASIC VALIDATION
+    // ------------------------------------------
 
-        this.router.navigate(
+    if (!this.email || !this.email.trim()) {
 
-            ['/verify-otp'],
+      this.alertService.warning(
+        'Email Required',
+        'Please enter your email address.'
+      );
 
-            {
+      return;
+    }
 
-              queryParams:{
 
-                email:this.email
+    // ------------------------------------------
+    // EMAIL FORMAT
+    // ------------------------------------------
 
-              }
+    const emailPattern =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            }
+    if (!emailPattern.test(this.email.trim())) {
 
+      this.alertService.warning(
+        'Invalid Email',
+        'Please enter a valid email address.'
+      );
+
+      return;
+    }
+
+
+    this.loading = true;
+
+    this.emailSent = false;
+
+    this.success = '';
+
+    this.error = '';
+
+
+    // ------------------------------------------
+    // SWEET ALERT LOADING
+    // ------------------------------------------
+
+    this.alertService.loading(
+      'Sending verification code...'
+    );
+
+
+    // ------------------------------------------
+    // SEND REQUEST
+    // ------------------------------------------
+
+    this.authService.forgotPassword({
+
+      email: this.email.trim()
+
+    }).subscribe({
+
+      // ========================================
+      // SUCCESS
+      // ========================================
+
+      next: (response) => {
+
+        this.loading = false;
+
+        this.emailSent = true;
+
+
+        // Close loading
+        this.alertService.close();
+
+
+        // Success alert
+        this.alertService.success(
+          'Verification Code Sent',
+          'A verification code has been sent to your email address.'
         );
 
-    },1000);
 
-},
+        // ======================================
+        // GO TO VERIFY OTP
+        // ======================================
 
-error:(err)=>{
+        this.router.navigate(
+          ['/verify-otp'],
+          {
+            queryParams: {
+              email: this.email.trim()
+            }
+          }
+        );
 
-this.loading=false;
+      },
 
-this.error=
 
-typeof err.error==='string'
-? err.error
-: err.error?.message ||
-"Unable to send verification code.";
+      // ========================================
+      // ERROR
+      // ========================================
 
-}
+      error: (err) => {
 
-});
+        this.loading = false;
 
-}
+
+        // Close loading
+        this.alertService.close();
+
+
+        let message =
+          'Unable to send verification code.';
+
+
+        if (typeof err.error === 'string') {
+
+          message = err.error;
+
+        }
+        else if (err.error?.message) {
+
+          message = err.error.message;
+
+        }
+
+
+        this.error = message;
+
+
+        this.alertService.error(
+          'Unable to Send Code',
+          message
+        );
+
+      }
+
+    });
+
+  }
 
 }

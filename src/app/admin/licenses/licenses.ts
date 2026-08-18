@@ -20,6 +20,11 @@ styleUrl:'./licenses.css'
 })
 
 export class Licenses implements OnInit{
+    showRejectModal = false;
+
+rejectReason = '';
+
+licenseToRejectId!: number;
 
 private service=inject(LicenseService);
 
@@ -143,13 +148,61 @@ this.loadLicenses();
 
 }
 
-reject(id:number){
+openReject(id:number){
 
-this.service.reject(id).subscribe(()=>{
+this.licenseToRejectId = id;
+
+this.rejectReason = '';
+
+this.showRejectModal = true;
+
+}
+
+confirmReject(){
+
+if(!this.rejectReason.trim()){
+
+alert("Please enter rejection reason.");
+
+return;
+
+}
+
+this.service
+
+.reject(
+
+this.licenseToRejectId,
+
+this.rejectReason
+
+)
+
+.subscribe({
+
+next:()=>{
+
+this.showRejectModal = false;
 
 this.loadLicenses();
 
+},
+
+error:()=>{
+
+alert("Failed to reject license.");
+
+}
+
 });
+
+}
+
+cancelReject(){
+
+this.showRejectModal = false;
+
+this.rejectReason = '';
 
 }
 

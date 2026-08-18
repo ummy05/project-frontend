@@ -31,7 +31,7 @@ export class MyLicenses implements OnInit {
 
   loadLicenses(){
 
-  this.licenseService
+   this.licenseService
 
   .myLicenses()
 
@@ -39,16 +39,14 @@ export class MyLicenses implements OnInit {
 
     next:(res)=>{
 
-      console.log("MY LICENSES =",res);
-
-      this.licenses=res;
+       this.licenses=res;
 
       this.filteredLicenses=res;
       this.cdr.detectChanges();
 
-    },
+     },
 
-    error:(err)=>{
+      error:(err)=>{
 
       console.log(err);
 
@@ -105,8 +103,79 @@ return matchesSearch && matchesStatus;
     this.showViewModal = false;
   }
 
-  
+  formatStatus(status:string){
+
+switch(status){
+
+case 'APPROVED':
+
+return 'Approved';
+
+case 'PENDING':
+
+return 'Pending';
+
+case 'UNDER_REVIEW':
+
+return 'Under Review';
+
+case 'REJECTED':
+
+return 'Rejected';
+
+case 'EXPIRED':
+
+return 'Expired';
+
+default:
+
+return status;
 
 }
 
- 
+}
+
+canRenew(license:any){
+
+return (
+
+license.status==='APPROVED'
+
+||
+
+license.status==='EXPIRED'
+
+)
+
+&&
+
+!license.renewal;
+
+}
+
+downloadLicense(license:any){
+
+console.log(
+
+'Download',
+
+license
+
+);
+
+}
+
+renewLicense(license:any){
+
+console.log(
+
+'Renew',
+
+license
+
+);
+
+}
+
+}
+

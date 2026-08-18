@@ -8,28 +8,58 @@ import {
 
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, catchError, throwError } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  throwError
+} from 'rxjs';
+
+import { AlertService } from '../services/alert.service';
+
 
 export const jwtInterceptor: HttpInterceptorFn = (
 
-req: HttpRequest<unknown>,
-next: HttpHandlerFn
+  req: HttpRequest<unknown>,
+
+  next: HttpHandlerFn
 
 ): Observable<HttpEvent<unknown>> => {
 
   const router = inject(Router);
 
-  const token = localStorage.getItem('token');
+  const alertService = inject(AlertService);
+
+
+  const token =
+    localStorage.getItem('token');
+
 
   let request = req;
 
-  if(token){
+
+  // ==========================================
+  // DO NOT ATTACH TOKEN TO PUBLIC AUTH ENDPOINTS
+  // ==========================================
+
+  const isPublicAuthEndpoint =
+    req.url.includes('/api/auth/login') ||
+    req.url.includes('/api/auth/register') ||
+    req.url.includes('/api/auth/forgot-password') ||
+    req.url.includes('/api/auth/verify-otp') ||
+    req.url.includes('/api/auth/reset-password');
+
+
+  if (
+    token &&
+    !isPublicAuthEndpoint
+  ) {
 
     request = req.clone({
 
-      setHeaders:{
+      setHeaders: {
 
-        Authorization:`Bearer ${token}`
+        Authorization:
+          `Bearer ${token}`
 
       }
 
@@ -37,23 +67,37 @@ next: HttpHandlerFn
 
   }
 
+
   return next(request).pipe(
 
-    catchError((error:HttpErrorResponse)=>{
+    catchError(
+      (error: HttpErrorResponse) => {
 
-      if(error.status===401){
+        if (
+          error.status === 401 &&
+          !isPublicAuthEndpoint
+        ) {
 
-        localStorage.clear();
+          localStorage.clear();
 
-        alert("Your session has expired. Please login again.");
+          alertService.error(
+            'Session Expired',
+            'Your session has expired. Please login again.'
+          );
 
-        router.navigate(['/login']);
+          router.navigate([
+            '/login'
+          ]);
+
+        }
+
+
+        return throwError(
+          () => error
+        );
 
       }
-
-      return throwError(()=>error);
-
-    })
+    )
 
   );
 

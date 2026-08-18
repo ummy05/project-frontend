@@ -5,14 +5,18 @@
     <div class="page-header">
 
         <div>
+
             <h2>My Licenses</h2>
+
             <p>
                 View and manage all your business licenses.
             </p>
+
         </div>
 
-        <button class="apply-btn" 
-        routerLink="/owner/apply-license">
+        <button
+            class="apply-btn"
+            routerLink="/owner/apply-license">
 
             <i class="fas fa-plus"></i>
 
@@ -21,7 +25,6 @@
         </button>
 
     </div>
-
 
     <!-- FILTERS -->
 
@@ -33,122 +36,263 @@
 
             <input
 
-               type="text"
+                type="text"
 
-               [(ngModel)]="search"
+                [(ngModel)]="search"
 
-              (input)="filterLicenses()"
+                (input)="filterLicenses()"
 
-               placeholder="Search license...">
+                placeholder="Search license number or business...">
 
         </div>
 
         <select
 
-           [(ngModel)]="status"
+            [(ngModel)]="status"
 
-           (change)="filterLicenses()">
+            (change)="filterLicenses()">
 
             <option value="ALL">
-
-               All Status
-
+                All Status
             </option>
 
             <option value="APPROVED">
-
-               Approved
-
+                Approved
             </option>
 
             <option value="PENDING">
-
                 Pending
+            </option>
 
+            <option value="UNDER_REVIEW">
+                Under Review
             </option>
 
             <option value="REJECTED">
-
                 Rejected
+            </option>
 
+            <option value="EXPIRED">
+                Expired
             </option>
 
         </select>
 
     </div>
 
+    <!-- EMPTY -->
 
-    <!-- LICENSE CARDS -->
+    <div
+        class="empty-state"
+        *ngIf="filteredLicenses.length==0">
 
-    <div class="licenses-grid">
+        <i class="fas fa-file-circle-xmark"></i>
 
-        <div class="license-card"
-             *ngFor="let license of filteredLicenses">
+        <h3>No Licenses Found</h3>
+
+        <p>
+
+            No licenses match your current search.
+
+        </p>
+
+    </div>
+
+    <!-- LICENSE GRID -->
+
+    <div
+        class="licenses-grid"
+        *ngIf="filteredLicenses.length>0">
+
+        <div
+
+            class="license-card"
+
+            *ngFor="let license of filteredLicenses">
+
+            <!-- TOP -->
 
             <div class="card-top">
 
                 <div class="license-icon">
+
                     <i class="fas fa-file-signature"></i>
+
                 </div>
 
-                <span class="status"
-                      [ngClass]="{
+                <span
 
-                      'active':license.status==='APPROVED',
+                    class="status"
 
-                      'pending':license.status==='PENDING',
+                    [ngClass]="{
 
-                       'expired':license.status==='REJECTED'
+                    active:license.status==='APPROVED',
+
+                    pending:license.status==='PENDING',
+
+                    review:license.status==='UNDER_REVIEW',
+
+                    rejected:license.status==='REJECTED',
+
+                    expired:license.status==='EXPIRED'
 
                     }">
 
-                    {{license.status}}
+                    {{formatStatus(license.status)}}
 
                 </span>
 
             </div>
 
-            <h3>{{license.licenseType}}</h3>
+            <!-- BODY -->
+
+            <h3>
+
+                {{license.licenseType.replace('_',' ')}}
+
+            </h3>
 
             <p class="business">
+
                 {{license.businessName}}
+
             </p>
 
             <div class="license-info">
 
                 <div>
-                    <small>Issued Date</small>
-                    <strong>{{license.issueDate | date:'dd MMM yyyy'}}</strong>
+
+                    <small>License Number</small>
+
+                    <strong>
+
+                        {{license.licenseNumber}}
+
+                    </strong>
+
                 </div>
 
                 <div>
+
+                    <small>Duration</small>
+
+                    <strong>
+
+                        {{license.durationMonths}}
+
+                        Months
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <small>License Fee</small>
+
+                    <strong>
+
+                        TZS
+
+                        {{license.licenseFee|number}}
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <small>Issued Date</small>
+
+                    <strong>
+
+                        {{license.issueDate ?
+
+                        (license.issueDate|date:'dd MMM yyyy')
+
+                        :
+
+                        'Not Issued Yet'}}
+
+                    </strong>
+
+                </div>
+
+                <div>
+
                     <small>Expiry Date</small>
-                    <strong>{{license.expiryDate | date:'dd MMM yyyy'}}</strong>
+
+                    <strong>
+
+                        {{license.expiryDate ?
+
+                        (license.expiryDate|date:'dd MMM yyyy')
+
+                        :
+
+                        'Not Issued Yet'}}
+
+                    </strong>
+
                 </div>
 
             </div>
 
+            <!-- ACTIONS -->
+
             <div class="actions">
 
-                <button class="view-btn"
-                        (click)="openView(license)">
+                <button
+
+                    class="view-btn"
+
+                    (click)="openView(license)">
 
                     <i class="fas fa-eye"></i>
+
                     View
 
                 </button>
 
-                <button class="download-btn">
+                <button
+
+                    *ngIf="license.status==='APPROVED'"
+
+                    class="download-btn"
+
+                    (click)="downloadLicense(license)">
 
                     <i class="fas fa-download"></i>
+
                     Download
 
                 </button>
 
-                <button class="renew-btn">
+                <button
+
+                    *ngIf="canRenew(license)"
+
+                    class="renew-btn"
+
+                    (click)="renewLicense(license)">
 
                     <i class="fas fa-sync"></i>
+
                     Renew
+
+                </button>
+
+                <button
+
+                    *ngIf="license.renewal && license.status==='PENDING'"
+
+                    class="renew-btn pending"
+
+                    disabled>
+
+                    <i class="fas fa-clock"></i>
+
+                    Renewal Pending
 
                 </button>
 
@@ -160,48 +304,242 @@
 
 </div>
 
-
 <!-- VIEW MODAL -->
 
-<div class="modal-overlay"
-     *ngIf="showViewModal">
+<div
 
-    <div class="modal">
+    class="modal-overlay"
+
+    *ngIf="showViewModal">
+
+    <div class="modal large-modal">
 
         <div class="modal-header">
 
-            <h3>License Details</h3>
+            <h3>
 
-            <button (click)="closeModal()">
+                License Details
+
+            </h3>
+
+            <button
+
+                (click)="closeModal()">
+
                 <i class="fas fa-times"></i>
+
             </button>
 
         </div>
 
         <div class="details">
 
-            <p><strong>License ID:</strong>
+            <p>
+
+                <strong>
+
+                    License Number
+
+                </strong>
+
                 {{selectedLicense?.licenseNumber}}
+
             </p>
 
-            <p><strong>License Type:</strong>
-                {{selectedLicense?.licenseType}}
-            </p>
+            <p>
 
-            <p><strong>Business:</strong>
+                <strong>
+
+                    Business Name
+
+                </strong>
+
                 {{selectedLicense?.businessName}}
+
             </p>
 
-            <p><strong>Issued Date:</strong>
-                {{selectedLicense?.issueDate | date:'dd MMM yyyy'}}
+            <p>
+
+                <strong>
+
+                    Owner
+
+                </strong>
+
+                {{selectedLicense?.ownerName}}
+
             </p>
 
-            <p><strong>Expiry Date:</strong>
-                {{selectedLicense?.expiryDate | date:'dd MMM yyyy'}}
+            <p>
+
+                <strong>
+
+                    Email
+
+                </strong>
+
+                {{selectedLicense?.ownerEmail}}
+
             </p>
 
-            <p><strong>Status:</strong>
-                {{selectedLicense?.status}}
+            <p>
+
+                <strong>
+
+                    Phone
+
+                </strong>
+
+                {{selectedLicense?.phoneNumber}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    License Type
+
+                </strong>
+
+                {{selectedLicense?.licenseType?.replace('_',' ')}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    District
+
+                </strong>
+
+                {{selectedLicense?.district}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Location
+
+                </strong>
+
+                {{selectedLicense?.location}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Duration
+
+                </strong>
+
+                {{selectedLicense?.durationMonths}}
+
+                Months
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    License Fee
+
+                </strong>
+
+                TZS
+
+                {{selectedLicense?.licenseFee|number}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Issued Date
+
+                </strong>
+
+                {{selectedLicense?.issueDate ?
+
+                (selectedLicense?.issueDate|date:'dd MMM yyyy')
+
+                :
+
+                'Not Issued Yet'}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Expiry Date
+
+                </strong>
+
+                {{selectedLicense?.expiryDate ?
+
+                (selectedLicense?.expiryDate|date:'dd MMM yyyy')
+
+                :
+
+                'Not Issued Yet'}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Status
+
+                </strong>
+
+                {{formatStatus(selectedLicense?.status)}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Renewal Count
+
+                </strong>
+
+                {{selectedLicense?.renewalCount}}
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Renewal Requested
+
+                </strong>
+
+                {{selectedLicense?.renewal ? 'Yes' : 'No'}}
+
+            </p>
+
+            <p *ngIf="selectedLicense?.remarks">
+
+                <strong>
+
+                    Remarks
+
+                </strong>
+
+                {{selectedLicense?.remarks}}
+
             </p>
 
         </div>

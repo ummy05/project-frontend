@@ -56,14 +56,17 @@ export class AuthService {
   // REGISTER
   // ==========================
 
-  register(data: RegisterRequest){
+register(data: RegisterRequest) {
 
-    return this.http.post(
-      `${this.api}/register`,
-      data
-    );
+  return this.http.post(
+    `${this.api}/register`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
 
-  }
+}
 
   // ==========================
   // PROFILE
@@ -101,46 +104,58 @@ export class AuthService {
   }
 
   // ==========================
-  // FORGOT PASSWORD
-  // ==========================
+// FORGOT PASSWORD
+// ==========================
 
-  forgotPassword(
-      data: ForgotPasswordRequest){
+forgotPassword(
+  data: ForgotPasswordRequest
+): Observable<string> {
 
-    return this.http.post(
-      `${this.api}/forgot-password`,
-      data
-    );
+  return this.http.post(
+    `${this.api}/forgot-password`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
 
-  }
+}
 
-  // ==========================
-  // VERIFY OTP
-  // ==========================
+ // ==========================
+// VERIFY OTP
+// ==========================
 
-  verifyOtp(
-      data: VerifyOtpRequest){
+verifyOtp(
+  data: VerifyOtpRequest
+): Observable<string> {
 
-    return this.http.post(
-      `${this.api}/verify-otp`,
-      data
-    );
+  return this.http.post(
+    `${this.api}/verify-otp`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
 
-  }
+}
 
-  // ==========================
-  // RESET PASSWORD
-  // ==========================
+ // ==========================
+// RESET PASSWORD
+// ==========================
 
-  resetPassword(
-      data: ResetPasswordRequest){
+resetPassword(
+  data: ResetPasswordRequest
+): Observable<string> {
 
-    return this.http.post(
-      `${this.api}/reset-password`,
-      data
-    );
+  return this.http.post(
+    `${this.api}/reset-password`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
 
-  }
+}
 
   // ==========================
   // TOKEN

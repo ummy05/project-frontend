@@ -142,7 +142,7 @@ class="edit-btn"
 
 <button
 class="delete-btn"
-(click)="reject(license.id)"
+(click)="openReject(license.id)"
 *ngIf="license.status=='PENDING'">
 
 <i class="fas fa-times"></i>
@@ -318,5 +318,83 @@ class="delete-btn"
         </button>
 
     </div>
+
+</div>
+
+<!-- REJECT MODAL -->
+
+<div
+class="modal-overlay"
+*ngIf="showRejectModal">
+
+<div class="modal reject-modal">
+
+<div class="modal-header">
+
+<h3>
+
+<i class="fas fa-ban"></i>
+
+Reject License
+
+</h3>
+
+<button
+(click)="cancelReject()">
+
+<i class="fas fa-times"></i>
+
+</button>
+
+</div>
+
+<div class="reject-body">
+
+<p>
+
+Please provide a reason for rejecting this license
+application.
+
+</p>
+
+<textarea
+
+rows="6"
+
+placeholder="Enter rejection reason..."
+
+[(ngModel)]="rejectReason">
+
+</textarea>
+
+</div>
+
+<div class="reject-footer">
+
+<button
+
+class="cancel-btn"
+
+(click)="cancelReject()">
+
+Cancel
+
+</button>
+
+<button
+
+class="reject-btn"
+
+(click)="confirmReject()">
+
+<i class="fas fa-ban"></i>
+
+Reject License
+
+</button>
+
+</div>
+
+</div>
 
 </div>
