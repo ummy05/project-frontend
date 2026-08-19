@@ -18,86 +18,219 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class Register {
-  acceptedTerms=false;
 
   private authService = inject(AuthService);
 
   private router = inject(Router);
 
-  showPassword=false;
+
+  // ==============================
+  // STATE
+  // ==============================
+
+  selectedType: 'TOURIST' | 'BUSINESS_OWNER' | '' = '';
+
+  acceptedTerms = false;
+
+  showPassword = false;
+
+  loading = false;
 
   success = '';
 
-  loading=false;
+  error = '';
 
-  error='';
 
-  registerData={
+  // ==============================
+  // TOURIST DATA
+  // ==============================
 
-    fullName:'',
+  touristData = {
 
-    email:'',
+    fullName: '',
 
-    phoneNumber:'',
+    email: '',
 
-    password:'',
+    phoneNumber: '',
 
-    age: 0,
+    age: null as number | null,
 
-    gender:'',
+    gender: '',
 
-    address:'',
+    nationality: '',
 
-    role:''
+    address: '',
+
+    password: ''
 
   };
 
-  togglePassword(){
 
-    this.showPassword=!this.showPassword;
+  // ==============================
+  // BUSINESS DATA
+  // ==============================
+
+  businessData = {
+
+    fullName: '',
+
+    email: '',
+
+    phoneNumber: '',
+
+    businessName: '',
+
+    businessType: '',
+
+    businessAddress: '',
+
+    businessRegistrationNumber: '',
+
+    password: ''
+
+  };
+
+
+  // ==============================
+  // SELECT REGISTRATION TYPE
+  // ==============================
+
+  selectType(
+    type: 'TOURIST' | 'BUSINESS_OWNER'
+  ) {
+
+    this.selectedType = type;
+
+    this.error = '';
+
+    this.success = '';
+
+    this.acceptedTerms = false;
 
   }
 
+
+  // ==============================
+  // PASSWORD
+  // ==============================
+
+  togglePassword() {
+
+    this.showPassword = !this.showPassword;
+
+  }
+
+
+  // ==============================
+  // REGISTER
+  // ==============================
+
   register() {
 
-  if (this.loading) return;
+    if (this.loading) return;
 
-  this.loading = true;
-  this.error = '';
-  this.success = '';
 
-  this.authService.register(this.registerData).subscribe({
+    this.error = '';
 
-    next: (response: any) => {
+    this.success = '';
 
-  this.loading = false;
 
-  this.success =
-      typeof response === 'string'
-      ? response
-      : 'Registration completed successfully.';
-
-  setTimeout(() => {
-
-      this.router.navigateByUrl('/login');
-
-  },1500);
-
-},
-
-    error: (err) => {
-
-      this.loading = false;
+    if (!this.selectedType) {
 
       this.error =
+        'Please select a registration type.';
 
-        typeof err.error === 'string'
-          ? err.error
-          : err.error?.message || 'Registration failed.';
+      return;
+    }
+
+
+    if (!this.acceptedTerms) {
+
+      this.error =
+        'Please accept the Terms and Conditions.';
+
+      return;
+    }
+
+
+    this.loading = true;
+
+
+    let data: any;
+
+
+    // ==============================
+    // TOURIST
+    // ==============================
+
+    if (this.selectedType === 'TOURIST') {
+
+      data = {
+
+        ...this.touristData,
+
+        role: 'TOURIST'
+
+      };
 
     }
 
-  });
 
-}
+    // ==============================
+    // BUSINESS OWNER
+    // ==============================
+
+    else {
+
+      data = {
+
+        ...this.businessData,
+
+        role: 'BUSINESS_OWNER'
+
+      };
+
+    }
+
+
+    this.authService.register(data).subscribe({
+
+      next: (response: any) => {
+
+        this.loading = false;
+
+        this.success =
+          typeof response === 'string'
+            ? response
+            : 'Registration completed successfully.';
+
+
+        setTimeout(() => {
+
+          this.router.navigateByUrl('/login');
+
+        }, 1500);
+
+      },
+
+
+      error: (err) => {
+
+        this.loading = false;
+
+        this.error =
+
+          typeof err.error === 'string'
+
+            ? err.error
+
+            : err.error?.message ||
+              'Registration failed.';
+
+      }
+
+    });
+
+  }
+
 }

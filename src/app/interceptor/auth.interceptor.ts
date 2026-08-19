@@ -17,7 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     req.url.includes('/api/auth/reset-password');
 
 
-  // ==========================================
+  // =A=========================================
   // ATTACH TOKEN ONLY TO PROTECTED REQUESTS
   // ==========================================
 
