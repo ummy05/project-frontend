@@ -28,16 +28,25 @@ export interface RegisterRequest {
 
   password: string;
 
-  age: number | null;
+  age: number;
 
   gender: string;
 
   address: string;
 
+  nationality: string;
+
   role: string;
 
-}
 
+  // BUSINESS
+
+  businessName?: string;
+
+  businessType?: string;
+
+  businessAddress?: string;
+}
 export interface ForgotPasswordRequest {
 
   email: string;

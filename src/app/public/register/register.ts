@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -16,13 +17,10 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-
 export class Register {
 
   private authService = inject(AuthService);
-
   private router = inject(Router);
-
 
   // ==============================
   // STATE
@@ -35,10 +33,6 @@ export class Register {
   showPassword = false;
 
   loading = false;
-
-  success = '';
-
-  error = '';
 
 
   // ==============================
@@ -78,13 +72,19 @@ export class Register {
 
     phoneNumber: '',
 
+    age: null as number | null,
+
+    gender: '',
+
+    nationality: '',
+
+    address: '',
+
     businessName: '',
 
     businessType: '',
 
     businessAddress: '',
-
-    businessRegistrationNumber: '',
 
     password: ''
 
@@ -92,7 +92,7 @@ export class Register {
 
 
   // ==============================
-  // SELECT REGISTRATION TYPE
+  // SELECT TYPE
   // ==============================
 
   selectType(
@@ -101,11 +101,9 @@ export class Register {
 
     this.selectedType = type;
 
-    this.error = '';
-
-    this.success = '';
-
     this.acceptedTerms = false;
+
+    this.showPassword = false;
 
   }
 
@@ -127,33 +125,43 @@ export class Register {
 
   register() {
 
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
 
 
-    this.error = '';
-
-    this.success = '';
-
+    // ==============================
+    // TYPE CHECK
+    // ==============================
 
     if (!this.selectedType) {
 
-      this.error =
-        'Please select a registration type.';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Registration Type Required',
+        text: 'Please select whether you want to register as a Tourist or Business Owner.',
+        confirmButtonColor: '#F28B65'
+      });
 
       return;
     }
 
+
+    // ==============================
+    // TERMS CHECK
+    // ==============================
 
     if (!this.acceptedTerms) {
 
-      this.error =
-        'Please accept the Terms and Conditions.';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Terms & Conditions',
+        text: 'Please accept the Terms and Conditions before creating your account.',
+        confirmButtonColor: '#F28B65'
+      });
 
       return;
     }
-
-
-    this.loading = true;
 
 
     let data: any;
@@ -167,7 +175,21 @@ export class Register {
 
       data = {
 
-        ...this.touristData,
+        fullName: this.touristData.fullName.trim(),
+
+        email: this.touristData.email.trim(),
+
+        phoneNumber: this.touristData.phoneNumber.trim(),
+
+        age: this.touristData.age,
+
+        gender: this.touristData.gender,
+
+        nationality: this.touristData.nationality.trim(),
+
+        address: this.touristData.address.trim(),
+
+        password: this.touristData.password,
 
         role: 'TOURIST'
 
@@ -184,7 +206,27 @@ export class Register {
 
       data = {
 
-        ...this.businessData,
+        fullName: this.businessData.fullName.trim(),
+
+        email: this.businessData.email.trim(),
+
+        phoneNumber: this.businessData.phoneNumber.trim(),
+
+        age: this.businessData.age,
+
+        gender: this.businessData.gender,
+
+        nationality: this.businessData.nationality.trim(),
+
+        address: this.businessData.address.trim(),
+
+        businessName: this.businessData.businessName.trim(),
+
+        businessType: this.businessData.businessType,
+
+        businessAddress: this.businessData.businessAddress.trim(),
+
+        password: this.businessData.password,
 
         role: 'BUSINESS_OWNER'
 
@@ -193,23 +235,66 @@ export class Register {
     }
 
 
+    // ==============================
+    // LOADING
+    // ==============================
+
+    this.loading = true;
+
+    Swal.fire({
+
+      title: 'Creating Account',
+
+      text: 'Please wait while we create your account...',
+
+      allowOutsideClick: false,
+
+      allowEscapeKey: false,
+
+      showConfirmButton: false,
+
+      didOpen: () => {
+
+        Swal.showLoading();
+
+      }
+
+    });
+
+
+    // ==============================
+    // API
+    // ==============================
+
     this.authService.register(data).subscribe({
 
       next: (response: any) => {
 
         this.loading = false;
 
-        this.success =
-          typeof response === 'string'
-            ? response
-            : 'Registration completed successfully.';
 
+        Swal.fire({
 
-        setTimeout(() => {
+          icon: 'success',
+
+          title: 'Registration Successful',
+
+          text:
+            typeof response === 'string'
+              ? response
+              : 'Your account has been created successfully.',
+
+          confirmButtonText: 'Continue to Login',
+
+          confirmButtonColor: '#F28B65',
+
+          allowOutsideClick: false
+
+        }).then(() => {
 
           this.router.navigateByUrl('/login');
 
-        }, 1500);
+        });
 
       },
 
@@ -218,14 +303,87 @@ export class Register {
 
         this.loading = false;
 
-        this.error =
 
-          typeof err.error === 'string'
+        let message = 'Registration failed. Please try again.';
 
-            ? err.error
 
-            : err.error?.message ||
-              'Registration failed.';
+        if (typeof err.error === 'string') {
+
+          message = err.error;
+
+        }
+        else if (err.error?.message) {
+
+          message = err.error.message;
+
+        }
+
+
+        // ==============================
+        // EMAIL EXISTS
+        // ==============================
+
+        if (
+          message.toLowerCase().includes('email already exists') ||
+          message.toLowerCase().includes('email already registered')
+        ) {
+
+          Swal.fire({
+
+            icon: 'error',
+
+            title: 'Email Already Registered',
+
+            text: 'An account with this email address already exists. Please use another email or sign in.',
+
+            confirmButtonColor: '#F28B65'
+
+          });
+
+          return;
+        }
+
+
+        // ==============================
+        // PHONE EXISTS
+        // ==============================
+
+        if (
+          message.toLowerCase().includes('phone number already exists') ||
+          message.toLowerCase().includes('phone already exists')
+        ) {
+
+          Swal.fire({
+
+            icon: 'error',
+
+            title: 'Phone Number Already Registered',
+
+            text: 'This phone number is already associated with another account.',
+
+            confirmButtonColor: '#F28B65'
+
+          });
+
+          return;
+        }
+
+
+        // ==============================
+        // GENERAL ERROR
+        // ==============================
+
+        Swal.fire({
+
+          icon: 'error',
+
+          title: 'Registration Failed',
+
+          text: message,
+
+          confirmButtonColor: '#F28B65'
+
+        });
 
       }
 
