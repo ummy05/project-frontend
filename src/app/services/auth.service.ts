@@ -17,6 +17,7 @@ import {
   VerifyOtpRequest
 } from '../models/auth.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,22 +43,28 @@ export class AuthService {
 
         tap(response => {
 
-          localStorage.setItem(
+          // =================================================
+          // SESSION STORAGE
+          // Each browser tab gets its own authentication
+          // session.
+          // =================================================
+
+          sessionStorage.setItem(
             'token',
             response.token
           );
 
-          localStorage.setItem(
+          sessionStorage.setItem(
             'role',
             response.role
           );
 
-          localStorage.setItem(
+          sessionStorage.setItem(
             'fullName',
             response.fullName
           );
 
-          localStorage.setItem(
+          sessionStorage.setItem(
             'email',
             response.email
           );
@@ -191,7 +198,8 @@ export class AuthService {
 
   getToken(): string | null {
 
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
+
   }
 
 
@@ -201,7 +209,8 @@ export class AuthService {
 
   getRole(): string | null {
 
-    return localStorage.getItem('role');
+    return sessionStorage.getItem('role');
+
   }
 
 
@@ -211,7 +220,8 @@ export class AuthService {
 
   getFullName(): string | null {
 
-    return localStorage.getItem('fullName');
+    return sessionStorage.getItem('fullName');
+
   }
 
 
@@ -221,7 +231,8 @@ export class AuthService {
 
   getEmail(): string | null {
 
-    return localStorage.getItem('email');
+    return sessionStorage.getItem('email');
+
   }
 
 
@@ -232,6 +243,7 @@ export class AuthService {
   isLoggedIn(): boolean {
 
     return !!this.getToken();
+
   }
 
 
@@ -242,6 +254,7 @@ export class AuthService {
   hasRole(role: string): boolean {
 
     return this.getRole() === role;
+
   }
 
 
@@ -251,10 +264,14 @@ export class AuthService {
 
   logout(): void {
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('fullName');
-    localStorage.removeItem('email');
+    sessionStorage.removeItem('token');
+
+    sessionStorage.removeItem('role');
+
+    sessionStorage.removeItem('fullName');
+
+    sessionStorage.removeItem('email');
+
   }
 
 }

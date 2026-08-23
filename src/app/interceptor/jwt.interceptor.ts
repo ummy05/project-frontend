@@ -41,7 +41,7 @@ export const jwtInterceptor: HttpInterceptorFn = (
   // =====================================================
 
   const token =
-    localStorage.getItem('token');
+    sessionStorage.getItem('token');
 
 
   // =====================================================
@@ -69,7 +69,8 @@ export const jwtInterceptor: HttpInterceptorFn = (
   // REQUEST
   // =====================================================
 
-  let request = req;
+  let request =
+    req;
 
 
   // =====================================================
@@ -116,20 +117,47 @@ export const jwtInterceptor: HttpInterceptorFn = (
           !!token
         ) {
 
-          localStorage.removeItem('token');
+          // -----------------------------------------------
+          // CLEAR ONLY CURRENT TAB SESSION
+          // -----------------------------------------------
 
-          localStorage.removeItem('user');
+          sessionStorage.removeItem(
+            'token'
+          );
 
-          localStorage.removeItem('role');
+          sessionStorage.removeItem(
+            'role'
+          );
+
+          sessionStorage.removeItem(
+            'fullName'
+          );
+
+          sessionStorage.removeItem(
+            'email'
+          );
+
+
+          // -----------------------------------------------
+          // SHOW SESSION EXPIRED
+          // -----------------------------------------------
 
           alertService.error(
             'Session Expired',
             'Your session has expired. Please login again.'
           );
 
-          router.navigate(['/login']);
+
+          // -----------------------------------------------
+          // REDIRECT TO LOGIN
+          // -----------------------------------------------
+
+          router.navigate([
+            '/login'
+          ]);
 
         }
+
 
         return throwError(
           () => error
