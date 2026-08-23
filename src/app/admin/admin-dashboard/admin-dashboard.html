@@ -1,12 +1,17 @@
 <div class="dashboard-page">
 
+
+  <!-- ================================================= -->
   <!-- HEADER -->
+  <!-- ================================================= -->
 
   <div class="dashboard-header">
 
     <div>
 
-      <h2>Welcome back, Admin</h2>
+      <h2>
+        Welcome back, Admin
+      </h2>
 
       <p>
         Monitor coastal conservation activities,
@@ -15,20 +20,27 @@
 
     </div>
 
+
     <button class="date-btn">
 
       <i class="fas fa-calendar"></i>
 
-      {{today | date:'dd MMMM yyyy'}}
+      {{ today | date:'dd MMMM yyyy' }}
 
     </button>
 
   </div>
 
 
-  <!-- ================= STATS ================= -->
+
+  <!-- ================================================= -->
+  <!-- STATS -->
+  <!-- ================================================= -->
 
   <div class="stats-grid">
+
+
+    <!-- USERS -->
 
     <div class="stat-card active-card">
 
@@ -40,16 +52,29 @@
 
       <div>
 
-        <h4>Total Users</h4>
+        <h4>
+          Total Users
+        </h4>
 
-        <h2>{{dashboard.totalUsers}}</h2>
+        <h2>
+          {{ dashboard.totalUsers }}
+        </h2>
 
-        <span>{{dashboard.totalBusinessOwners}} Business Owners • {{dashboard.totalTourists}} Tourists</span>
+        <span>
+          {{ dashboard.totalBusinessOwners }}
+          Business Owners •
+
+          {{ dashboard.totalTourists }}
+          Tourists
+        </span>
 
       </div>
 
     </div>
 
+
+
+    <!-- REVENUE -->
 
     <div class="stat-card">
 
@@ -61,16 +86,26 @@
 
       <div>
 
-        <h4>Total Revenue</h4>
+        <h4>
+          Total Revenue
+        </h4>
 
-        <h2>{{dashboard.totalRevenue | number}}</h2>
+        <h2>
+          {{ dashboard.totalRevenue | number }}
+        </h2>
 
-        <span>{{dashboard.approvedPayments}} Verified Payments</span>
+        <span>
+          {{ dashboard.approvedPayments }}
+          Verified Payments
+        </span>
 
       </div>
 
     </div>
 
+
+
+    <!-- LICENSES -->
 
     <div class="stat-card">
 
@@ -82,15 +117,21 @@
 
       <div>
 
-        <h4>Licenses</h4>
+        <h4>
+          Licenses
+        </h4>
 
-        <h2>{{dashboard.totalLicenses}}</h2>
+        <h2>
+          {{ dashboard.totalLicenses }}
+        </h2>
 
         <span>
 
-          {{dashboard.approvedLicenses}} Approved •
+          {{ dashboard.approvedLicenses }}
+          Approved •
 
-          {{dashboard.pendingLicenses}} Pending
+          {{ dashboard.pendingLicenses }}
+          Pending
 
         </span>
 
@@ -98,26 +139,37 @@
 
     </div>
 
+
+
+    <!-- ================================================= -->
+    <!-- PERMITS — REPLACED INSPECTIONS -->
+    <!-- ================================================= -->
 
     <div class="stat-card">
 
       <div class="icon-box">
 
-        <i class="fas fa-clipboard-check"></i>
+        <i class="fas fa-file-contract"></i>
 
       </div>
 
       <div>
 
-        <h4>Inspections</h4>
+        <h4>
+          Permits
+        </h4>
 
-        <h2>{{dashboard.totalInspections}}</h2>
+        <h2>
+          {{ dashboard.totalPermits }}
+        </h2>
 
         <span>
 
-          {{dashboard.passedInspections}} Passed •
+          {{ dashboard.approvedPermits }}
+          Approved •
 
-          {{dashboard.pendingInspections}} Pending
+          {{ dashboard.pendingPermits }}
+          Pending
 
         </span>
 
@@ -125,90 +177,132 @@
 
     </div>
 
+
   </div>
 
 
-  <!-- ================= CHARTS ================= -->
+
+  <!-- ================================================= -->
+  <!-- CHART ROW -->
+  <!-- ================================================= -->
 
   <div class="chart-grid">
 
-    <!-- Revenue -->
+
+    <!-- REVENUE -->
 
     <div class="chart-card">
 
       <div class="card-header">
 
-        <h3>Monthly Revenue</h3>
+        <h3>
+          Monthly Revenue
+        </h3>
 
       </div>
 
-      <canvas id="revenueChart"></canvas>
+      <canvas
+        id="revenueChart">
+      </canvas>
 
     </div>
 
 
-    <!-- Complaints -->
+
+    <!-- COMPLAINTS -->
 
     <div class="chart-card">
 
       <div class="card-header">
 
-        <h3>Complaint Status</h3>
+        <h3>
+          Complaint Status
+        </h3>
 
       </div>
 
-      <canvas id="complaintChart"></canvas>
+      <canvas
+        id="complaintChart">
+      </canvas>
 
     </div>
+
 
   </div>
 
 
+
+  <!-- ================================================= -->
   <!-- SECOND CHART ROW -->
+  <!-- ================================================= -->
 
   <div class="chart-grid">
 
-    <div class="chart-card">
 
-      <div class="card-header">
-
-        <h3>Monthly Licenses</h3>
-
-      </div>
-
-      <canvas id="licenseChart"></canvas>
-
-    </div>
-
+    <!-- LICENSES -->
 
     <div class="chart-card">
 
       <div class="card-header">
 
-        <h3>System Overview</h3>
+        <h3>
+          Monthly Licenses
+        </h3>
 
       </div>
 
-      <canvas id="overviewChart"></canvas>
+      <canvas
+        id="licenseChart">
+      </canvas>
 
     </div>
+
+
+
+    <!-- SYSTEM OVERVIEW -->
+
+    <div class="chart-card">
+
+      <div class="card-header">
+
+        <h3>
+          System Overview
+        </h3>
+
+      </div>
+
+      <canvas
+        id="overviewChart">
+      </canvas>
+
+    </div>
+
 
   </div>
 
 
-  <!-- ================= SUMMARY ================= -->
+
+  <!-- ================================================= -->
+  <!-- SUMMARY -->
+  <!-- ================================================= -->
 
   <div class="bottom-grid">
 
-    <!-- Payments -->
+
+    <!-- ================================================= -->
+    <!-- PAYMENT SUMMARY -->
+    <!-- ================================================= -->
 
     <div class="activity-card">
 
       <div class="card-header">
 
-        <h3>Payment Summary</h3>
+        <h3>
+          Payment Summary
+        </h3>
 
       </div>
+
 
       <div class="activity">
 
@@ -216,13 +310,18 @@
 
         <div>
 
-          <h4>Approved</h4>
+          <h4>
+            Approved
+          </h4>
 
-          <p>{{dashboard.approvedPayments}}</p>
+          <p>
+            {{ dashboard.approvedPayments }}
+          </p>
 
         </div>
 
       </div>
+
 
       <div class="activity">
 
@@ -230,13 +329,18 @@
 
         <div>
 
-          <h4>Pending</h4>
+          <h4>
+            Pending
+          </h4>
 
-          <p>{{dashboard.pendingPayments}}</p>
+          <p>
+            {{ dashboard.pendingPayments }}
+          </p>
 
         </div>
 
       </div>
+
 
       <div class="activity">
 
@@ -244,9 +348,13 @@
 
         <div>
 
-          <h4>Rejected</h4>
+          <h4>
+            Rejected
+          </h4>
 
-          <p>{{dashboard.rejectedPayments}}</p>
+          <p>
+            {{ dashboard.rejectedPayments }}
+          </p>
 
         </div>
 
@@ -255,65 +363,80 @@
     </div>
 
 
-    <!-- Complaints -->
+
+    <!-- ================================================= -->
+    <!-- COMPLAINT SUMMARY -->
+    <!-- ================================================= -->
 
     <div class="activity-card">
 
       <div class="card-header">
 
-        <h3>Complaint Summary</h3>
+        <h3>
+          Complaint Summary
+        </h3>
 
       </div>
+
 
       <div class="alert-item">
 
         <div>
 
-          <h4>Resolved</h4>
+          <h4>
+            Resolved
+          </h4>
 
         </div>
 
         <span class="low">
 
-          {{dashboard.resolvedComplaints}}
+          {{ dashboard.resolvedComplaints }}
 
         </span>
 
       </div>
 
+
       <div class="alert-item">
 
         <div>
 
-          <h4>Pending</h4>
+          <h4>
+            Pending
+          </h4>
 
         </div>
 
         <span class="medium">
 
-          {{dashboard.pendingComplaints}}
+          {{ dashboard.pendingComplaints }}
 
         </span>
 
       </div>
 
+
       <div class="alert-item">
 
         <div>
 
-          <h4>Rejected</h4>
+          <h4>
+            Rejected
+          </h4>
 
         </div>
 
         <span class="high">
 
-          {{dashboard.rejectedComplaints}}
+          {{ dashboard.rejectedComplaints }}
 
         </span>
 
       </div>
 
     </div>
+
 
   </div>
 

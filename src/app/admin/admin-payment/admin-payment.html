@@ -1,76 +1,131 @@
 <div class="page-container">
 
-    <!-- HEADER -->
+    <!-- ===========================
+    HEADER
+    =========================== -->
 
     <div class="page-header">
 
         <div>
+
             <h2>Payments Management</h2>
-            <p>Manage and monitor all payment transactions.</p>
+
+            <p>
+                Manage and monitor all payment transactions.
+            </p>
+
         </div>
 
         <div class="header-actions">
 
             <button class="export-btn">
+
                 <i class="fas fa-download"></i>
+
                 Export
+
             </button>
 
         </div>
 
     </div>
 
-    <!-- SUMMARY -->
+
+    <!-- ===========================
+    SUMMARY
+    =========================== -->
 
     <div class="summary-grid">
+
+        <!-- REVENUE -->
 
         <div class="summary-card">
 
             <i class="fas fa-coins"></i>
 
             <div>
-                <h3>{{totalRevenue | number}}</h3>
-                <span>Total Revenue</span>
+
+                <h3>
+                    TZS {{totalRevenue | number}}
+                </h3>
+
+                <span>
+                    Total Revenue
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- APPROVED -->
 
         <div class="summary-card">
 
             <i class="fas fa-check-circle"></i>
 
             <div>
-                <h3>{{approvedCount}}</h3>
-                <span>Approved</span>
+
+                <h3>
+                    {{approvedCount}}
+                </h3>
+
+                <span>
+                    Approved
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- PENDING -->
 
         <div class="summary-card">
 
             <i class="fas fa-clock"></i>
 
             <div>
-                <h3>{{pendingCount}}</h3>
-                <span>Pending</span>
+
+                <h3>
+                    {{pendingCount}}
+                </h3>
+
+                <span>
+                    Pending
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- REJECTED -->
 
         <div class="summary-card">
 
             <i class="fas fa-times-circle"></i>
 
             <div>
-                <h3>{{rejectedCount}}</h3>
-                <span>Rejected</span>
+
+                <h3>
+                    {{rejectedCount}}
+                </h3>
+
+                <span>
+                    Rejected
+                </span>
+
             </div>
 
         </div>
 
     </div>
 
-    <!-- FILTER -->
+
+    <!-- ===========================
+    FILTER
+    =========================== -->
 
     <div class="filter-section">
 
@@ -79,27 +134,48 @@
             <i class="fas fa-search"></i>
 
             <input
+
                 type="text"
+
                 [(ngModel)]="search"
+
                 (input)="filterPayments()"
-                placeholder="Search Payment Number or License">
+
+                placeholder="Search Payment, License or Permit">
 
         </div>
 
+
         <select
+
             [(ngModel)]="status"
+
             (change)="filterPayments()">
 
-            <option value="ALL">All Status</option>
-            <option value="APPROVED">Approved</option>
-            <option value="PENDING">Pending</option>
-            <option value="REJECTED">Rejected</option>
+            <option value="ALL">
+                All Status
+            </option>
+
+            <option value="APPROVED">
+                Approved
+            </option>
+
+            <option value="PENDING">
+                Pending
+            </option>
+
+            <option value="REJECTED">
+                Rejected
+            </option>
 
         </select>
 
     </div>
 
-    <!-- TABLE -->
+
+    <!-- ===========================
+    TABLE
+    =========================== -->
 
     <div class="table-card">
 
@@ -109,49 +185,122 @@
 
             <tr>
 
-                <th>Payment No.</th>
+                <th>
+                    Payment No.
+                </th>
 
-                <th>License No.</th>
+                <th>
+                    License / Permit
+                </th>
 
-                <th>Amount</th>
+                <th>
+                    Amount
+                </th>
 
-                <th>Method</th>
+                <th>
+                    Method
+                </th>
 
-                <th>Date</th>
+                <th>
+                    Date
+                </th>
 
-                <th>Status</th>
+                <th>
+                    Status
+                </th>
 
-                <th>Actions</th>
+                <th>
+                    Actions
+                </th>
 
             </tr>
 
             </thead>
 
+
             <tbody>
 
-            <tr *ngFor="let payment of filteredPayments">
+            <tr
+                *ngFor="let payment of filteredPayments">
 
-                <td>{{payment.paymentNumber}}</td>
+                <!-- PAYMENT -->
 
-                <td>{{payment.licenseNumber}}</td>
+                <td>
 
-                <td>{{payment.amount | number}}</td>
+                    <strong>
+                        {{payment.paymentNumber}}
+                    </strong>
 
-                <td>{{payment.paymentMethod}}</td>
+                </td>
 
-                <td>{{payment.paymentDate | date:'dd MMM yyyy'}}</td>
+
+                <!-- LICENSE / PERMIT -->
+
+                <td>
+
+                    <span *ngIf="payment.licenseNumber">
+
+                        {{payment.licenseNumber}}
+
+                    </span>
+
+                    <span *ngIf="!payment.licenseNumber">
+
+                        {{payment.permitNumber || '-'}}
+
+                    </span>
+
+                </td>
+
+
+                <!-- AMOUNT -->
+
+                <td>
+
+                    <strong>
+                        TZS {{payment.amount | number}}
+                    </strong>
+
+                </td>
+
+
+                <!-- METHOD -->
+
+                <td>
+
+                    {{payment.paymentMethod}}
+
+                </td>
+
+
+                <!-- DATE -->
+
+                <td>
+
+                    {{payment.paymentDate
+                    | date:'dd MMM yyyy'}}
+
+                </td>
+
+
+                <!-- STATUS -->
 
                 <td>
 
                     <span
+
                         class="status"
+
                         [ngClass]="{
 
-                            'approved': payment.status=='APPROVED',
+                        'approved':
+                        payment.status === 'APPROVED',
 
-                            'pending': payment.status=='PENDING',
+                        'pending':
+                        payment.status === 'PENDING',
 
-                            'rejected': payment.status=='REJECTED'
+                        'rejected':
+                        payment.status === 'REJECTED'
 
                         }">
 
@@ -161,28 +310,54 @@
 
                 </td>
 
+
+                <!-- ACTIONS -->
+
                 <td>
 
                     <div class="actions">
 
+
+                        <!-- VIEW -->
+
                         <button
+
                             class="view-btn"
+
+                            title="View Payment"
+
                             (click)="openView(payment)">
 
                             <i class="fas fa-eye"></i>
 
                         </button>
 
+
+                        <!-- REVIEW -->
+
                         <button
+
+                            *ngIf="payment.status === 'PENDING'"
+
                             class="edit-btn"
+
+                            title="Review Payment"
+
                             (click)="openReview(payment)">
 
                             <i class="fas fa-check"></i>
 
                         </button>
 
+
+                        <!-- DELETE -->
+
                         <button
+
                             class="delete-btn"
+
+                            title="Delete Payment"
+
                             (click)="delete(payment)">
 
                             <i class="fas fa-trash"></i>
@@ -190,6 +365,31 @@
                         </button>
 
                     </div>
+
+                </td>
+
+            </tr>
+
+
+            <!-- EMPTY -->
+
+            <tr
+                *ngIf="filteredPayments.length === 0">
+
+                <td
+                    colspan="7"
+                    class="empty-state">
+
+                    <i class="fas fa-receipt"></i>
+
+                    <h3>
+                        No Payments Found
+                    </h3>
+
+                    <p>
+                        There are no payment records
+                        matching your search.
+                    </p>
 
                 </td>
 
@@ -203,21 +403,27 @@
 
 </div>
 
+
 <!-- ===========================
-VIEW PAYMENT
+VIEW PAYMENT MODAL
 =========================== -->
 
 <div
+
     class="modal-overlay"
+
     *ngIf="showViewModal">
 
     <div class="modal">
 
         <div class="modal-header">
 
-            <h3>Payment Details</h3>
+            <h3>
+                Payment Details
+            </h3>
 
-            <button (click)="closeModals()">
+            <button
+                (click)="closeModals()">
 
                 <i class="fas fa-times"></i>
 
@@ -225,69 +431,124 @@ VIEW PAYMENT
 
         </div>
 
+
         <div class="details">
 
             <p>
 
-                <strong>Payment Number:</strong>
+                <strong>
+                    Payment Number:
+                </strong>
 
                 {{selectedPayment?.paymentNumber}}
 
             </p>
 
+
             <p>
 
-                <strong>License Number:</strong>
+                <strong>
+                    License Number:
+                </strong>
 
-                {{selectedPayment?.licenseNumber}}
+                {{selectedPayment?.licenseNumber || '-'}}
 
             </p>
 
+
             <p>
 
-                <strong>Amount:</strong>
+                <strong>
+                    Permit Number:
+                </strong>
 
-                {{selectedPayment?.amount | number}}
+                {{selectedPayment?.permitNumber || '-'}}
 
             </p>
 
+
             <p>
 
-                <strong>Payment Method:</strong>
+                <strong>
+                    Amount:
+                </strong>
+
+                TZS {{selectedPayment?.amount | number}}
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Payment Method:
+                </strong>
 
                 {{selectedPayment?.paymentMethod}}
 
             </p>
 
+
             <p>
 
-                <strong>Transaction No:</strong>
+                <strong>
+                    Transaction No:
+                </strong>
 
                 {{selectedPayment?.transactionNumber}}
 
             </p>
 
+
             <p>
 
-                <strong>Status:</strong>
+                <strong>
+                    Status:
+                </strong>
 
-                {{selectedPayment?.status}}
+                <span
+
+                    class="status"
+
+                    [ngClass]="{
+
+                    'approved':
+                    selectedPayment?.status === 'APPROVED',
+
+                    'pending':
+                    selectedPayment?.status === 'PENDING',
+
+                    'rejected':
+                    selectedPayment?.status === 'REJECTED'
+
+                    }">
+
+                    {{selectedPayment?.status}}
+
+                </span>
 
             </p>
 
+
             <p>
 
-                <strong>Admin Remarks:</strong>
+                <strong>
+                    Admin Remarks:
+                </strong>
 
-                {{selectedPayment?.adminRemarks || '-' }}
+                {{selectedPayment?.adminRemarks || '-'}}
 
             </p>
 
+
             <p>
 
-                <strong>Payment Date:</strong>
+                <strong>
+                    Payment Date:
+                </strong>
 
-                {{selectedPayment?.paymentDate | date:'medium'}}
+                {{selectedPayment?.paymentDate
+                | date:'medium'}}
 
             </p>
 
@@ -297,21 +558,29 @@ VIEW PAYMENT
 
 </div>
 
+
 <!-- ===========================
-APPROVE / REJECT
+PAYMENT REVIEW MODAL
 =========================== -->
 
 <div
+
     class="modal-overlay"
+
     *ngIf="showEditModal">
 
-    <div class="modal">
+    <div class="modal review-modal">
 
         <div class="modal-header">
 
-            <h3>Payment Review</h3>
+            <h3>
+                <i class="fas fa-shield-check"></i>
 
-            <button (click)="closeModals()">
+                Payment Review
+            </h3>
+
+            <button
+                (click)="closeModals()">
 
                 <i class="fas fa-times"></i>
 
@@ -319,29 +588,71 @@ APPROVE / REJECT
 
         </div>
 
+
         <div class="details">
 
             <p>
 
-                <strong>Payment:</strong>
+                <strong>
+                    Payment:
+                </strong>
 
                 {{selectedPayment?.paymentNumber}}
 
             </p>
 
+
             <p>
 
-                <strong>License:</strong>
+                <strong>
+                    License:
+                </strong>
 
-                {{selectedPayment?.licenseNumber}}
+                {{selectedPayment?.licenseNumber || '-'}}
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Permit:
+                </strong>
+
+                {{selectedPayment?.permitNumber || '-'}}
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Amount:
+                </strong>
+
+                TZS {{selectedPayment?.amount | number}}
+
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Transaction:
+                </strong>
+
+                {{selectedPayment?.transactionNumber}}
 
             </p>
 
         </div>
 
+
         <div class="form-group">
 
-            <label>Administrator Remarks</label>
+            <label>
+                Administrator Remarks
+            </label>
 
             <textarea
 
@@ -349,32 +660,55 @@ APPROVE / REJECT
 
                 [(ngModel)]="remarks"
 
-                placeholder="Enter remarks">
+                placeholder="Enter remarks...">
 
             </textarea>
 
         </div>
 
-        <div
-            style="display:flex;gap:15px;margin-top:20px;">
+
+        <div class="review-actions">
+
+
+            <!-- APPROVE -->
 
             <button
+
                 class="approve-btn"
+
                 (click)="approve()">
 
                 <i class="fas fa-check"></i>
 
-                Approve
+                Approve Payment
 
             </button>
 
+
+            <!-- REJECT -->
+
             <button
+
                 class="reject-btn"
+
                 (click)="reject()">
 
                 <i class="fas fa-times"></i>
 
-                Reject
+                Reject Payment
+
+            </button>
+
+
+            <!-- CANCEL -->
+
+            <button
+
+                class="cancel-btn"
+
+                (click)="closeModals()">
+
+                Cancel
 
             </button>
 

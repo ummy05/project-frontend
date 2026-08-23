@@ -1,7 +1,25 @@
-import { CommonModule, DecimalPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { AnalyticsService } from '../../services/analytics.service';
+// src/app/admin/reports/reports.ts
+
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+
+import {
+  CommonModule,
+  DecimalPipe
+} from '@angular/common';
+
+import {
+  FormsModule
+} from '@angular/forms';
+
+import {
+  forkJoin
+} from 'rxjs';
 
 import {
   Chart,
@@ -20,143 +38,591 @@ import {
   Filler
 } from 'chart.js';
 
+import {
+  AnalyticsService,
+  AnalyticsResponse
+} from '../../services/analytics.service';
+
+import {
+  AlertService
+} from '../../services/alert.service';
+
+
+// =====================================================
+// CHART.JS REGISTRATION
+// =====================================================
+
 Chart.register(
+
   CategoryScale,
+
   LinearScale,
+
   PointElement,
+
   LineElement,
+
   ArcElement,
+
   BarElement,
+
   DoughnutController,
+
   PieController,
+
   BarController,
+
   LineController,
+
   Tooltip,
+
   Legend,
+
   Filler
+
 );
 
+
+// =====================================================
+// PERFORMANCE INTERFACE
+// =====================================================
+
+interface PerformanceItem {
+
+  month: string;
+
+  revenue: number | string;
+
+  licenses: number;
+
+  complaints: number;
+
+}
+
+
+// =====================================================
+// COMPONENT
+// =====================================================
+
 @Component({
+
   selector: 'app-reports',
+
   standalone: true,
+
   imports: [
+
     CommonModule,
+
     FormsModule,
+
     DecimalPipe
+
   ],
+
   templateUrl: './reports.html',
+
   styleUrl: './reports.css'
+
 })
-export class Reports implements OnInit {
+export class Reports
+  implements OnInit, AfterViewInit, OnDestroy {
+
+
+  // =====================================================
+  // CONSTRUCTOR
+  // =====================================================
 
   constructor(
-    private analytics: AnalyticsService,
-    private cdr:ChangeDetectorRef
+
+    private analytics:
+      AnalyticsService,
+
+    private alertService:
+      AlertService,
+
+    private cdr:
+      ChangeDetectorRef
+
   ) {}
 
-  report: any = {};
+
+  // =====================================================
+  // REPORT DATA
+  // =====================================================
+
+  report: AnalyticsResponse = {
+
+    // LICENSES
+
+    approvedLicenses: 0,
+
+    pendingLicenses: 0,
+
+    rejectedLicenses: 0,
+
+
+    // PERMITS
+
+    approvedPermits: 0,
+
+    pendingPermits: 0,
+
+    rejectedPermits: 0,
+
+
+    // PAYMENTS
+
+    approvedPayments: 0,
+
+    pendingPayments: 0,
+
+    rejectedPayments: 0,
+
+
+    // COMPLAINTS
+
+    resolvedComplaints: 0,
+
+    pendingComplaints: 0,
+
+    rejectedComplaints: 0,
+
+
+    // REVENUE
+
+    totalRevenue: 0
+
+  };
+
+
+  // =====================================================
+  // FILTER DATES
+  // =====================================================
 
   fromDate = '';
 
   toDate = '';
 
-  performance: any[] = [];
 
-  revenueChart: any;
+  // =====================================================
+  // LOADING
+  // =====================================================
 
-  licenseChart: any;
+  loading = false;
 
-  complaintChart: any;
+
+  // =====================================================
+  // PERFORMANCE
+  // =====================================================
+
+  performance:
+    PerformanceItem[] = [];
+
+
+  // =====================================================
+  // CHARTS
+  // =====================================================
+
+  revenueChart:
+    Chart | null = null;
+
+  licenseChart:
+    Chart | null = null;
+
+  complaintChart:
+    Chart | null = null;
+
+
+  // =====================================================
+  // INIT
+  // =====================================================
 
   ngOnInit(): void {
 
-    this.loadReport();
-
-    this.loadRevenueChart();
-
-    this.loadLicenseChart();
-
-    this.loadComplaintChart();
+    this.setDefaultDates();
 
   }
 
-  //================================================
 
-  loadReport() {
+  // =====================================================
+  // AFTER VIEW INIT
+  // =====================================================
 
-    this.analytics.reports().subscribe({
+  ngAfterViewInit(): void {
 
-      next: (res) => {
+    this.loadReports();
 
-        this.report = res;
+  }
 
-        this.performance = [
 
-          {
+  // =====================================================
+  // DEFAULT DATES
+  // =====================================================
 
-            month: 'Approved',
+  private setDefaultDates(): void {
 
-            revenue: res.totalRevenue,
+    const now =
+      new Date();
 
-            licenses: res.approvedLicenses,
 
-            complaints: res.resolvedComplaints
+    const year =
+      now.getFullYear();
 
-          },
 
-          {
+    this.fromDate =
+      `${year}-01-01`;
 
-            month: 'Pending',
 
-            revenue: '-',
+    this.toDate =
+      now.toISOString()
+        .split('T')[0];
 
-            licenses: res.pendingLicenses,
+  }
 
-            complaints: res.pendingComplaints
 
-          },
+  // =====================================================
+  // LOAD REPORTS
+  // =====================================================
 
-          {
+  loadReports(
+    showLoading = true
+  ): void {
 
-            month: 'Rejected',
+    // ---------------------------------------------------
+    // DATE VALIDATION
+    // ---------------------------------------------------
 
-            revenue: '-',
+    if (
 
-            licenses: res.rejectedLicenses,
+      this.fromDate &&
 
-            complaints: res.rejectedComplaints
+      this.toDate &&
 
-          }
+      this.fromDate > this.toDate
 
-        ];
+    ) {
+
+      this.alertService.warning(
+
+        'Invalid Date Range',
+
+        'From Date cannot be later than To Date.'
+
+      );
+
+      return;
+
+    }
+
+
+    // ---------------------------------------------------
+    // LOADING
+    // ---------------------------------------------------
+
+    if (showLoading) {
+
+      this.alertService.loading(
+        'Generating report...'
+      );
+
+    }
+
+
+    this.loading = true;
+
+
+    // ---------------------------------------------------
+    // BACKEND REQUESTS
+    // ---------------------------------------------------
+
+    forkJoin({
+
+      report:
+        this.analytics.reports(),
+
+      revenue:
+        this.analytics.monthlyRevenue(),
+
+      licenses:
+        this.analytics.monthlyLicenses(),
+
+      complaints:
+        this.analytics.monthlyComplaints()
+
+    })
+
+    .subscribe({
+
+      // =================================================
+      // SUCCESS
+      // =================================================
+
+      next: (data) => {
+
+        console.log(
+          'REPORT DATA:',
+          data
+        );
+
+
+        // -----------------------------------------------
+        // MAIN REPORT
+        // -----------------------------------------------
+
+        this.report =
+          data.report;
+
+
+        // -----------------------------------------------
+        // PERFORMANCE
+        // -----------------------------------------------
+
+        this.buildPerformanceTable(
+
+          data.revenue,
+
+          data.licenses,
+
+          data.complaints
+
+        );
+
+
+        // -----------------------------------------------
+        // LOADING
+        // -----------------------------------------------
+
+        this.loading = false;
+
+
+        if (showLoading) {
+
+          this.alertService.close();
+
+        }
+
+
         this.cdr.detectChanges();
 
+
+        // -----------------------------------------------
+        // CHARTS
+        // -----------------------------------------------
+
+        setTimeout(() => {
+
+          this.buildRevenueChart(
+            data.revenue
+          );
+
+
+          this.buildLicenseChart(
+            data.licenses
+          );
+
+
+          this.buildComplaintChart(
+            data.complaints
+          );
+
+        }, 100);
+
+      },
+
+
+      // =================================================
+      // ERROR
+      // =================================================
+
+      error: (error) => {
+
+        console.error(
+          'REPORT ERROR:',
+          error
+        );
+
+
+        this.loading = false;
+
+
+        this.alertService.close();
+
+
+        let message =
+          'Unable to retrieve analytics from the server.';
+
+
+        if (
+          error?.status === 401
+        ) {
+
+          message =
+            'Authentication required. Please login again.';
+
+        }
+
+        else if (
+          error?.status === 403
+        ) {
+
+          message =
+            'You are not authorized to access admin reports.';
+
+        }
+
+        else if (
+          error?.error?.message
+        ) {
+
+          message =
+            error.error.message;
+
+        }
+
+
+        this.alertService.error(
+
+          'Failed to Load Report',
+
+          message
+
+        );
+
       }
-      
 
     });
 
   }
 
-  //================================================
 
-  loadRevenueChart() {
+  // =====================================================
+  // GENERATE REPORT
+  // =====================================================
 
-    this.analytics.monthlyRevenue().subscribe({
+  generateReport(): void {
 
-      next: (data: any) => {
+    this.loadReports();
 
-        const labels = Object.keys(data);
+  }
 
-        const values = Object.values(data);
 
-        if (this.revenueChart) {
+  // =====================================================
+  // PERFORMANCE TABLE
+  // =====================================================
 
-          this.revenueChart.destroy();
+  private buildPerformanceTable(
 
-        }
+    revenueData:
+      Record<string, number>,
 
-        this.revenueChart = new Chart("revenueChart", {
+    licenseData:
+      Record<string, number>,
+
+    complaintData:
+      Record<string, number>
+
+  ): void {
+
+    const months =
+      Object.keys(revenueData);
+
+
+    this.performance =
+      months.map((month) => {
+
+        return {
+
+          month:
+            this.formatMonth(month),
+
+          revenue:
+            revenueData[month] ?? 0,
+
+          licenses:
+            licenseData[month] ?? 0,
+
+          complaints:
+            complaintData[month] ?? 0
+
+        };
+
+      });
+
+  }
+
+
+  // =====================================================
+  // FORMAT MONTH
+  // =====================================================
+
+  private formatMonth(
+    month: string
+  ): string {
+
+    return (
+
+      month
+        .charAt(0)
+        .toUpperCase() +
+
+      month
+        .slice(1)
+        .toLowerCase()
+
+    );
+
+  }
+
+
+  // =====================================================
+  // REVENUE CHART
+  // =====================================================
+
+  private buildRevenueChart(
+
+    data:
+      Record<string, number>
+
+  ): void {
+
+    if (this.revenueChart) {
+
+      this.revenueChart.destroy();
+
+    }
+
+
+    const labels =
+      Object.keys(data)
+        .map(month =>
+          this.formatMonth(month)
+        );
+
+
+    const values =
+      Object.values(data);
+
+
+    const canvas =
+      document.getElementById(
+        'revenueChart'
+      );
+
+
+    if (!canvas) {
+
+      return;
+
+    }
+
+
+    this.revenueChart =
+      new Chart(
+
+        canvas as HTMLCanvasElement,
+
+        {
 
           type: 'line',
 
@@ -168,15 +634,20 @@ export class Reports implements OnInit {
 
               {
 
-                label: 'Revenue',
+                label:
+                  'Revenue',
 
-                data: values,
+                data:
+                  values,
 
-                fill: true,
+                fill:
+                  true,
 
-                tension: .4,
+                tension:
+                  0.4,
 
-                borderWidth: 3
+                borderWidth:
+                  3
 
               }
 
@@ -186,15 +657,61 @@ export class Reports implements OnInit {
 
           options: {
 
-            responsive: true,
+            responsive:
+              true,
 
-            maintainAspectRatio: false,
+            maintainAspectRatio:
+              false,
 
             plugins: {
 
               legend: {
 
-                display: false
+                display:
+                  false
+
+              },
+
+              tooltip: {
+
+                callbacks: {
+
+                  label:
+                    (context) => {
+
+                      return `TZS ${
+                        Number(
+                          context.raw
+                        ).toLocaleString()
+                      }`;
+
+                    }
+
+                }
+
+              }
+
+            },
+
+            scales: {
+
+              y: {
+
+                beginAtZero:
+                  true,
+
+                ticks: {
+
+                  callback:
+                    (value) => {
+
+                      return 'TZS ' +
+                        Number(value)
+                          .toLocaleString();
+
+                    }
+
+                }
 
               }
 
@@ -202,58 +719,74 @@ export class Reports implements OnInit {
 
           }
 
-        });
-        this.cdr.detectChanges();
+        }
 
-      }
-
-    });
+      );
 
   }
 
-  //================================================
 
-  loadLicenseChart() {
+  // =====================================================
+  // LICENSE CHART
+  // =====================================================
 
-    this.analytics.reports().subscribe({
+  private buildLicenseChart(
 
-      next: (res: any) => {
+    data:
+      Record<string, number>
 
-        if (this.licenseChart) {
+  ): void {
 
-          this.licenseChart.destroy();
+    if (this.licenseChart) {
 
-        }
+      this.licenseChart.destroy();
 
-        this.licenseChart = new Chart("licenseChart", {
+    }
+
+
+    const labels =
+      Object.keys(data)
+        .map(month =>
+          this.formatMonth(month)
+        );
+
+
+    const values =
+      Object.values(data);
+
+
+    const canvas =
+      document.getElementById(
+        'licenseChart'
+      );
+
+
+    if (!canvas) {
+
+      return;
+
+    }
+
+
+    this.licenseChart =
+      new Chart(
+
+        canvas as HTMLCanvasElement,
+
+        {
 
           type: 'pie',
 
           data: {
 
-            labels: [
-
-              'Approved',
-
-              'Pending',
-
-              'Rejected'
-
-            ],
+            labels,
 
             datasets: [
 
               {
 
-                data: [
-
-                  res.approvedLicenses,
-
-                  res.pendingLicenses,
-
-                  res.rejectedLicenses
-
-                ]
+                data:
+                  values
 
               }
 
@@ -263,82 +796,18 @@ export class Reports implements OnInit {
 
           options: {
 
-            responsive: true,
+            responsive:
+              true,
 
-            maintainAspectRatio: false
-
-          }
-
-        });
-        this.cdr.detectChanges();
-
-      }
-
-    });
-
-  }
-
-  //================================================
-
-  loadComplaintChart() {
-
-    this.analytics.reports().subscribe({
-
-      next: (res: any) => {
-
-        if (this.complaintChart) {
-
-          this.complaintChart.destroy();
-
-        }
-
-        this.complaintChart = new Chart("complaintChart", {
-
-          type: 'bar',
-
-          data: {
-
-            labels: [
-
-              'Resolved',
-
-              'Pending',
-
-              'Rejected'
-
-            ],
-
-            datasets: [
-
-              {
-
-                data: [
-
-                  res.resolvedComplaints,
-
-                  res.pendingComplaints,
-
-                  res.rejectedComplaints
-
-                ]
-
-              }
-
-            ]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
+            maintainAspectRatio:
+              false,
 
             plugins: {
 
               legend: {
 
-                display: false
+                position:
+                  'bottom'
 
               }
 
@@ -346,75 +815,373 @@ export class Reports implements OnInit {
 
           }
 
-        });
-        this.cdr.detectChanges();
+        }
 
-      }
-
-    });
+      );
 
   }
 
-  //================================================
 
-  generateReport() {
+  // =====================================================
+  // COMPLAINT CHART
+  // =====================================================
 
-    this.loadReport();
+  private buildComplaintChart(
 
-    this.loadRevenueChart();
+    data:
+      Record<string, number>
 
-    this.loadLicenseChart();
+  ): void {
 
-    this.loadComplaintChart();
+    if (this.complaintChart) {
+
+      this.complaintChart.destroy();
+
+    }
+
+
+    const labels =
+      Object.keys(data)
+        .map(month =>
+          this.formatMonth(month)
+        );
+
+
+    const values =
+      Object.values(data);
+
+
+    const canvas =
+      document.getElementById(
+        'complaintChart'
+      );
+
+
+    if (!canvas) {
+
+      return;
+
+    }
+
+
+    this.complaintChart =
+      new Chart(
+
+        canvas as HTMLCanvasElement,
+
+        {
+
+          type: 'bar',
+
+          data: {
+
+            labels,
+
+            datasets: [
+
+              {
+
+                label:
+                  'Complaints',
+
+                data:
+                  values,
+
+                borderWidth:
+                  1
+
+              }
+
+            ]
+
+          },
+
+          options: {
+
+            responsive:
+              true,
+
+            maintainAspectRatio:
+              false,
+
+            plugins: {
+
+              legend: {
+
+                display:
+                  false
+
+              }
+
+            },
+
+            scales: {
+
+              y: {
+
+                beginAtZero:
+                  true,
+
+                ticks: {
+
+                  precision:
+                    0
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      );
 
   }
 
-  exportPdf() {
 
-  this.analytics.exportPdf().subscribe({
+  // =====================================================
+  // EXPORT PDF
+  // =====================================================
 
-    next: (file: Blob) => {
+  exportPdf(): void {
 
-      const url = window.URL.createObjectURL(file);
+    this.alertService.loading(
+      'Preparing PDF report...'
+    );
 
-      const a = document.createElement('a');
 
-      a.href = url;
+    this.analytics
+      .exportPdf()
+      .subscribe({
 
-      a.download = 'Coastal-Conservation-Report.pdf';
+        next: (file: Blob) => {
 
-      a.click();
+          this.downloadFile(
 
-      window.URL.revokeObjectURL(url);
+            file,
 
-    }
+            'Coastal-Conservation-Report.pdf'
 
-  });
+          );
 
-}
 
-  exportExcel() {
+          this.alertService.close();
 
-  this.analytics.exportExcel().subscribe({
 
-    next: (file: Blob) => {
+          this.alertService.success(
 
-      const url = window.URL.createObjectURL(file);
+            'PDF Exported',
 
-      const a = document.createElement('a');
+            'The analytics report has been downloaded successfully.'
 
-      a.href = url;
+          );
 
-      a.download = 'Coastal-Conservation-Report.xlsx';
+        },
 
-      a.click();
 
-      window.URL.revokeObjectURL(url);
+        error: (error) => {
 
-    }
+          console.error(
+            'PDF EXPORT ERROR:',
+            error
+          );
 
-  });
 
-}
+          this.alertService.close();
+
+
+          let message =
+            'Unable to generate the PDF report.';
+
+
+          if (
+            error?.status === 401
+          ) {
+
+            message =
+              'Authentication required. Please login again.';
+
+          }
+
+          else if (
+            error?.status === 403
+          ) {
+
+            message =
+              'You are not authorized to export reports.';
+
+          }
+
+
+          this.alertService.error(
+
+            'PDF Export Failed',
+
+            message
+
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =====================================================
+  // EXPORT EXCEL
+  // =====================================================
+
+  exportExcel(): void {
+
+    this.alertService.loading(
+      'Preparing Excel report...'
+    );
+
+
+    this.analytics
+      .exportExcel()
+      .subscribe({
+
+        next: (file: Blob) => {
+
+          this.downloadFile(
+
+            file,
+
+            'Coastal-Conservation-Report.xlsx'
+
+          );
+
+
+          this.alertService.close();
+
+
+          this.alertService.success(
+
+            'Excel Exported',
+
+            'The analytics report has been downloaded successfully.'
+
+          );
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'EXCEL EXPORT ERROR:',
+            error
+          );
+
+
+          this.alertService.close();
+
+
+          let message =
+            'Unable to generate the Excel report.';
+
+
+          if (
+            error?.status === 401
+          ) {
+
+            message =
+              'Authentication required. Please login again.';
+
+          }
+
+          else if (
+            error?.status === 403
+          ) {
+
+            message =
+              'You are not authorized to export reports.';
+
+          }
+
+
+          this.alertService.error(
+
+            'Excel Export Failed',
+
+            message
+
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =====================================================
+  // DOWNLOAD FILE
+  // =====================================================
+
+  private downloadFile(
+
+    file:
+      Blob,
+
+    fileName:
+      string
+
+  ): void {
+
+    const url =
+      window.URL.createObjectURL(file);
+
+
+    const anchor =
+      document.createElement('a');
+
+
+    anchor.href =
+      url;
+
+
+    anchor.download =
+      fileName;
+
+
+    document.body.appendChild(
+      anchor
+    );
+
+
+    anchor.click();
+
+
+    document.body.removeChild(
+      anchor
+    );
+
+
+    window.URL.revokeObjectURL(
+      url
+    );
+
+  }
+
+
+  // =====================================================
+  // DESTROY
+  // =====================================================
+
+  ngOnDestroy(): void {
+
+    this.revenueChart?.destroy();
+
+    this.licenseChart?.destroy();
+
+    this.complaintChart?.destroy();
+
+  }
 
 }

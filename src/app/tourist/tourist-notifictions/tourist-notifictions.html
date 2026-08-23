@@ -1,103 +1,316 @@
 <div class="notifications-page">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="page-header">
 
         <div>
-            <h2>Notifications</h2>
-            <p>
-                Stay updated with your reports and environmental alerts.
-            </p>
+
+            <div class="title-row">
+
+                <div class="title-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+
+                <div>
+
+                    <h2>Notifications</h2>
+
+                    <p>
+                        Stay updated with your applications,
+                        permits and environmental alerts.
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <button class="mark-btn">
 
-            <i class="fas fa-check-double"></i>
-            Mark All as Read
+        <button
+            class="mark-btn"
+            type="button"
+            (click)="markAllAsRead()"
+            [disabled]="
+                markingAllRead ||
+                unreadNotifications === 0
+            "
+        >
+
+            <i
+                class="fas"
+                [class.fa-spinner]="markingAllRead"
+                [class.fa-spin]="markingAllRead"
+                [class.fa-check-double]="!markingAllRead"
+            ></i>
+
+            {{
+                markingAllRead
+                    ? 'Marking...'
+                    : 'Mark All as Read'
+            }}
 
         </button>
 
     </div>
 
-    <!-- SUMMARY -->
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
 
     <div class="summary-grid">
 
         <div class="summary-card">
 
-            <i class="fas fa-bell"></i>
+            <div class="summary-icon total">
+
+                <i class="fas fa-bell"></i>
+
+            </div>
 
             <div>
-                <h3>15</h3>
-                <span>Total Notifications</span>
+
+                <h3>
+                    {{ totalNotifications }}
+                </h3>
+
+                <span>
+                    Total Notifications
+                </span>
+
             </div>
 
         </div>
 
+
         <div class="summary-card">
 
-            <i class="fas fa-envelope"></i>
+            <div class="summary-icon unread">
+
+                <i class="fas fa-envelope"></i>
+
+            </div>
 
             <div>
-                <h3>5</h3>
-                <span>Unread</span>
+
+                <h3>
+                    {{ unreadNotifications }}
+                </h3>
+
+                <span>
+                    Unread
+                </span>
+
             </div>
 
         </div>
 
+
         <div class="summary-card">
 
-            <i class="fas fa-triangle-exclamation"></i>
+            <div class="summary-icon alerts">
+
+                <i class="fas fa-triangle-exclamation"></i>
+
+            </div>
 
             <div>
-                <h3>2</h3>
-                <span>Alerts</span>
+
+                <h3>
+                    {{ alertNotifications }}
+                </h3>
+
+                <span>
+                    Alerts
+                </span>
+
             </div>
 
         </div>
 
     </div>
 
-    <!-- LIST -->
 
-    <div class="notifications-list">
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
 
-        <div class="notification-card"
-             *ngFor="let notification of notifications"
-             [class.unread]="notification.unread">
+    <div
+        class="loading-state"
+        *ngIf="loading"
+    >
 
-            <div class="icon"
-                 [ngClass]="notification.type">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
 
-                <i class="fas fa-check-circle"
-                   *ngIf="notification.type === 'success'"></i>
+        <h3>Loading Notifications</h3>
 
-                <i class="fas fa-hourglass-half"
-                   *ngIf="notification.type === 'review'"></i>
+        <p>
+            Please wait while we retrieve your notifications.
+        </p>
 
-                <i class="fas fa-triangle-exclamation"
-                   *ngIf="notification.type === 'alert'"></i>
+    </div>
 
-                <i class="fas fa-bullhorn"
-                   *ngIf="notification.type === 'system'"></i>
 
-                <i class="fas fa-heart"
-                   *ngIf="notification.type === 'thanks'"></i>
+    <!-- =====================================================
+         EMPTY
+    ====================================================== -->
+
+    <div
+        class="empty-state"
+        *ngIf="
+            !loading &&
+            notifications.length === 0
+        "
+    >
+
+        <div class="empty-icon">
+
+            <i class="fas fa-bell-slash"></i>
+
+        </div>
+
+        <h3>No Notifications</h3>
+
+        <p>
+            You don't have any notifications yet.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIST
+    ====================================================== -->
+
+    <div
+        class="notifications-list"
+        *ngIf="
+            !loading &&
+            notifications.length > 0
+        "
+    >
+
+        <div
+            class="notification-card"
+            *ngFor="
+                let notification of notifications;
+                trackBy: trackByNotificationId
+            "
+            [class.unread]="!notification.read"
+            (click)="markAsRead(notification)"
+        >
+
+            <!-- ICON -->
+
+            <div
+                class="icon"
+                [ngClass]="
+                    getNotificationType(notification)
+                "
+            >
+
+                <i
+                    [class]="
+                        getNotificationIcon(notification)
+                    "
+                ></i>
 
             </div>
+
+
+            <!-- CONTENT -->
 
             <div class="content">
 
                 <div class="top-row">
 
-                    <h4>{{notification.title}}</h4>
+                    <div class="title-wrapper">
 
-                    <span>{{notification.time}}</span>
+                        <h4>
+                            {{
+                                getNotificationTitle(
+                                    notification
+                                )
+                            }}
+                        </h4>
+
+                        <span
+                            class="unread-dot"
+                            *ngIf="!notification.read"
+                        ></span>
+
+                    </div>
+
+                    <span class="time">
+
+                        {{
+                            notification.createdAt
+                                | date:'dd MMM yyyy, HH:mm'
+                        }}
+
+                    </span>
 
                 </div>
 
-                <p>{{notification.message}}</p>
+
+                <p>
+                    {{ notification.message }}
+                </p>
+
+
+                <div class="notification-footer">
+
+                    <span
+                        class="read-label"
+                        *ngIf="notification.read"
+                    >
+
+                        <i class="fas fa-check-double"></i>
+
+                        Read
+
+                    </span>
+
+
+                    <span
+                        class="read-label unread-label"
+                        *ngIf="!notification.read"
+                    >
+
+                        <i class="fas fa-envelope"></i>
+
+                        Unread
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION -->
+
+            <div class="notification-action">
+
+                <i
+                    *ngIf="
+                        markingReadId !== notification.id
+                    "
+                    class="fas fa-chevron-right"
+                ></i>
+
+                <i
+                    *ngIf="
+                        markingReadId === notification.id
+                    "
+                    class="fas fa-spinner fa-spin"
+                ></i>
 
             </div>
 

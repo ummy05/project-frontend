@@ -1,97 +1,194 @@
 <div class="layout-container">
 
-    <!-- OVERLAY -->
 
-    <div class="overlay"
-         *ngIf="sidebarOpen"
-         (click)="toggleSidebar()">
+    <!-- ================================================= -->
+    <!-- MOBILE OVERLAY -->
+    <!-- ================================================= -->
+
+    <div
+        class="overlay"
+        *ngIf="sidebarOpen"
+        (click)="closeSidebar()">
     </div>
 
+
+    <!-- ================================================= -->
     <!-- SIDEBAR -->
+    <!-- ================================================= -->
 
-    <aside class="sidebar"
-           [class.active]="sidebarOpen">
+    <aside
+        class="sidebar"
+        [class.active]="sidebarOpen">
 
-        <button class="close-btn"
-                (click)="toggleSidebar()">
+
+        <!-- CLOSE BUTTON -->
+
+        <button
+            type="button"
+            class="close-btn"
+            (click)="closeSidebar()">
 
             <i class="fas fa-times"></i>
 
         </button>
 
+
+        <!-- ================================================= -->
+        <!-- LOGO -->
+        <!-- ================================================= -->
+
         <div class="logo">
 
-            <img src="/img/logo-1.png"
-                 alt="Logo">
+            <img
+                src="/img/logo-1.png"
+                alt="Coastal Monitor Logo">
 
             <div>
 
-                <h2>Coastal Monitor</h2>
-                <span>Tourist Portal</span>
+                <h2>
+                    Coastal Monitor
+                </h2>
+
+                <span>
+                    Tourist Portal
+                </span>
 
             </div>
 
         </div>
 
+
+        <!-- ================================================= -->
+        <!-- NAVIGATION -->
+        <!-- ================================================= -->
+
         <nav>
 
-            <a routerLink="/tourist/dashboard"
-               routerLinkActive="active">
+
+            <!-- DASHBOARD -->
+
+            <a
+                routerLink="/tourist/dashboard"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="closeSidebar()">
 
                 <i class="fas fa-home"></i>
-                Dashboard
+
+                <span>
+                    Dashboard
+                </span>
 
             </a>
 
-            <a routerLink="/tourist/report-issue"
-               routerLinkActive="active">
+            <!-- PERMITS -->
 
-                <i class="fas fa-triangle-exclamation"></i>
-                Report Issue
+            <a
+                routerLink="/tourist/permits"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
+
+                <i class="fas fa-id-card"></i>
+
+                <span>
+                    Permits
+                </span>
 
             </a>
 
-            <a routerLink="/tourist/my-reports"
-               routerLinkActive="active">
+
+            <!-- PAYMENTS -->
+
+            <a
+                routerLink="/tourist/payments"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
+
+                <i class="fas fa-credit-card"></i>
+
+                <span>
+                    Payments
+                </span>
+
+            </a>
+
+            <a
+                routerLink="/tourist/complaints"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
 
                 <i class="fas fa-file-lines"></i>
-                My Reports
+
+                <span>
+                    Complaints
+                </span>
 
             </a>
 
-            <a routerLink="/tourist/notifications"
-               routerLinkActive="active">
 
-                <i class="fas fa-bell"></i>
-                Notifications
+            <!-- PROFILE -->
 
-            </a>
-
-            <a routerLink="/tourist/profile"
-               routerLinkActive="active">
+            <a
+                routerLink="/tourist/profile"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
 
                 <i class="fas fa-user"></i>
-                Profile
+
+                <span>
+                    Profile
+                </span>
 
             </a>
 
-            <a routerLink="/login">
+
+            <!-- DIVIDER -->
+
+            <div class="nav-divider"></div>
+
+
+            <!-- LOGOUT -->
+
+            <button
+                type="button"
+                class="logout-btn"
+                (click)="logout()">
 
                 <i class="fas fa-right-from-bracket"></i>
-                Logout
 
-            </a>
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
 
         </nav>
 
+
+        <!-- ================================================= -->
+        <!-- USER CARD -->
+        <!-- ================================================= -->
+
         <div class="profile-card">
 
-            <img src="/img/tourist.jpg">
 
-            <div>
+            <div class="profile-avatar">
 
-                <h4>John Smith</h4>
-                <span>Tourist</span>
+                <i class="fas fa-user"></i>
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <h4>
+                    {{ fullName }}
+                </h4>
+
+                <span>
+                    Tourist
+                </span>
 
             </div>
 
@@ -100,35 +197,79 @@
     </aside>
 
 
-    <!-- MAIN -->
+    <!-- ================================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================= -->
 
     <div class="main-content">
 
+
+        <!-- ================================================= -->
+        <!-- TOPBAR -->
+        <!-- ================================================= -->
+
         <header class="topbar">
 
-            <button class="menu-btn"
-                    (click)="toggleSidebar()">
+
+            <!-- MOBILE MENU -->
+
+            <button
+                type="button"
+                class="menu-btn"
+                (click)="toggleSidebar()">
 
                 <i class="fas fa-bars"></i>
 
             </button>
 
+
+            <!-- WELCOME -->
+
             <div class="top-right">
+
 
                 <div class="welcome">
 
-                    <h3>Welcome 👋</h3>
-                    <span>Protect our coastal environment</span>
+                    <h3>
+                        Welcome, {{ fullName }} 👋
+                    </h3>
+
+                    <span>
+                        Protect our coastal environment
+                    </span>
 
                 </div>
 
+
+                <!-- ACTIONS -->
+
                 <div class="top-actions">
 
-                    <button>
+
+                    <!-- NOTIFICATIONS -->
+
+                    <button
+                        type="button"
+                        class="notification-btn"
+                        routerLink="/tourist/notifications"
+                        aria-label="Notifications">
+
                         <i class="fas fa-bell"></i>
+
                     </button>
 
-                    <img src="/img/tourist.jpg">
+
+                    <!-- PROFILE -->
+
+                    <button
+                        type="button"
+                        class="top-profile"
+                        routerLink="/tourist/profile"
+                        aria-label="Profile">
+
+                        <i class="fas fa-user"></i>
+
+                    </button>
 
                 </div>
 
@@ -136,7 +277,17 @@
 
         </header>
 
-        <router-outlet></router-outlet>
+
+        <!-- ================================================= -->
+        <!-- PAGE CONTENT -->
+        <!-- ================================================= -->
+
+        <main class="page-content">
+
+            <router-outlet></router-outlet>
+
+        </main>
+
 
     </div>
 

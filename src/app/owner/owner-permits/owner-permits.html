@@ -1,0 +1,883 @@
+<div class="permits-page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="title-area">
+
+        <div class="title-icon">
+          <i class="fas fa-file-signature"></i>
+        </div>
+
+        <div>
+
+          <h2>My Permits</h2>
+
+          <p>
+            Apply for and manage your event permits.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="apply-btn"
+      (click)="openApplyModal()">
+
+      <i class="fas fa-plus"></i>
+
+      Apply for Permit
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+ <div class="summary-grid">
+
+  <!-- TOTAL -->
+
+  <div class="summary-card">
+
+    <div class="summary-icon total">
+      <i class="fas fa-file-alt"></i>
+    </div>
+
+    <div>
+      <h3>
+        {{ permits.length }}
+      </h3>
+
+      <span>
+        Total Applications
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- WAITING PAYMENT -->
+
+  <div class="summary-card">
+
+    <div class="summary-icon waiting">
+      <i class="fas fa-credit-card"></i>
+    </div>
+
+    <div>
+      <h3>
+        {{ getStatusCount('WAITING_PAYMENT') }}
+      </h3>
+
+      <span>
+        Waiting Payment
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- PENDING -->
+
+  <div class="summary-card">
+
+    <div class="summary-icon pending">
+      <i class="fas fa-clock"></i>
+    </div>
+
+    <div>
+      <h3>
+        {{ getStatusCount('PENDING') }}
+      </h3>
+
+      <span>
+        Pending Approval
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- APPROVED -->
+
+  <div class="summary-card">
+
+    <div class="summary-icon approved">
+      <i class="fas fa-check-circle"></i>
+    </div>
+
+    <div>
+      <h3>
+        {{ getStatusCount('APPROVED') }}
+      </h3>
+
+      <span>
+        Approved
+      </span>
+    </div>
+
+  </div>
+
+</div>
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="loading">
+
+    <div class="spinner"></div>
+
+    <p>
+      Loading your permits...
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       EMPTY
+  ====================================================== -->
+
+  <div
+    class="empty-card"
+    *ngIf="!loading && permits.length === 0">
+
+    <div class="empty-icon">
+
+      <i class="fas fa-file-circle-plus"></i>
+
+    </div>
+
+    <h3>
+      No Permit Applications
+    </h3>
+
+    <p>
+      You have not submitted any permit applications yet.
+    </p>
+
+    <button
+      class="apply-btn"
+      (click)="openApplyModal()">
+
+      <i class="fas fa-plus"></i>
+
+      Apply for Permit
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       PERMITS TABLE
+  ====================================================== -->
+
+  <div
+    class="table-card"
+    *ngIf="!loading && permits.length > 0">
+
+    <div class="table-header">
+
+      <div>
+
+        <h3>
+          Permit Applications
+        </h3>
+
+        <p>
+          Track the status of your applications.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Permit
+            </th>
+
+            <th>
+              Event
+            </th>
+
+            <th>
+              Type
+            </th>
+
+            <th>
+              Event Date
+            </th>
+
+            <th>
+              Fee
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Action
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="let permit of permits">
+
+            <!-- PERMIT -->
+
+            <td>
+
+              <div class="permit-number">
+
+                <strong>
+                  {{ permit.permitNumber }}
+                </strong>
+
+                <small>
+                  {{ permit.controlNumber }}
+                </small>
+
+              </div>
+
+            </td>
+
+
+            <!-- EVENT -->
+
+            <td>
+
+              <strong>
+                {{ permit.eventName }}
+              </strong>
+
+              <small>
+                {{ permit.location }}
+              </small>
+
+            </td>
+
+
+            <!-- TYPE -->
+
+            <td>
+
+              {{ getPermitTypeLabel(permit.permitType) }}
+
+            </td>
+
+
+            <!-- DATE -->
+
+            <td>
+
+              {{ permit.eventDate | date:'dd MMM yyyy' }}
+
+            </td>
+
+
+            <!-- FEE -->
+
+            <td>
+
+              <strong>
+                TZS {{ permit.permitFee | number }}
+              </strong>
+
+            </td>
+
+
+            <!-- STATUS -->
+
+            <td>
+
+              <span
+                class="status"
+                [ngClass]="{
+
+                  'waiting':
+                    permit.status === 'WAITING_PAYMENT',
+
+                  'pending':
+                    permit.status === 'PENDING',
+
+                  'approved':
+                    permit.status === 'APPROVED',
+
+                  'rejected':
+                    permit.status === 'REJECTED',
+
+                  'expired':
+                    permit.status === 'EXPIRED'
+
+                }">
+
+                <i
+                  class="fas"
+                  [ngClass]="{
+
+                    'fa-credit-card':
+                      permit.status === 'WAITING_PAYMENT',
+
+                    'fa-clock':
+                      permit.status === 'PENDING',
+
+                    'fa-check-circle':
+                      permit.status === 'APPROVED',
+
+                    'fa-times-circle':
+                      permit.status === 'REJECTED',
+
+                    'fa-calendar-xmark':
+                      permit.status === 'EXPIRED'
+
+                  }">
+                </i>
+
+                {{ getStatusLabel(permit.status) }}
+
+              </span>
+
+            </td>
+
+
+            <!-- ACTION -->
+
+            <td>
+
+              <div class="actions">
+
+                <button
+                  class="view-btn"
+                  title="View"
+                  (click)="viewPermit(permit)">
+
+                  <i class="fas fa-eye"></i>
+
+                </button>
+
+
+                <button
+                  *ngIf="permit.status === 'WAITING_PAYMENT'"
+                  class="pay-btn"
+                  title="Pay Permit"
+                  (click)="payPermit(permit)">
+
+                  <i class="fas fa-credit-card"></i>
+
+                  Pay
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     APPLY PERMIT MODAL
+====================================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showApplyModal"
+  (click)="closeApplyModal()">
+
+  <div
+    class="modal application-modal"
+    (click)="$event.stopPropagation()">
+
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <div class="modal-title-icon">
+
+          <i class="fas fa-file-signature"></i>
+
+        </div>
+
+        <div>
+
+          <h3>
+            Apply for Permit
+          </h3>
+
+          <p>
+            Submit your event permit application.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="close-btn"
+        (click)="closeApplyModal()">
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <div class="modal-body">
+
+      <div class="form-grid">
+
+
+        <!-- PERMIT TYPE -->
+
+        <div class="form-group full">
+
+          <label>
+            Permit Type
+            <span>*</span>
+          </label>
+
+          <select
+            [(ngModel)]="permitForm.permitType">
+
+            <option value="">
+              Select permit type
+            </option>
+
+            <option
+              *ngFor="let type of permitTypes"
+              [value]="type.value">
+
+              {{ type.label }}
+              -
+              TZS {{ type.fee | number }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- EVENT NAME -->
+
+        <div class="form-group">
+
+          <label>
+            Event Name
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="permitForm.eventName"
+            placeholder="Enter event name">
+
+        </div>
+
+
+        <!-- SHEHIA -->
+
+        <div class="form-group">
+
+          <label>
+            Shehia
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="permitForm.shehia"
+            placeholder="Enter your Shehia">
+
+        </div>
+
+
+        <!-- EVENT DATE -->
+
+        <div class="form-group">
+
+          <label>
+            Event Date
+            <span>*</span>
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="permitForm.eventDate">
+
+        </div>
+
+
+        <!-- EVENT TIME -->
+
+        <div class="form-group">
+
+          <label>
+            Event Time
+            <span>*</span>
+          </label>
+
+          <input
+            type="time"
+            [(ngModel)]="permitForm.eventTime">
+
+        </div>
+
+
+        <!-- LOCATION -->
+
+        <div class="form-group full">
+
+          <label>
+            Event Location
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="permitForm.location"
+            placeholder="Enter event location">
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group full">
+
+          <label>
+            Event Description
+            <span>*</span>
+          </label>
+
+          <textarea
+            rows="4"
+            [(ngModel)]="permitForm.description"
+            placeholder="Describe the event...">
+          </textarea>
+
+        </div>
+
+
+        <!-- FEE PREVIEW -->
+
+        <div
+          class="fee-preview full"
+          *ngIf="permitForm.permitType">
+
+          <div class="fee-icon">
+
+            <i class="fas fa-coins"></i>
+
+          </div>
+
+          <div>
+
+            <span>
+              Required Permit Fee
+            </span>
+
+            <strong>
+              TZS {{ getSelectedFee() | number }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeApplyModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="submit-btn"
+        (click)="submitApplication()">
+
+        <i class="fas fa-paper-plane"></i>
+
+        Submit Application
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     VIEW PERMIT MODAL
+====================================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="selectedPermit"
+  (click)="closeDetails()">
+
+  <div
+    class="modal details-modal"
+    (click)="$event.stopPropagation()">
+
+
+    <div class="modal-header">
+
+      <div>
+
+        <h3>
+          Permit Details
+        </h3>
+
+        <p>
+          {{ selectedPermit.permitNumber }}
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeDetails()">
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="details-body">
+
+
+      <div class="detail-status">
+
+        <span
+          class="status"
+          [ngClass]="{
+
+            'waiting':
+              selectedPermit.status === 'WAITING_PAYMENT',
+
+            'pending':
+              selectedPermit.status === 'PENDING',
+
+            'approved':
+              selectedPermit.status === 'APPROVED',
+
+            'rejected':
+              selectedPermit.status === 'REJECTED',
+
+            'expired':
+              selectedPermit.status === 'EXPIRED'
+
+          }">
+
+          {{ getStatusLabel(selectedPermit.status) }}
+
+        </span>
+
+      </div>
+
+
+      <div class="detail-grid">
+
+
+        <div class="detail-item">
+
+          <span>
+            Permit Type
+          </span>
+
+          <strong>
+            {{ getPermitTypeLabel(selectedPermit.permitType) }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Event Name
+          </span>
+
+          <strong>
+            {{ selectedPermit.eventName }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Event Date
+          </span>
+
+          <strong>
+            {{ selectedPermit.eventDate | date:'dd MMM yyyy' }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Event Time
+          </span>
+
+          <strong>
+            {{ selectedPermit.eventTime }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Location
+          </span>
+
+          <strong>
+            {{ selectedPermit.location }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Shehia
+          </span>
+
+          <strong>
+            {{ selectedPermit.shehia }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Control Number
+          </span>
+
+          <strong class="control-number">
+            {{ selectedPermit.controlNumber }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Permit Fee
+          </span>
+
+          <strong>
+            TZS {{ selectedPermit.permitFee | number }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="remarks"
+        *ngIf="selectedPermit.remarks">
+
+        <span>
+          Remarks
+        </span>
+
+        <p>
+          {{ selectedPermit.remarks }}
+        </p>
+
+      </div>
+
+
+      <button
+        *ngIf="selectedPermit.status === 'WAITING_PAYMENT'"
+        class="modal-pay-btn"
+        (click)="payPermit(selectedPermit)">
+
+        <i class="fas fa-credit-card"></i>
+
+        Proceed to Payment
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

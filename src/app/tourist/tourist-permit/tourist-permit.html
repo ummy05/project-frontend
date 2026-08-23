@@ -1,0 +1,764 @@
+<div class="permit-page">
+
+    <!-- ================================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                TOURIST PORTAL
+            </span>
+
+            <h1>
+                My Permits
+            </h1>
+
+            <p>
+                Apply for and manage permits for your coastal activities
+                and events.
+            </p>
+
+        </div>
+
+
+        <button
+            class="primary-btn"
+            (click)="openApplicationForm()">
+
+            <i class="fas fa-plus"></i>
+
+            Apply for Permit
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- INFORMATION BANNER -->
+    <!-- ================================================= -->
+
+    <div class="info-banner">
+
+        <div class="info-icon">
+
+            <i class="fas fa-shield-halved"></i>
+
+        </div>
+
+        <div>
+
+            <h3>
+                Protect Zanzibar's Coastline
+            </h3>
+
+            <p>
+                Obtain the appropriate permit before organizing
+                events or activities in coastal areas.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- EMPTY STATE -->
+    <!-- ================================================= -->
+
+    <div
+        class="empty-state"
+        *ngIf="!loading && permits.length === 0">
+
+        <div class="empty-icon">
+
+            <i class="fas fa-file-circle-plus"></i>
+
+        </div>
+
+        <h2>
+            No Permits Yet
+        </h2>
+
+        <p>
+            You have not submitted any permit applications.
+            Start by applying for a permit.
+        </p>
+
+        <button
+            class="primary-btn"
+            (click)="openApplicationForm()">
+
+            <i class="fas fa-plus"></i>
+
+            Apply for Permit
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- PERMITS -->
+    <!-- ================================================= -->
+
+    <div
+        class="permits-grid"
+        *ngIf="!loading && permits.length > 0">
+
+        <div
+            class="permit-card"
+            *ngFor="
+                let permit of permits;
+                trackBy: trackByPermitId
+            ">
+
+
+            <!-- CARD HEADER -->
+
+            <div class="permit-card-header">
+
+                <div class="permit-icon">
+
+                    <i class="fas fa-file-contract"></i>
+
+                </div>
+
+                <span
+                    class="status"
+                    [ngClass]="
+                        getStatusClass(permit.status)
+                    ">
+
+                    {{ getStatusLabel(permit.status) }}
+
+                </span>
+
+            </div>
+
+
+            <!-- PERMIT NUMBER -->
+
+            <div class="permit-number">
+
+                <span>
+                    Permit Number
+                </span>
+
+                <strong>
+                    {{ permit.permitNumber }}
+                </strong>
+
+            </div>
+
+
+            <!-- EVENT -->
+
+            <h2>
+                {{ permit.eventName }}
+            </h2>
+
+            <span class="permit-type">
+
+                {{ getPermitTypeLabel(permit.permitType) }}
+
+            </span>
+
+
+            <!-- DETAILS -->
+
+            <div class="details">
+
+                <div class="detail">
+
+                    <i class="fas fa-calendar"></i>
+
+                    <div>
+
+                        <span>
+                            Event Date
+                        </span>
+
+                        <strong>
+                            {{ permit.eventDate }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <i class="fas fa-clock"></i>
+
+                    <div>
+
+                        <span>
+                            Time
+                        </span>
+
+                        <strong>
+                            {{ permit.eventTime }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <i class="fas fa-location-dot"></i>
+
+                    <div>
+
+                        <span>
+                            Location
+                        </span>
+
+                        <strong>
+                            {{ permit.location }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <i class="fas fa-map-marker-alt"></i>
+
+                    <div>
+
+                        <span>
+                            Shehia
+                        </span>
+
+                        <strong>
+                            {{ permit.shehia }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT INFORMATION -->
+
+            <div
+                class="payment-box"
+                *ngIf="
+                    permit.status === 'WAITING_PAYMENT'
+                    || permit.status === 'PENDING'
+                    || permit.status === 'APPROVED'
+                ">
+
+                <div>
+
+                    <span>
+                        Permit Fee
+                    </span>
+
+                    <strong>
+                        TZS
+                        {{ formatAmount(permit.permitFee) }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Paid
+                    </span>
+
+                    <strong>
+                        TZS
+                        {{ formatAmount(permit.paidAmount) }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTROL NUMBER -->
+
+            <div
+                class="control-number"
+                *ngIf="permit.status === 'WAITING_PAYMENT'">
+
+                <span>
+                    Control Number
+                </span>
+
+                <strong>
+                    {{ permit.controlNumber }}
+                </strong>
+
+            </div>
+
+
+            <!-- REMARKS -->
+
+            <div
+                class="remarks"
+                *ngIf="permit.remarks">
+
+                <i class="fas fa-circle-info"></i>
+
+                <span>
+                    {{ permit.remarks }}
+                </span>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="card-actions">
+
+                <button
+                    *ngIf="
+                        permit.status === 'WAITING_PAYMENT'
+                    "
+                    class="pay-btn"
+                    (click)="openPayment(permit)">
+
+                    <i class="fas fa-credit-card"></i>
+
+                    Pay Permit
+
+                </button>
+
+
+                <button
+                    *ngIf="
+                        permit.status === 'APPROVED'
+                    "
+                    class="approved-btn"
+                    disabled>
+
+                    <i class="fas fa-circle-check"></i>
+
+                    Approved
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- APPLICATION MODAL -->
+    <!-- ================================================= -->
+
+    <div
+        class="modal-overlay"
+        *ngIf="showApplicationForm"
+        (click)="closeApplicationForm()">
+
+        <div
+            class="modal"
+            (click)="$event.stopPropagation()">
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        PERMIT APPLICATION
+                    </span>
+
+                    <h2>
+                        Apply for a Permit
+                    </h2>
+
+                </div>
+
+                <button
+                    class="close-btn"
+                    (click)="closeApplicationForm()">
+
+                    <i class="fas fa-times"></i>
+
+                </button>
+
+            </div>
+
+
+            <form
+                (ngSubmit)="applyForPermit()"
+                class="application-form">
+
+
+                <!-- PERMIT TYPE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Permit Type
+                        <span>*</span>
+                    </label>
+
+                    <select
+                        [(ngModel)]="application.permitType"
+                        name="permitType"
+                        required>
+
+                        <option value="">
+                            Select permit type
+                        </option>
+
+                        <option
+                            *ngFor="let type of permitTypes"
+                            [value]="type.value">
+
+                            {{ type.label }}
+                            — TZS {{ formatAmount(type.fee) }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- EVENT NAME -->
+
+                <div class="form-group">
+
+                    <label>
+                        Event / Activity Name
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="application.eventName"
+                        name="eventName"
+                        placeholder="Enter event or activity name"
+                        required>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Description
+                        <span>*</span>
+                    </label>
+
+                    <textarea
+                        [(ngModel)]="application.description"
+                        name="description"
+                        rows="4"
+                        placeholder="Describe your planned activity..."
+                        required>
+                    </textarea>
+
+                </div>
+
+
+                <!-- DATE & TIME -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            Event Date
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            [(ngModel)]="application.eventDate"
+                            name="eventDate"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Event Time
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="time"
+                            [(ngModel)]="application.eventTime"
+                            name="eventTime"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Location
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="application.location"
+                        name="location"
+                        placeholder="e.g. Nungwi Beach"
+                        required>
+
+                </div>
+
+
+                <!-- SHEHIA -->
+
+                <div class="form-group">
+
+                    <label>
+                        Shehia
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="application.shehia"
+                        name="shehia"
+                        placeholder="Enter your Shehia"
+                        required>
+
+                    <small>
+                        Enter the Shehia where the activity will take place.
+                    </small>
+
+                </div>
+
+
+                <!-- FEE -->
+
+                <div
+                    class="fee-preview"
+                    *ngIf="application.permitType">
+
+                    <div>
+
+                        <span>
+                            Required Permit Fee
+                        </span>
+
+                        <strong>
+                            TZS
+                            {{ formatAmount(getSelectedFee()) }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        (click)="closeApplicationForm()">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        [disabled]="submitting">
+
+                        <i class="fas fa-paper-plane"></i>
+
+                        Submit Application
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- PAYMENT MODAL -->
+    <!-- ================================================= -->
+
+    <div
+        class="modal-overlay"
+        *ngIf="showPaymentModal"
+        (click)="closePayment()">
+
+        <div
+            class="modal payment-modal"
+            (click)="$event.stopPropagation()">
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        PERMIT PAYMENT
+                    </span>
+
+                    <h2>
+                        Complete Payment
+                    </h2>
+
+                </div>
+
+                <button
+                    class="close-btn"
+                    (click)="closePayment()">
+
+                    <i class="fas fa-times"></i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="payment-instruction">
+
+                <div class="payment-icon">
+
+                    <i class="fas fa-money-bill-wave"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Payment Required
+                    </h3>
+
+                    <p>
+                        Use the control number generated for
+                        your permit application.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="payment-summary">
+
+                <div>
+
+                    <span>
+                        Control Number
+                    </span>
+
+                    <strong>
+                        {{ payment.controlNumber }}
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Amount
+                    </span>
+
+                    <strong>
+                        TZS
+                        {{ formatAmount(payment.amount) }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Control Number
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="payment.controlNumber"
+                    placeholder="Enter control number">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Payment Amount (TZS)
+                </label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="payment.amount"
+                    min="1">
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    (click)="closePayment()">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    [disabled]="paymentLoading"
+                    (click)="payPermit(selectedPermit!)">
+
+                    <i class="fas fa-credit-card"></i>
+
+                    Pay Now
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

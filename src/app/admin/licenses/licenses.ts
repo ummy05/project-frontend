@@ -1,233 +1,590 @@
+// src/app/admin/licenses/licenses.ts
+
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 
 import { LicenseService } from '../../services/license.service';
+import { AlertService } from '../../services/alert.service';
+
 import { License } from '../../models/license.model';
+
 
 @Component({
 
-selector:'app-licenses',
+  selector: 'app-licenses',
 
-standalone:true,
+  standalone: true,
 
-imports:[CommonModule,FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
 
-templateUrl:'./licenses.html',
+  templateUrl: './licenses.html',
 
-styleUrl:'./licenses.css'
+  styleUrl: './licenses.css'
 
 })
+export class Licenses implements OnInit {
 
-export class Licenses implements OnInit{
-    showRejectModal = false;
 
-rejectReason = '';
+  // =====================================================
+  // SERVICES
+  // =====================================================
 
-licenseToRejectId!: number;
+  private licenseService =
+    inject(LicenseService);
 
-private service=inject(LicenseService);
+  public alertService =
+  inject(AlertService);
 
-constructor(private cdr:ChangeDetectorRef){}
 
-licenses:License[]=[];
+  // =====================================================
+  // STATE
+  // =====================================================
 
-filteredLicenses:License[]=[];
+  licenses: License[] = [];
 
-search='';
+  filteredLicenses: License[] = [];
 
-status='';
+  selectedLicense: License | null = null;
 
-loading=false;
 
-selectedLicense!:License;
+  search = '';
 
-showViewModal=false;
+  status = '';
 
-showEditModal=false;
+  loading = false;
 
-showAddModal=false;
 
-ngOnInit(){
+  // =====================================================
+  // MODALS
+  // =====================================================
 
-this.loadLicenses();
+  showViewModal = false;
 
-}
+  showEditModal = false;
 
-loadLicenses(){
+  showAddModal = false;
 
-this.loading=true;
+  showRejectModal = false;
 
-this.service.getAll().subscribe({
 
-next:(res)=>{
+  // =====================================================
+  // REJECTION
+  // =====================================================
 
-this.licenses=res;
+  rejectReason = '';
 
-this.filteredLicenses=res;
+  licenseToRejectId: number | null = null;
 
-this.cdr.detectChanges();
 
-this.loading=false;
+  // =====================================================
+  // CONSTRUCTOR
+  // =====================================================
 
-},
+  constructor(
+    private cdr: ChangeDetectorRef
+  ) {}
 
-error:()=>{
 
-this.loading=false;
+  // =====================================================
+  // INIT
+  // =====================================================
 
-}
+  ngOnInit(): void {
 
-});
+    this.loadLicenses();
 
-}
+  }
 
-filter(){
 
-this.filteredLicenses=this.licenses.filter(l=>{
+  // =====================================================
+  // LOAD ALL LICENSES
+  // =====================================================
 
-const searchMatch=
+  loadLicenses(): void {
 
-l.businessName.toLowerCase().includes(
+    this.loading = true;
 
-this.search.toLowerCase()
+    this.alertService.loading(
+      'Loading licenses...'
+    );
 
-)
 
-||
+    this.licenseService
+      .getAll()
+      .subscribe({
 
-l.ownerName.toLowerCase().includes(
+        next: (res) => {
 
-this.search.toLowerCase()
+          this.licenses = res ?? [];
 
-)
+          this.filter();
 
-||
+          this.loading = false;
 
-l.licenseNumber.toLowerCase().includes(
+          this.alertService.close();
 
-this.search.toLowerCase()
+          this.cdr.detectChanges();
 
-);
+        },
 
-const statusMatch=
 
-!this.status||
+        error: (error) => {
 
-l.status==this.status;
+          this.loading = false;
 
-return searchMatch&&statusMatch;
+          this.alertService.close();
 
-});
+          this.alertService.error(
+            'Failed to Load Licenses',
+            this.getErrorMessage(
+              error,
+              'Unable to retrieve licenses from the server.'
+            )
+          );
 
-}
+        }
 
-openView(item:License){
+      });
 
-this.selectedLicense=item;
+  }
 
-this.showViewModal=true;
 
-}
+  // =====================================================
+  // FILTER
+  // =====================================================
 
-openEdit(item:License){
+  filter(): void {
 
-this.selectedLicense={...item};
+    const keyword =
+      this.search
+        .trim()
+        .toLowerCase();
 
-this.showEditModal=true;
 
-}
+    this.filteredLicenses =
+      this.licenses.filter((license) => {
 
-approve(id:number){
+        const matchesSearch =
 
-this.service.approve(id).subscribe(()=>{
+          !keyword ||
 
-this.loadLicenses();
+          (license.businessName ?? '')
+            .toLowerCase()
+            .includes(keyword) ||
 
-});
+          (license.ownerName ?? '')
+            .toLowerCase()
+            .includes(keyword) ||
 
-}
+          (license.licenseNumber ?? '')
+            .toLowerCase()
+            .includes(keyword) ||
 
-openReject(id:number){
+          (license.ownerEmail ?? '')
+            .toLowerCase()
+            .includes(keyword);
 
-this.licenseToRejectId = id;
 
-this.rejectReason = '';
+        const matchesStatus =
 
-this.showRejectModal = true;
+          !this.status ||
 
-}
+          license.status === this.status;
 
-confirmReject(){
 
-if(!this.rejectReason.trim()){
+        return (
+          matchesSearch &&
+          matchesStatus
+        );
 
-alert("Please enter rejection reason.");
+      });
 
-return;
+  }
 
-}
 
-this.service
+  // =====================================================
+  // VIEW LICENSE
+  // =====================================================
 
-.reject(
+  openView(
+    license: License
+  ): void {
 
-this.licenseToRejectId,
+    this.selectedLicense = {
+      ...license
+    };
 
-this.rejectReason
+    this.showViewModal = true;
 
-)
+  }
 
-.subscribe({
 
-next:()=>{
+  // =====================================================
+  // EDIT
+  // =====================================================
 
-this.showRejectModal = false;
+  openEdit(
+    license: License
+  ): void {
 
-this.loadLicenses();
+    this.selectedLicense = {
+      ...license
+    };
 
-},
+    this.showEditModal = true;
 
-error:()=>{
+  }
 
-alert("Failed to reject license.");
 
-}
+  // =====================================================
+  // APPROVE LICENSE
+  // =====================================================
 
-});
+  async approve(
+    license: License
+  ): Promise<void> {
 
-}
+    if (
+      license.status !== 'PENDING'
+    ) {
 
-cancelReject(){
+      return;
 
-this.showRejectModal = false;
+    }
 
-this.rejectReason = '';
 
-}
+    const confirmed =
+      await this.alertService.confirm(
 
-delete(id:number){
+        'Approve License?',
 
-if(confirm('Delete this license?')){
+        `Are you sure you want to approve ${license.licenseNumber}?`,
 
-this.service.delete(id).subscribe(()=>{
+        'Approve'
 
-this.loadLicenses();
+      );
 
-});
 
-}
+    if (!confirmed) {
 
-}
+      return;
 
-closeModals(){
+    }
 
-this.showAddModal=false;
 
-this.showViewModal=false;
+    this.alertService.loading(
+      'Approving license...'
+    );
 
-this.showEditModal=false;
 
-}
+    this.licenseService
+      .approve(license.id)
+      .subscribe({
+
+        next: () => {
+
+          this.alertService.close();
+
+          this.alertService.success(
+            'License Approved',
+            `${license.licenseNumber} has been approved successfully.`
+          );
+
+          this.loadLicenses();
+
+        },
+
+
+        error: (error) => {
+
+          this.alertService.close();
+
+          this.alertService.error(
+            'Approval Failed',
+            this.getErrorMessage(
+              error,
+              'Unable to approve this license.'
+            )
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =====================================================
+  // OPEN REJECT MODAL
+  // =====================================================
+
+  openReject(
+    id: number
+  ): void {
+
+    this.licenseToRejectId = id;
+
+    this.rejectReason = '';
+
+    this.showRejectModal = true;
+
+  }
+
+
+  // =====================================================
+  // CONFIRM REJECTION
+  // =====================================================
+
+  async confirmReject(): Promise<void> {
+
+    if (
+      !this.licenseToRejectId
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      !this.rejectReason.trim()
+    ) {
+
+      this.alertService.warning(
+        'Rejection Reason Required',
+        'Please provide a reason for rejecting this license.'
+      );
+
+      return;
+
+    }
+
+
+    const confirmed =
+      await this.alertService.confirm(
+
+        'Reject License?',
+
+        'This license application will be marked as rejected.',
+
+        'Reject License'
+
+      );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    this.alertService.loading(
+      'Rejecting license...'
+    );
+
+
+    this.licenseService
+      .reject(
+        this.licenseToRejectId,
+        this.rejectReason.trim()
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.alertService.close();
+
+          this.showRejectModal = false;
+
+          this.alertService.success(
+            'License Rejected',
+            'The license application has been rejected successfully.'
+          );
+
+          this.resetReject();
+
+          this.loadLicenses();
+
+        },
+
+
+        error: (error) => {
+
+          this.alertService.close();
+
+          this.alertService.error(
+            'Rejection Failed',
+            this.getErrorMessage(
+              error,
+              'Unable to reject this license.'
+            )
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =====================================================
+  // CANCEL REJECTION
+  // =====================================================
+
+  cancelReject(): void {
+
+    this.showRejectModal = false;
+
+    this.resetReject();
+
+  }
+
+
+  private resetReject(): void {
+
+    this.rejectReason = '';
+
+    this.licenseToRejectId = null;
+
+  }
+
+
+  // =====================================================
+  // DELETE
+  // =====================================================
+
+  async delete(
+    license: License
+  ): Promise<void> {
+
+    const confirmed =
+      await this.alertService.confirm(
+
+        'Delete License?',
+
+        `Are you sure you want to permanently delete ${license.licenseNumber}? This action cannot be undone.`,
+
+        'Delete'
+
+      );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    this.alertService.loading(
+      'Deleting license...'
+    );
+
+
+    this.licenseService
+      .delete(license.id)
+      .subscribe({
+
+        next: () => {
+
+          this.alertService.close();
+
+          this.alertService.success(
+            'License Deleted',
+            'The license has been deleted successfully.'
+          );
+
+          this.loadLicenses();
+
+        },
+
+
+        error: (error) => {
+
+          this.alertService.close();
+
+          this.alertService.error(
+            'Delete Failed',
+            this.getErrorMessage(
+              error,
+              'Unable to delete the license.'
+            )
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =====================================================
+  // CLOSE MODALS
+  // =====================================================
+
+  closeModals(): void {
+
+    this.showAddModal = false;
+
+    this.showViewModal = false;
+
+    this.showEditModal = false;
+
+    this.showRejectModal = false;
+
+    this.selectedLicense = null;
+
+    this.resetReject();
+
+  }
+
+
+  // =====================================================
+  // BACKEND ERROR MESSAGE
+  // =====================================================
+
+  private getErrorMessage(
+    error: any,
+    fallback: string
+  ): string {
+
+    if (
+      typeof error?.error === 'string'
+    ) {
+
+      return error.error;
+
+    }
+
+    if (
+      error?.error?.message
+    ) {
+
+      return error.error.message;
+
+    }
+
+    if (
+      error?.message
+    ) {
+
+      return error.message;
+
+    }
+
+    return fallback;
+
+  }
 
 }

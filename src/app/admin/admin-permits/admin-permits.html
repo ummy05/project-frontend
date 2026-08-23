@@ -1,0 +1,878 @@
+<div class="permits-page">
+
+
+  <!-- ================================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ================================================= -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+
+        <i class="fas fa-file-contract"></i>
+
+      </div>
+
+      <div>
+
+        <h1>
+          Permit Management
+        </h1>
+
+        <p>
+          View and manage all permit applications
+          registered in the system.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="header-count">
+
+      <span>
+        Total Permits
+      </span>
+
+      <strong>
+        {{ permits.length }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================================================= -->
+  <!-- TOOLBAR -->
+  <!-- ================================================= -->
+
+  <div class="toolbar">
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+      <i class="fas fa-search"></i>
+
+      <input
+
+        type="text"
+
+        [(ngModel)]="searchTerm"
+
+        (input)="filterPermits()"
+
+        placeholder="Search permit, owner, business, location..."
+
+      />
+
+    </div>
+
+
+
+    <!-- STATUS -->
+
+    <div class="filter-box">
+
+      <i class="fas fa-filter"></i>
+
+      <select
+
+        [(ngModel)]="selectedStatus"
+
+        (change)="filterPermits()"
+
+      >
+
+        <option value="ALL">
+          All Status
+        </option>
+
+        <option value="WAITING_PAYMENT">
+          Waiting Payment
+        </option>
+
+        <option value="PENDING">
+          Pending
+        </option>
+
+        <option value="APPROVED">
+          Approved
+        </option>
+
+        <option value="REJECTED">
+          Rejected
+        </option>
+
+      </select>
+
+    </div>
+
+
+
+    <!-- REFRESH -->
+
+    <button
+      class="refresh-btn"
+      (click)="loadPermits()"
+    >
+
+      <i class="fas fa-sync-alt"></i>
+
+      Refresh
+
+    </button>
+
+
+  </div>
+
+
+
+  <!-- ================================================= -->
+  <!-- TABLE CARD -->
+  <!-- ================================================= -->
+
+  <div class="table-card">
+
+
+    <!-- LOADING -->
+
+    <div
+      class="loading-state"
+      *ngIf="loading"
+    >
+
+      <div class="spinner"></div>
+
+      <p>
+        Loading permits...
+      </p>
+
+    </div>
+
+
+
+    <!-- EMPTY -->
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !loading &&
+        filteredPermits.length === 0
+      "
+    >
+
+      <div class="empty-icon">
+
+        <i class="fas fa-file-contract"></i>
+
+      </div>
+
+      <h3>
+        No permits found
+      </h3>
+
+      <p>
+        There are no permits matching
+        your current search or filter.
+      </p>
+
+    </div>
+
+
+
+    <!-- TABLE -->
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !loading &&
+        filteredPermits.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              #
+            </th>
+
+            <th>
+              Permit
+            </th>
+
+            <th>
+              Applicant
+            </th>
+
+            <th>
+              Event
+            </th>
+
+            <th>
+              Location
+            </th>
+
+            <th>
+              Event Date
+            </th>
+
+            <th>
+              Fee
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="
+              let permit of filteredPermits;
+              let i = index;
+              trackBy: trackByPermit
+            "
+          >
+
+
+            <!-- NUMBER -->
+
+            <td class="number-cell">
+
+              {{ i + 1 }}
+
+            </td>
+
+
+
+            <!-- PERMIT -->
+
+            <td>
+
+              <div class="permit-info">
+
+                <strong>
+                  {{ permit.permitNumber }}
+                </strong>
+
+                <small>
+
+                  {{ permit.controlNumber }}
+
+                </small>
+
+              </div>
+
+            </td>
+
+
+
+            <!-- APPLICANT -->
+
+            <td>
+
+              <div class="owner-info">
+
+                <strong>
+
+                  {{
+                    permit.ownerName
+                    || 'Unknown Applicant'
+                  }}
+
+                </strong>
+
+                <small>
+
+                  {{
+                    permit.businessName
+                    || 'Individual / Tourist'
+                  }}
+
+                </small>
+
+              </div>
+
+            </td>
+
+
+
+            <!-- EVENT -->
+
+            <td>
+
+              <div class="event-info">
+
+                <strong>
+
+                  {{ permit.eventName }}
+
+                </strong>
+
+                <small>
+
+                  {{ permit.permitType }}
+
+                </small>
+
+              </div>
+
+            </td>
+
+
+
+            <!-- LOCATION -->
+
+            <td>
+
+              <div class="location">
+
+                <i class="fas fa-map-marker-alt"></i>
+
+                <span>
+
+                  {{ permit.location }}
+
+                </span>
+
+              </div>
+
+            </td>
+
+
+
+            <!-- EVENT DATE -->
+
+            <td>
+
+              {{ permit.eventDate | date:'dd MMM yyyy' }}
+
+            </td>
+
+
+
+            <!-- FEE -->
+
+            <td class="amount">
+
+              TZS
+              {{
+                permit.permitFee
+                | number
+              }}
+
+            </td>
+
+
+
+            <!-- STATUS -->
+
+            <td>
+
+              <span
+                class="status"
+                [ngClass]="
+                  statusClass(permit.status)
+                "
+              >
+
+                {{ formatStatus(permit.status) }}
+
+              </span>
+
+            </td>
+
+
+
+            <!-- ACTIONS -->
+
+            <td>
+
+              <div class="actions">
+
+
+                <!-- VIEW -->
+
+                <button
+
+                  class="action-btn view-btn"
+
+                  title="View Permit"
+
+                  (click)="viewPermit(permit)"
+
+                >
+
+                  <i class="fas fa-eye"></i>
+
+                </button>
+
+
+
+                <!-- DELETE -->
+
+                <button
+
+                  class="action-btn delete-btn"
+
+                  title="Delete Permit"
+
+                  (click)="deletePermit(permit)"
+
+                >
+
+                  <i class="fas fa-trash"></i>
+
+                </button>
+
+
+              </div>
+
+            </td>
+
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ================================================= -->
+  <!-- DETAILS MODAL -->
+  <!-- ================================================= -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showDetails"
+    (click)="closeDetails()"
+  >
+
+
+    <div
+      class="details-modal"
+      (click)="$event.stopPropagation()"
+      *ngIf="selectedPermit"
+    >
+
+
+      <!-- MODAL HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span>
+            Permit Details
+          </span>
+
+          <h2>
+
+            {{ selectedPermit.permitNumber }}
+
+          </h2>
+
+        </div>
+
+
+        <button
+          class="close-btn"
+          (click)="closeDetails()"
+        >
+
+          <i class="fas fa-times"></i>
+
+        </button>
+
+      </div>
+
+
+
+      <!-- MODAL BODY -->
+
+      <div class="modal-body">
+
+
+        <!-- STATUS -->
+
+        <div class="detail-status">
+
+          <span>
+            Current Status
+          </span>
+
+          <strong
+            class="status"
+            [ngClass]="
+              statusClass(
+                selectedPermit.status
+              )
+            "
+          >
+
+            {{
+              formatStatus(
+                selectedPermit.status
+              )
+            }}
+
+          </strong>
+
+        </div>
+
+
+
+        <!-- APPLICATION -->
+
+        <div class="detail-section">
+
+          <h3>
+            Application Information
+          </h3>
+
+
+          <div class="detail-grid">
+
+
+            <div class="detail-item">
+
+              <span>
+                Permit Number
+              </span>
+
+              <strong>
+                {{ selectedPermit.permitNumber }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Control Number
+              </span>
+
+              <strong>
+                {{ selectedPermit.controlNumber }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Permit Type
+              </span>
+
+              <strong>
+                {{ selectedPermit.permitType }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Permit Fee
+              </span>
+
+              <strong>
+                TZS
+                {{
+                  selectedPermit.permitFee
+                  | number
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Paid Amount
+              </span>
+
+              <strong>
+                TZS
+                {{
+                  selectedPermit.paidAmount
+                  | number
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Shehia
+              </span>
+
+              <strong>
+                {{ selectedPermit.shehia }}
+              </strong>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- EVENT -->
+
+        <div class="detail-section">
+
+          <h3>
+            Event Information
+          </h3>
+
+
+          <div class="detail-grid">
+
+
+            <div class="detail-item full">
+
+              <span>
+                Event Name
+              </span>
+
+              <strong>
+                {{ selectedPermit.eventName }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Event Date
+              </span>
+
+              <strong>
+                {{
+                  selectedPermit.eventDate
+                  | date:'dd MMMM yyyy'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Event Time
+              </span>
+
+              <strong>
+                {{ selectedPermit.eventTime }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item full">
+
+              <span>
+                Location
+              </span>
+
+              <strong>
+                {{ selectedPermit.location }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item full">
+
+              <span>
+                Description
+              </span>
+
+              <p>
+                {{
+                  selectedPermit.description
+                  || 'No description provided.'
+                }}
+              </p>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- OWNER -->
+
+        <div class="detail-section">
+
+          <h3>
+            Applicant Information
+          </h3>
+
+
+          <div class="detail-grid">
+
+
+            <div class="detail-item">
+
+              <span>
+                Applicant Name
+              </span>
+
+              <strong>
+                {{ selectedPermit.ownerName }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Business
+              </span>
+
+              <strong>
+                {{
+                  selectedPermit.businessName
+                  || 'Individual / Tourist'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Email
+              </span>
+
+              <strong>
+                {{ selectedPermit.ownerEmail }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span>
+                Phone
+              </span>
+
+              <strong>
+                {{ selectedPermit.phoneNumber }}
+              </strong>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- REMARKS -->
+
+        <div
+          class="remarks-box"
+          *ngIf="selectedPermit.remarks"
+        >
+
+          <i class="fas fa-info-circle"></i>
+
+          <div>
+
+            <strong>
+              Remarks
+            </strong>
+
+            <p>
+              {{ selectedPermit.remarks }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- MODAL FOOTER -->
+
+      <div class="modal-footer">
+
+        <button
+          class="secondary-btn"
+          (click)="closeDetails()"
+        >
+
+          Close
+
+        </button>
+
+
+        <button
+          class="danger-btn"
+          (click)="deletePermit(selectedPermit)"
+        >
+
+          <i class="fas fa-trash"></i>
+
+          Delete Permit
+
+        </button>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+</div>

@@ -1,84 +1,168 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../environment/environment';
+import {
+  Injectable,
+  inject
+} from '@angular/core';
+
+import {
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  environment
+} from '../environment/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
 
-  private http = inject(HttpClient);
 
-  private api = `${environment.apiUrl}/payments`;
+  private http =
+    inject(HttpClient);
 
-  //===========================
-  // GET ALL
-  //===========================
 
-  getAll(){
+  private api =
+    `${environment.apiUrl}/payments`;
 
-    return this.http.get<any[]>(this.api);
+
+  // =====================================================
+  // OWNER
+  // GET MY PAYMENTS
+  // =====================================================
+
+  getMyPayments(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      `${this.api}/my`
+    );
 
   }
 
-  //===========================
-  // GET BY ID
-  //===========================
 
-  getById(id:number){
+  // =====================================================
+  // OWNER
+  // MAKE PAYMENT
+  // =====================================================
+
+  makePayment(
+    request: {
+      controlNumber: string;
+      amount: number;
+      paymentMethod: string;
+    }
+  ): Observable<any> {
+
+    return this.http.post<any>(
+      this.api,
+      request
+    );
+
+  }
+
+
+  // =====================================================
+  // GET PAYMENT BY ID
+  // =====================================================
+
+  getById(
+    id: number
+  ): Observable<any> {
 
     return this.http.get<any>(
-
       `${this.api}/${id}`
-
     );
 
   }
 
-  //===========================
+
+  // =====================================================
+  // ADMIN
+  // GET ALL PAYMENTS
+  // =====================================================
+
+  getAll(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      this.api
+    );
+
+  }
+
+
+  // =====================================================
+  // ADMIN
+  // GET PENDING PAYMENTS
+  // =====================================================
+
+  getPending(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      `${this.api}/pending`
+    );
+
+  }
+
+
+  // =====================================================
+  // ADMIN
   // APPROVE
-  //===========================
+  // =====================================================
 
-  approve(id:number,remarks:string){
+  approve(
+    id: number,
+    remarks: string
+  ): Observable<any> {
 
-    return this.http.patch(
-
+    return this.http.patch<any>(
       `${this.api}/${id}/approve`,
-
-      {remarks}
-
+      {
+        remarks: remarks
+      }
     );
 
   }
 
-  //===========================
+
+  // =====================================================
+  // ADMIN
   // REJECT
-  //===========================
+  // =====================================================
 
-  reject(id:number,remarks:string){
+  reject(
+    id: number,
+    remarks: string
+  ): Observable<any> {
 
-    return this.http.patch(
-
+    return this.http.patch<any>(
       `${this.api}/${id}/reject`,
-
-      {remarks}
-
+      {
+        remarks: remarks
+      }
     );
 
   }
 
-  //===========================
+
+  // =====================================================
+  // ADMIN
   // DELETE
-  //===========================
+  // =====================================================
 
-  delete(id:number){
+  delete(
+    id: number
+  ): Observable<any> {
 
-    return this.http.delete(
-
+    return this.http.delete<any>(
       `${this.api}/${id}`
-
     );
 
   }
+
+  
 
 }

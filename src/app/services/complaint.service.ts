@@ -1,38 +1,145 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../environment/environment';
+import {
+  Injectable,
+  inject
+} from '@angular/core';
+
+import {
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  environment
+} from '../environment/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComplaintService {
 
-  private http = inject(HttpClient);
 
-  private api = `${environment.apiUrl}/complaints`;
+  // =====================================================
+  // HTTP
+  // =====================================================
+
+  private http =
+    inject(HttpClient);
+
+
+  // =====================================================
+  // API
+  // =====================================================
+
+  private api =
+    `${environment.apiUrl}/complaints`;
+
+
+  // =====================================================
+  // TOURIST
+  // CREATE COMPLAINT
+  // POST /api/complaints
+  // =====================================================
+
+  create(data: any) {
+
+    return this.http.post<any>(
+      this.api,
+      data
+    );
+
+  }
+
+
+  // =====================================================
+  // TOURIST
+  // GET MY COMPLAINTS
+  // GET /api/complaints/my
+  // =====================================================
+
+  getMyComplaints() {
+
+    return this.http.get<any[]>(
+      `${this.api}/my`
+    );
+
+  }
+
+
+  // =====================================================
+  // GET ALL COMPLAINTS
+  // ADMIN
+  // GET /api/complaints
+  // =====================================================
 
   getAll() {
-    return this.http.get<any[]>(this.api);
+
+    return this.http.get<any[]>(
+      this.api
+    );
+
   }
+
+
+  // =====================================================
+  // GET PENDING COMPLAINTS
+  // ADMIN
+  // GET /api/complaints/pending
+  // =====================================================
 
   getPending() {
-    return this.http.get<any[]>(`${this.api}/pending`);
+
+    return this.http.get<any[]>(
+      `${this.api}/pending`
+    );
+
   }
 
-  getById(id:number) {
-    return this.http.get<any>(`${this.api}/${id}`);
+
+  // =====================================================
+  // GET COMPLAINT BY ID
+  // =====================================================
+
+  getById(
+    id: number
+  ) {
+
+    return this.http.get<any>(
+      `${this.api}/${id}`
+    );
+
   }
 
-  progress(id:number) {
-    return this.http.patch(
+
+  // =====================================================
+  // MARK IN PROGRESS
+  // ADMIN
+  // PATCH /{id}/progress
+  // =====================================================
+
+  progress(
+    id: number
+  ) {
+
+    return this.http.patch<any>(
       `${this.api}/${id}/progress`,
       {}
     );
+
   }
 
-  resolve(id:number,response:string) {
 
-    return this.http.patch(
+  // =====================================================
+  // RESOLVE
+  // ADMIN
+  // PATCH /{id}/resolve
+  // =====================================================
+
+  resolve(
+    id: number,
+    response: string
+  ) {
+
+    return this.http.patch<any>(
       `${this.api}/${id}/resolve`,
       {
         response
@@ -41,9 +148,19 @@ export class ComplaintService {
 
   }
 
-  reject(id:number,response:string){
 
-    return this.http.patch(
+  // =====================================================
+  // REJECT
+  // ADMIN
+  // PATCH /{id}/reject
+  // =====================================================
+
+  reject(
+    id: number,
+    response: string
+  ) {
+
+    return this.http.patch<any>(
       `${this.api}/${id}/reject`,
       {
         response
@@ -52,7 +169,15 @@ export class ComplaintService {
 
   }
 
-  delete(id:number){
+
+  // =====================================================
+  // DELETE
+  // ADMIN ONLY
+  // =====================================================
+
+  delete(
+    id: number
+  ) {
 
     return this.http.delete(
       `${this.api}/${id}`

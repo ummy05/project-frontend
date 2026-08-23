@@ -26,6 +26,7 @@
 
     </div>
 
+
     <!-- FILTERS -->
 
     <div class="filter-card">
@@ -35,21 +36,16 @@
             <i class="fas fa-search"></i>
 
             <input
-
                 type="text"
-
                 [(ngModel)]="search"
-
                 (input)="filterLicenses()"
-
                 placeholder="Search license number or business...">
 
         </div>
 
+
         <select
-
             [(ngModel)]="status"
-
             (change)="filterLicenses()">
 
             <option value="ALL">
@@ -80,35 +76,34 @@
 
     </div>
 
+
     <!-- EMPTY -->
 
     <div
         class="empty-state"
-        *ngIf="filteredLicenses.length==0">
+        *ngIf="filteredLicenses.length === 0">
 
         <i class="fas fa-file-circle-xmark"></i>
 
         <h3>No Licenses Found</h3>
 
         <p>
-
             No licenses match your current search.
-
         </p>
 
     </div>
+
 
     <!-- LICENSE GRID -->
 
     <div
         class="licenses-grid"
-        *ngIf="filteredLicenses.length>0">
+        *ngIf="filteredLicenses.length > 0">
 
         <div
-
             class="license-card"
-
             *ngFor="let license of filteredLicenses">
+
 
             <!-- TOP -->
 
@@ -120,117 +115,124 @@
 
                 </div>
 
+
                 <span
-
                     class="status"
-
                     [ngClass]="{
-
-                    active:license.status==='APPROVED',
-
-                    pending:license.status==='PENDING',
-
-                    review:license.status==='UNDER_REVIEW',
-
-                    rejected:license.status==='REJECTED',
-
-                    expired:license.status==='EXPIRED'
-
+                        active: license.status === 'APPROVED',
+                        pending: license.status === 'PENDING',
+                        review: license.status === 'UNDER_REVIEW',
+                        rejected: license.status === 'REJECTED',
+                        expired: license.status === 'EXPIRED'
                     }">
 
-                    {{formatStatus(license.status)}}
+                    {{ formatStatus(license.status) }}
 
                 </span>
 
             </div>
 
+
             <!-- BODY -->
 
             <h3>
-
-                {{license.licenseType.replace('_',' ')}}
-
+                {{ license.licenseType?.replace('_',' ') }}
             </h3>
 
             <p class="business">
-
-                {{license.businessName}}
-
+                {{ license.businessName }}
             </p>
+
+
+            <!-- INFO -->
 
             <div class="license-info">
 
+
                 <div>
 
-                    <small>License Number</small>
+                    <small>
+                        License Number
+                    </small>
+
+                    <strong>
+                        {{ license.licenseNumber }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        Duration
+                    </small>
+
+                    <strong>
+                        {{ license.durationMonths }} Months
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        License Fee
+                    </small>
+
+                    <strong>
+                        TZS {{ license.licenseFee | number }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        Paid Amount
+                    </small>
+
+                    <strong>
+                        TZS {{ license.paidAmount | number }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        Issued Date
+                    </small>
 
                     <strong>
 
-                        {{license.licenseNumber}}
+                        {{
+                            license.issueDate
+                            ? (license.issueDate | date:'dd MMM yyyy')
+                            : 'Not Issued Yet'
+                        }}
 
                     </strong>
 
                 </div>
 
-                <div>
-
-                    <small>Duration</small>
-
-                    <strong>
-
-                        {{license.durationMonths}}
-
-                        Months
-
-                    </strong>
-
-                </div>
 
                 <div>
 
-                    <small>License Fee</small>
+                    <small>
+                        Expiry Date
+                    </small>
 
                     <strong>
 
-                        TZS
-
-                        {{license.licenseFee|number}}
-
-                    </strong>
-
-                </div>
-
-                <div>
-
-                    <small>Issued Date</small>
-
-                    <strong>
-
-                        {{license.issueDate ?
-
-                        (license.issueDate|date:'dd MMM yyyy')
-
-                        :
-
-                        'Not Issued Yet'}}
-
-                    </strong>
-
-                </div>
-
-                <div>
-
-                    <small>Expiry Date</small>
-
-                    <strong>
-
-                        {{license.expiryDate ?
-
-                        (license.expiryDate|date:'dd MMM yyyy')
-
-                        :
-
-                        'Not Issued Yet'}}
+                        {{
+                            license.expiryDate
+                            ? (license.expiryDate | date:'dd MMM yyyy')
+                            : 'Not Issued Yet'
+                        }}
 
                     </strong>
 
@@ -238,14 +240,16 @@
 
             </div>
 
+
             <!-- ACTIONS -->
 
             <div class="actions">
 
+
+                <!-- VIEW -->
+
                 <button
-
                     class="view-btn"
-
                     (click)="openView(license)">
 
                     <i class="fas fa-eye"></i>
@@ -254,26 +258,54 @@
 
                 </button>
 
+
+                <!-- PAY -->
+
                 <button
+                    *ngIf="canPay(license)"
+                    class="pay-btn"
+                    (click)="payLicense(license)">
 
-                    *ngIf="license.status==='APPROVED'"
+                    <i class="fas fa-credit-card"></i>
 
-                    class="download-btn"
-
-                    (click)="downloadLicense(license)">
-
-                    <i class="fas fa-download"></i>
-
-                    Download
+                    Pay License
 
                 </button>
 
+
+                <!-- PAYMENT PENDING -->
+
                 <button
+                    *ngIf="isPaymentPending(license)"
+                    class="payment-pending-btn"
+                    disabled>
 
+                    <i class="fas fa-clock"></i>
+
+                    Payment Pending
+
+                </button>
+
+
+                <!-- DOWNLOAD -->
+
+                <button
+                    *ngIf="canDownload(license)"
+                    class="download-btn"
+                    (click)="downloadLicense(license)">
+
+                    <i class="fas fa-file-pdf"></i>
+
+                    Download PDF
+
+                </button>
+
+
+                <!-- RENEW -->
+
+                <button
                     *ngIf="canRenew(license)"
-
                     class="renew-btn"
-
                     (click)="renewLicense(license)">
 
                     <i class="fas fa-sync"></i>
@@ -282,12 +314,12 @@
 
                 </button>
 
+
+                <!-- RENEWAL PENDING -->
+
                 <button
-
-                    *ngIf="license.renewal && license.status==='PENDING'"
-
+                    *ngIf="license.renewal && license.status === 'PENDING'"
                     class="renew-btn pending"
-
                     disabled>
 
                     <i class="fas fa-clock"></i>
@@ -304,12 +336,13 @@
 
 </div>
 
-<!-- VIEW MODAL -->
+
+<!-- =====================================================
+     VIEW MODAL
+===================================================== -->
 
 <div
-
     class="modal-overlay"
-
     *ngIf="showViewModal">
 
     <div class="modal large-modal">
@@ -317,13 +350,10 @@
         <div class="modal-header">
 
             <h3>
-
                 License Details
-
             </h3>
 
             <button
-
                 (click)="closeModal()">
 
                 <i class="fas fa-times"></i>
@@ -332,213 +362,131 @@
 
         </div>
 
+
         <div class="details">
 
+
             <p>
+                <strong>License Number</strong>
+                {{ selectedLicense?.licenseNumber }}
+            </p>
 
-                <strong>
 
-                    License Number
+            <p>
+                <strong>Business Name</strong>
+                {{ selectedLicense?.businessName }}
+            </p>
 
-                </strong>
 
-                {{selectedLicense?.licenseNumber}}
+            <p>
+                <strong>Owner</strong>
+                {{ selectedLicense?.ownerName }}
+            </p>
+
+
+            <p>
+                <strong>Email</strong>
+                {{ selectedLicense?.ownerEmail }}
+            </p>
+
+
+            <p>
+                <strong>Phone</strong>
+                {{ selectedLicense?.phoneNumber }}
+            </p>
+
+
+            <p>
+                <strong>License Type</strong>
+                {{ selectedLicense?.licenseType?.replace('_',' ') }}
+            </p>
+
+
+            <p>
+                <strong>District</strong>
+                {{ selectedLicense?.district }}
+            </p>
+
+
+            <p>
+                <strong>Location</strong>
+                {{ selectedLicense?.location }}
+            </p>
+
+
+            <p>
+                <strong>Duration</strong>
+                {{ selectedLicense?.durationMonths }} Months
+            </p>
+
+
+            <p>
+                <strong>License Fee</strong>
+                TZS {{ selectedLicense?.licenseFee | number }}
+            </p>
+
+
+            <p>
+                <strong>Paid Amount</strong>
+                TZS {{ selectedLicense?.paidAmount | number }}
+            </p>
+
+
+            <p>
+                <strong>Issued Date</strong>
+
+                {{
+                    selectedLicense?.issueDate
+                    ? (selectedLicense?.issueDate | date:'dd MMM yyyy')
+                    : 'Not Issued Yet'
+                }}
 
             </p>
 
+
             <p>
+                <strong>Expiry Date</strong>
 
-                <strong>
-
-                    Business Name
-
-                </strong>
-
-                {{selectedLicense?.businessName}}
+                {{
+                    selectedLicense?.expiryDate
+                    ? (selectedLicense?.expiryDate | date:'dd MMM yyyy')
+                    : 'Not Issued Yet'
+                }}
 
             </p>
 
+
             <p>
+                <strong>Status</strong>
 
-                <strong>
-
-                    Owner
-
-                </strong>
-
-                {{selectedLicense?.ownerName}}
+                {{ formatStatus(selectedLicense?.status) }}
 
             </p>
 
+
             <p>
+                <strong>Renewal Count</strong>
 
-                <strong>
-
-                    Email
-
-                </strong>
-
-                {{selectedLicense?.ownerEmail}}
+                {{ selectedLicense?.renewalCount }}
 
             </p>
 
+
             <p>
+                <strong>Renewal Requested</strong>
 
-                <strong>
-
-                    Phone
-
-                </strong>
-
-                {{selectedLicense?.phoneNumber}}
+                {{ selectedLicense?.renewal ? 'Yes' : 'No' }}
 
             </p>
 
-            <p>
-
-                <strong>
-
-                    License Type
-
-                </strong>
-
-                {{selectedLicense?.licenseType?.replace('_',' ')}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    District
-
-                </strong>
-
-                {{selectedLicense?.district}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Location
-
-                </strong>
-
-                {{selectedLicense?.location}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Duration
-
-                </strong>
-
-                {{selectedLicense?.durationMonths}}
-
-                Months
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    License Fee
-
-                </strong>
-
-                TZS
-
-                {{selectedLicense?.licenseFee|number}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Issued Date
-
-                </strong>
-
-                {{selectedLicense?.issueDate ?
-
-                (selectedLicense?.issueDate|date:'dd MMM yyyy')
-
-                :
-
-                'Not Issued Yet'}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Expiry Date
-
-                </strong>
-
-                {{selectedLicense?.expiryDate ?
-
-                (selectedLicense?.expiryDate|date:'dd MMM yyyy')
-
-                :
-
-                'Not Issued Yet'}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Status
-
-                </strong>
-
-                {{formatStatus(selectedLicense?.status)}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Renewal Count
-
-                </strong>
-
-                {{selectedLicense?.renewalCount}}
-
-            </p>
-
-            <p>
-
-                <strong>
-
-                    Renewal Requested
-
-                </strong>
-
-                {{selectedLicense?.renewal ? 'Yes' : 'No'}}
-
-            </p>
 
             <p *ngIf="selectedLicense?.remarks">
 
                 <strong>
-
                     Remarks
-
                 </strong>
 
-                {{selectedLicense?.remarks}}
+                {{ selectedLicense?.remarks }}
 
             </p>
 

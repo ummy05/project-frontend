@@ -19,33 +19,18 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-
   fullName: string;
-
   email: string;
-
   phoneNumber: string;
-
   password: string;
-
-  age: number;
-
-  gender: string;
-
-  address: string;
-
-  nationality: string;
-
-  role: string;
-
-
-  // BUSINESS
-
+  age?: number;
+  gender?: string;
+  address?: string;
+  nationality?: string;
   businessName?: string;
-
   businessType?: string;
-
   businessAddress?: string;
+  role: string;
 }
 export interface ForgotPasswordRequest {
 
@@ -80,23 +65,20 @@ export interface ChangePasswordRequest {
 }
 
 export interface UserProfile {
-
   id: number;
-
   fullName: string;
-
   email: string;
-
   phoneNumber: string;
-
-  age: number;
-
-  gender: string;
-
-  address: string;
-
+  age?: number;
+  gender?: string;
+  address?: string;
   enabled: boolean;
-
   role: string;
-
+  profileImage?: string;
+  businessName?: string;
+  businessType?: string;
+  businessAddress?: string;
+  businessRegistrationNumber?: string;
+  shehia?: string;
+  nationality?: string;
 }

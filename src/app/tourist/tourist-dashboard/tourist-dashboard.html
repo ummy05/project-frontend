@@ -1,185 +1,466 @@
 <div class="dashboard-page">
 
-    <!-- HERO -->
 
-    <div class="hero-card">
+    <!-- ================================================= -->
+    <!-- HERO -->
+    <!-- ================================================= -->
+
+    <section class="hero-card">
+
 
         <div class="hero-content">
 
-            <h2>Protect Our Coastline 🌊</h2>
+            <span class="hero-label">
+                COASTAL CONSERVATION
+            </span>
+
+
+            <h2>
+                Protect Our Coastline 🌊
+            </h2>
+
 
             <p>
-                Help preserve Zanzibar's coastal environment by reporting
-                environmental issues and supporting conservation efforts.
+                Help preserve Zanzibar's coastal environment
+                by reporting environmental issues and supporting
+                conservation efforts.
             </p>
 
-            <button>
+
+            <a
+                routerLink="/tourist/report-issue"
+                class="hero-button">
+
                 <i class="fas fa-triangle-exclamation"></i>
+
                 Report Environmental Issue
-            </button>
+
+            </a>
 
         </div>
 
-        <img src="/img/beach-1.jpg" alt="Beach">
-    </div>
 
+        <div class="hero-image">
+
+            <img
+                src="/img/beach-1.jpg"
+                alt="Zanzibar Coastal Environment">
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
     <!-- SUMMARY -->
+    <!-- ================================================= -->
 
-    <div class="summary-grid">
+    <section class="summary-grid">
+
+
+        <!-- REPORTS -->
 
         <div class="summary-card">
 
             <div class="icon reports">
+
                 <i class="fas fa-file-lines"></i>
+
             </div>
 
+
             <div>
-                <h3>12</h3>
-                <span>My Reports</span>
+
+                <h3>
+                    {{ totalReports }}
+                </h3>
+
+                <span>
+                    My Reports
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- RESOLVED -->
 
         <div class="summary-card">
 
             <div class="icon resolved">
+
                 <i class="fas fa-check-circle"></i>
+
             </div>
 
+
             <div>
-                <h3>8</h3>
-                <span>Resolved</span>
+
+                <h3>
+                    {{ resolvedReports }}
+                </h3>
+
+                <span>
+                    Resolved
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- NOTIFICATIONS -->
 
         <div class="summary-card">
 
             <div class="icon alerts">
+
                 <i class="fas fa-bell"></i>
+
             </div>
 
+
             <div>
-                <h3>3</h3>
-                <span>Notifications</span>
+
+                <h3>
+                    {{ notifications }}
+                </h3>
+
+                <span>
+                    Notifications
+                </span>
+
             </div>
 
         </div>
 
-    </div>
+    </section>
 
+
+    <!-- ================================================= -->
     <!-- QUICK ACTIONS -->
+    <!-- ================================================= -->
 
-    <div class="section-card">
+    <section class="section-card">
 
-        <h3>Quick Actions</h3>
+
+        <div class="section-heading">
+
+            <div>
+
+                <h3>
+                    Quick Actions
+                </h3>
+
+                <p>
+                    Access the most important tourist services quickly.
+                </p>
+
+            </div>
+
+        </div>
+
 
         <div class="actions-grid">
 
-            <button>
-                <i class="fas fa-triangle-exclamation"></i>
-                Report Issue
-            </button>
 
-            <button>
-                <i class="fas fa-file-lines"></i>
-                My Reports
-            </button>
+            <!-- REPORT -->
 
-            <button>
-                <i class="fas fa-bell"></i>
-                Notifications
-            </button>
+            <a
+                routerLink="/tourist/report-issue"
+                class="action-card">
 
-        </div>
+                <div class="action-icon report-icon">
 
-    </div>
-
-    <!-- CONTENT GRID -->
-
-    <div class="content-grid">
-
-        <!-- RECENT REPORTS -->
-
-        <div class="section-card">
-
-            <h3>Recent Reports</h3>
-
-            <div class="report-item"
-                 *ngFor="let report of reports">
-
-                <div>
-
-                    <h4>{{report.title}}</h4>
-
-                    <span>{{report.location}}</span>
+                    <i class="fas fa-triangle-exclamation"></i>
 
                 </div>
 
                 <div>
 
-                    <span class="status"
-                          [ngClass]="{
-                          'resolved-status': report.status==='Resolved',
-                          'review-status': report.status==='Under Review',
-                          'pending-status': report.status==='Pending'
-                          }">
+                    <h4>
+                        Report Issue
+                    </h4>
 
-                        {{report.status}}
-
+                    <span>
+                        Report an environmental problem
                     </span>
 
-                    <small>{{report.date}}</small>
+                </div>
+
+                <i class="fas fa-arrow-right arrow"></i>
+
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                routerLink="/tourist/my-reports"
+                class="action-card">
+
+                <div class="action-icon report-list-icon">
+
+                    <i class="fas fa-file-lines"></i>
 
                 </div>
 
-            </div>
+                <div>
+
+                    <h4>
+                        My Reports
+                    </h4>
+
+                    <span>
+                        Track your submitted reports
+                    </span>
+
+                </div>
+
+                <i class="fas fa-arrow-right arrow"></i>
+
+            </a>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a
+                routerLink="/tourist/notifications"
+                class="action-card">
+
+                <div class="action-icon notification-icon">
+
+                    <i class="fas fa-bell"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>
+                        Notifications
+                    </h4>
+
+                    <span>
+                        View your latest notifications
+                    </span>
+
+                </div>
+
+                <i class="fas fa-arrow-right arrow"></i>
+
+            </a>
+
+
+            <!-- PERMITS -->
+
+            <a
+                routerLink="/tourist/permits"
+                class="action-card">
+
+                <div class="action-icon permit-icon">
+
+                    <i class="fas fa-id-card"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>
+                        Permits
+                    </h4>
+
+                    <span>
+                        Manage your coastal permits
+                    </span>
+
+                </div>
+
+                <i class="fas fa-arrow-right arrow"></i>
+
+            </a>
 
         </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- CONSERVATION INFORMATION -->
+    <!-- ================================================= -->
+
+    <section class="content-grid">
+
 
         <!-- CONSERVATION TIPS -->
 
         <div class="section-card">
 
-            <h3>Conservation Tips</h3>
 
-            <div class="tip-card">
-                ♻️ Dispose waste in designated bins.
+            <div class="section-title">
+
+                <div class="title-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Conservation Tips
+                    </h3>
+
+                    <p>
+                        Small actions make a big difference.
+                    </p>
+
+                </div>
+
             </div>
 
-            <div class="tip-card">
-                🐠 Avoid disturbing marine wildlife.
-            </div>
 
             <div class="tip-card">
-                🌊 Keep beaches clean and plastic-free.
+
+                <span class="tip-number">
+                    01
+                </span>
+
+                <div>
+
+                    <strong>
+                        Dispose waste responsibly
+                    </strong>
+
+                    <p>
+                        Dispose waste in designated bins.
+                    </p>
+
+                </div>
+
             </div>
 
+
             <div class="tip-card">
-                🚫 Report illegal coastal activities.
+
+                <span class="tip-number">
+                    02
+                </span>
+
+                <div>
+
+                    <strong>
+                        Protect marine wildlife
+                    </strong>
+
+                    <p>
+                        Avoid disturbing marine wildlife.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tip-card">
+
+                <span class="tip-number">
+                    03
+                </span>
+
+                <div>
+
+                    <strong>
+                        Keep beaches clean
+                    </strong>
+
+                    <p>
+                        Help keep beaches clean and plastic-free.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tip-card">
+
+                <span class="tip-number">
+                    04
+                </span>
+
+                <div>
+
+                    <strong>
+                        Report illegal activities
+                    </strong>
+
+                    <p>
+                        Report illegal coastal activities.
+                    </p>
+
+                </div>
+
             </div>
 
         </div>
 
-    </div>
 
-    <!-- ALERT CARD -->
+        <!-- IMPORTANT INFORMATION -->
 
-    <div class="alert-card">
+        <div class="section-card information-card">
 
-        <i class="fas fa-circle-info"></i>
 
-        <div>
+            <div class="section-title">
 
-            <h4>Environmental Alert</h4>
+                <div class="title-icon">
+                    <i class="fas fa-circle-info"></i>
+                </div>
 
-            <p>
-                High tide warning has been issued for some coastal areas.
-                Please follow local safety guidelines.
-            </p>
+                <div>
+
+                    <h3>
+                        Coastal Safety
+                    </h3>
+
+                    <p>
+                        Important information for visitors.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-content">
+
+                <i class="fas fa-water"></i>
+
+                <h4>
+                    Help protect Zanzibar's coast
+                </h4>
+
+                <p>
+                    While enjoying Zanzibar's beaches and
+                    coastal areas, help preserve the environment
+                    and report activities that may harm coastal
+                    resources.
+                </p>
+
+
+                <a
+                    routerLink="/tourist/report-issue"
+                    class="info-button">
+
+                    Report an Issue
+
+                    <i class="fas fa-arrow-right"></i>
+
+                </a>
+
+            </div>
 
         </div>
 
-    </div>
+    </section>
+
 
 </div>

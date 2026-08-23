@@ -1,274 +1,1050 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AnalyticsService } from '../../services/analytics.service';
-import { Chart } from 'chart.js';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+
+import {
+  Chart,
+  registerables
+} from 'chart.js';
+
+import {
+  AnalyticsService,
+  AdminDashboardResponse,
+  AnalyticsResponse
+} from '../../services/analytics.service';
+
+import {
+  AlertService
+} from '../../services/alert.service';
+
+
+Chart.register(...registerables);
+
 
 @Component({
+
   selector: 'app-admin-dashboard',
+
   standalone: true,
-  imports: [CommonModule],
+
+  imports: [
+    CommonModule
+  ],
+
   templateUrl: './admin-dashboard.html',
-  styleUrl: './admin-dashboard.css',
+
+  styleUrl: './admin-dashboard.css'
+
 })
-export class AdminDashboard implements OnInit {
+export class AdminDashboard
+  implements OnInit, OnDestroy {
+
+
+  // ===================================================
+  // CONSTRUCTOR
+  // ===================================================
 
   constructor(
-    private analytics: AnalyticsService,
-    
-    private cdr:ChangeDetectorRef
-  ){}
 
-  dashboard: any = {};
+    private analytics:
+      AnalyticsService,
 
-  revenueChart: any;
-  licenseChart: any;
-  complaintChart: any;
-  overviewChart: any;
+    private alertService:
+      AlertService,
+
+    private cdr:
+      ChangeDetectorRef
+
+  ) {}
+
+
+  // ===================================================
+  // DASHBOARD DATA
+  // ===================================================
+
+  dashboard: AdminDashboardResponse = {
+
+    // USERS
+
+    totalUsers: 0,
+
+    totalBusinessOwners: 0,
+
+    totalTourists: 0,
+
+
+    // LICENSES
+
+    totalLicenses: 0,
+
+    approvedLicenses: 0,
+
+    pendingLicenses: 0,
+
+    rejectedLicenses: 0,
+
+
+    // PERMITS
+
+    totalPermits: 0,
+
+    approvedPermits: 0,
+
+    pendingPermits: 0,
+
+    rejectedPermits: 0,
+
+
+    // COMPLAINTS
+
+    totalComplaints: 0,
+
+    resolvedComplaints: 0,
+
+    pendingComplaints: 0,
+
+    rejectedComplaints: 0,
+
+
+    // PAYMENTS
+
+    totalPayments: 0,
+
+    approvedPayments: 0,
+
+    pendingPayments: 0,
+
+    rejectedPayments: 0,
+
+    totalRevenue: 0
+
+  };
+
+
+  // ===================================================
+  // REPORT DATA
+  // ===================================================
+
+  reportsData: AnalyticsResponse = {
+
+    // LICENSES
+
+    approvedLicenses: 0,
+
+    pendingLicenses: 0,
+
+    rejectedLicenses: 0,
+
+
+    // PERMITS
+
+    approvedPermits: 0,
+
+    pendingPermits: 0,
+
+    rejectedPermits: 0,
+
+
+    // PAYMENTS
+
+    approvedPayments: 0,
+
+    pendingPayments: 0,
+
+    rejectedPayments: 0,
+
+
+    // COMPLAINTS
+
+    resolvedComplaints: 0,
+
+    pendingComplaints: 0,
+
+    rejectedComplaints: 0,
+
+
+    // REVENUE
+
+    totalRevenue: 0
+
+  };
+
+
+  // ===================================================
+  // CHARTS
+  // ===================================================
+
+  revenueChart?: Chart;
+
+  licenseChart?: Chart;
+
+  complaintChart?: Chart;
+
+  overviewChart?: Chart;
+
+
+  // ===================================================
+  // TODAY
+  // ===================================================
 
   today = new Date();
 
+
+  // ===================================================
+  // INIT
+  // ===================================================
+
   ngOnInit(): void {
+
     this.loadDashboard();
+
   }
 
-  loadDashboard() {
 
-    this.analytics.adminDashboard().subscribe({
+  // ===================================================
+  // LOAD DASHBOARD
+  // ===================================================
 
-      next: (res) => {
+  loadDashboard(): void {
 
-        this.dashboard = res;
+    this.alertService.loading(
+      'Loading admin dashboard...'
+    );
 
-        this.loadRevenue();
-        this.loadLicenses();
-        this.loadComplaints();
-        this.loadOverview();
+
+    this.analytics
+      .adminDashboard()
+      .subscribe({
+
+        // =============================================
+        // SUCCESS
+        // =============================================
+
+        next: (res) => {
+
+          console.log(
+            'ADMIN DASHBOARD DATA:',
+            res
+          );
+
+
+          this.dashboard = res;
+
+
+          this.loadCharts();
+
+        },
+
+
+        // =============================================
+        // ERROR
+        // =============================================
+
+        error: (error) => {
+
+          console.error(
+            'Admin dashboard error:',
+            error
+          );
+
+
+          this.alertService.close();
+
+
+          let message =
+            'Unable to load admin dashboard data from the server.';
+
+
+          if (
+            error?.status === 401
+          ) {
+
+            message =
+              'Authentication required. Please login again.';
+
+          }
+
+          else if (
+            error?.status === 403
+          ) {
+
+            message =
+              'You are not authorized to access the admin dashboard.';
+
+          }
+
+          else if (
+            error?.error?.message
+          ) {
+
+            message =
+              error.error.message;
+
+          }
+
+
+          this.alertService.error(
+
+            'Dashboard Error',
+
+            message
+
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // ===================================================
+  // LOAD CHARTS
+  // ===================================================
+
+  loadCharts(): void {
+
+    let completedRequests = 0;
+
+    const totalRequests = 4;
+
+
+    const requestCompleted = (): void => {
+
+      completedRequests++;
+
+
+      if (
+        completedRequests >= totalRequests
+      ) {
+
+        this.alertService.close();
+
         this.cdr.detectChanges();
 
       }
 
-    });
+    };
 
-  }
 
-  loadRevenue() {
+    // =================================================
+    // REVENUE
+    // =================================================
 
-    this.analytics.monthlyRevenue().subscribe(data => {
+    this.analytics
+      .monthlyRevenue()
+      .subscribe({
 
-      const labels = Object.keys(data);
-      const values = Object.values(data);
+        next: (data) => {
 
-      if (this.revenueChart) {
-        this.revenueChart.destroy();
-      }
+          this.createRevenueChart(data);
 
-      this.revenueChart = new Chart("revenueChart", {
-
-        type: 'line',
-
-        data: {
-
-          labels,
-
-          datasets: [{
-
-            label: 'Revenue',
-
-            data: values,
-
-            fill: true,
-
-            tension: .4,
-
-            borderWidth: 3
-
-          }]
+          requestCompleted();
 
         },
 
-        options: {
+        error: (error) => {
 
-          responsive: true,
+          console.error(
+            'Monthly revenue error:',
+            error
+          );
 
-          plugins: {
-
-            legend: {
-
-              display: false
-
-            }
-            
-
-          }
-          
-
-        }
-        
-
-      });
-      this.cdr.detectChanges();
-
-    });
-
-  }
-
-  loadLicenses() {
-
-    this.analytics.monthlyLicenses().subscribe(data => {
-
-      const labels = Object.keys(data);
-      const values = Object.values(data);
-
-      if (this.licenseChart) {
-        this.licenseChart.destroy();
-      }
-
-      this.licenseChart = new Chart("licenseChart", {
-
-        type: 'bar',
-
-        data: {
-
-          labels,
-
-          datasets: [{
-
-            data: values
-
-          }]
-
-        },
-
-        options: {
-
-          responsive: true,
-
-          plugins: {
-
-            legend: {
-
-              display: false
-
-            }
-
-          }
+          requestCompleted();
 
         }
 
       });
-      this.cdr.detectChanges();
 
-    });
+
+    // =================================================
+    // LICENSES
+    // =================================================
+
+    this.analytics
+      .monthlyLicenses()
+      .subscribe({
+
+        next: (data) => {
+
+          this.createLicenseChart(data);
+
+          requestCompleted();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Monthly licenses error:',
+            error
+          );
+
+          requestCompleted();
+
+        }
+
+      });
+
+
+    // =================================================
+    // COMPLAINTS
+    // =================================================
+
+    this.analytics
+      .monthlyComplaints()
+      .subscribe({
+
+        next: (data) => {
+
+          this.createComplaintMonthlyChart(
+            data
+          );
+
+          requestCompleted();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Monthly complaints error:',
+            error
+          );
+
+          requestCompleted();
+
+        }
+
+      });
+
+
+    // =================================================
+    // REPORT
+    // =================================================
+
+    this.analytics
+      .reports()
+      .subscribe({
+
+        next: (res) => {
+
+          console.log(
+            'ANALYTICS REPORT DATA:',
+            res
+          );
+
+
+          this.reportsData = res;
+
+
+          this.createOverviewChart(
+            res
+          );
+
+
+          this.createComplaintStatusChart();
+
+
+          requestCompleted();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Analytics report error:',
+            error
+          );
+
+          requestCompleted();
+
+        }
+
+      });
 
   }
 
-  loadComplaints() {
 
-    this.analytics.reports().subscribe(res => {
+  // ===================================================
+  // REVENUE CHART
+  // ===================================================
 
-      if (this.complaintChart) {
-        this.complaintChart.destroy();
-      }
+  createRevenueChart(
+    data: Record<string, number>
+  ): void {
 
-      this.complaintChart = new Chart("complaintChart", {
+    const canvas =
+      document.getElementById(
+        'revenueChart'
+      ) as HTMLCanvasElement | null;
 
-        type: 'doughnut',
 
-        data: {
+    if (!canvas) {
 
-          labels: [
+      return;
 
-            'Resolved',
+    }
 
-            'Pending',
 
-            'Rejected'
+    if (this.revenueChart) {
 
-          ],
+      this.revenueChart.destroy();
 
-          datasets: [{
+    }
 
-            data: [
 
-              res.resolvedComplaints,
+    this.revenueChart =
+      new Chart(
 
-              res.pendingComplaints,
+        canvas,
 
-              res.rejectedComplaints
+        {
+
+          type: 'line',
+
+          data: {
+
+            labels:
+              Object.keys(data),
+
+            datasets: [
+
+              {
+
+                label:
+                  'Revenue',
+
+                data:
+                  Object.values(data),
+
+                fill:
+                  true,
+
+                tension:
+                  0.4,
+
+                borderWidth:
+                  3
+
+              }
 
             ]
 
-          }]
+          },
 
-        },
+          options: {
 
-        options: {
+            responsive:
+              true,
 
-          responsive: true
+            maintainAspectRatio:
+              false,
+
+            plugins: {
+
+              legend: {
+
+                display:
+                  false
+
+              },
+
+              tooltip: {
+
+                callbacks: {
+
+                  label:
+                    (context) => {
+
+                      return `TZS ${
+                        Number(
+                          context.raw
+                        ).toLocaleString()
+                      }`;
+
+                    }
+
+                }
+
+              }
+
+            },
+
+            scales: {
+
+              y: {
+
+                beginAtZero:
+                  true,
+
+                ticks: {
+
+                  callback:
+                    (value) => {
+
+                      return 'TZS ' +
+                        Number(value)
+                          .toLocaleString();
+
+                    }
+
+                }
+
+              }
+
+            }
+
+          }
 
         }
 
-      });
-      this.cdr.detectChanges();
-
-    });
+      );
 
   }
 
-  loadOverview() {
 
-    this.analytics.reports().subscribe(res => {
+  // ===================================================
+  // LICENSE CHART
+  // ===================================================
 
-      if (this.overviewChart) {
-        this.overviewChart.destroy();
-      }
+  createLicenseChart(
+    data: Record<string, number>
+  ): void {
 
-      this.overviewChart = new Chart("overviewChart", {
+    const canvas =
+      document.getElementById(
+        'licenseChart'
+      ) as HTMLCanvasElement | null;
 
-        type: 'pie',
 
-        data: {
+    if (!canvas) {
 
-          labels: [
+      return;
 
-            'Approved Licenses',
+    }
 
-            'Pending Licenses',
 
-            'Resolved Complaints',
+    if (this.licenseChart) {
 
-            'Approved Payments'
+      this.licenseChart.destroy();
 
-          ],
+    }
 
-          datasets: [{
 
-            data: [
+    this.licenseChart =
+      new Chart(
 
-              res.approvedLicenses,
+        canvas,
 
-              res.pendingLicenses,
+        {
 
-              res.resolvedComplaints,
+          type: 'bar',
 
-              res.approvedPayments
+          data: {
+
+            labels:
+              Object.keys(data),
+
+            datasets: [
+
+              {
+
+                label:
+                  'Licenses',
+
+                data:
+                  Object.values(data),
+
+                borderWidth:
+                  1
+
+              }
 
             ]
 
-          }]
+          },
 
-        },
+          options: {
 
-        options: {
+            responsive:
+              true,
 
-          responsive: true
+            maintainAspectRatio:
+              false,
+
+            plugins: {
+
+              legend: {
+
+                display:
+                  false
+
+              }
+
+            },
+
+            scales: {
+
+              y: {
+
+                beginAtZero:
+                  true,
+
+                ticks: {
+
+                  precision:
+                    0
+
+                }
+
+              }
+
+            }
+
+          }
 
         }
 
-      });
-      this.cdr.detectChanges();
+      );
 
-    });
+  }
+
+
+  // ===================================================
+  // MONTHLY COMPLAINT CHART
+  // ===================================================
+
+  createComplaintMonthlyChart(
+    data: Record<string, number>
+  ): void {
+
+    const canvas =
+      document.getElementById(
+        'complaintMonthlyChart'
+      ) as HTMLCanvasElement | null;
+
+
+    if (!canvas) {
+
+      return;
+
+    }
+
+
+    if (this.complaintChart) {
+
+      this.complaintChart.destroy();
+
+    }
+
+
+    this.complaintChart =
+      new Chart(
+
+        canvas,
+
+        {
+
+          type: 'bar',
+
+          data: {
+
+            labels:
+              Object.keys(data),
+
+            datasets: [
+
+              {
+
+                label:
+                  'Complaints',
+
+                data:
+                  Object.values(data),
+
+                borderWidth:
+                  1
+
+              }
+
+            ]
+
+          },
+
+          options: {
+
+            responsive:
+              true,
+
+            maintainAspectRatio:
+              false,
+
+            plugins: {
+
+              legend: {
+
+                display:
+                  false
+
+              }
+
+            },
+
+            scales: {
+
+              y: {
+
+                beginAtZero:
+                  true,
+
+                ticks: {
+
+                  precision:
+                    0
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      );
+
+  }
+
+
+  // ===================================================
+  // COMPLAINT STATUS CHART
+  // ===================================================
+
+  createComplaintStatusChart(): void {
+
+    const canvas =
+      document.getElementById(
+        'complaintChart'
+      ) as HTMLCanvasElement | null;
+
+
+    if (!canvas) {
+
+      return;
+
+    }
+
+
+    if (this.complaintChart) {
+
+      this.complaintChart.destroy();
+
+    }
+
+
+    this.complaintChart =
+      new Chart(
+
+        canvas,
+
+        {
+
+          type: 'doughnut',
+
+          data: {
+
+            labels: [
+
+              'Resolved',
+
+              'Pending',
+
+              'Rejected'
+
+            ],
+
+            datasets: [
+
+              {
+
+                data: [
+
+                  this.reportsData
+                    .resolvedComplaints,
+
+                  this.reportsData
+                    .pendingComplaints,
+
+                  this.reportsData
+                    .rejectedComplaints
+
+                ]
+
+              }
+
+            ]
+
+          },
+
+          options: {
+
+            responsive:
+              true,
+
+            maintainAspectRatio:
+              false,
+
+            plugins: {
+
+              legend: {
+
+                position:
+                  'bottom'
+
+              }
+
+            }
+
+          }
+
+        }
+
+      );
+
+  }
+
+
+  // ===================================================
+  // SYSTEM OVERVIEW
+  // ===================================================
+
+  createOverviewChart(
+    res: AnalyticsResponse
+  ): void {
+
+    const canvas =
+      document.getElementById(
+        'overviewChart'
+      ) as HTMLCanvasElement | null;
+
+
+    if (!canvas) {
+
+      return;
+
+    }
+
+
+    if (this.overviewChart) {
+
+      this.overviewChart.destroy();
+
+    }
+
+
+    this.overviewChart =
+      new Chart(
+
+        canvas,
+
+        {
+
+          type: 'pie',
+
+          data: {
+
+            labels: [
+
+              'Approved Licenses',
+
+              'Pending Licenses',
+
+              'Approved Permits',
+
+              'Pending Permits',
+
+              'Resolved Complaints',
+
+              'Approved Payments'
+
+            ],
+
+            datasets: [
+
+              {
+
+                data: [
+
+                  res.approvedLicenses,
+
+                  res.pendingLicenses,
+
+                  res.approvedPermits,
+
+                  res.pendingPermits,
+
+                  res.resolvedComplaints,
+
+                  res.approvedPayments
+
+                ]
+
+              }
+
+            ]
+
+          },
+
+          options: {
+
+            responsive:
+              true,
+
+            maintainAspectRatio:
+              false,
+
+            plugins: {
+
+              legend: {
+
+                position:
+                  'bottom'
+
+              }
+
+            }
+
+          }
+
+        }
+
+      );
+
+  }
+
+
+  // ===================================================
+  // DESTROY
+  // ===================================================
+
+  ngOnDestroy(): void {
+
+    this.revenueChart?.destroy();
+
+    this.licenseChart?.destroy();
+
+    this.complaintChart?.destroy();
+
+    this.overviewChart?.destroy();
 
   }
 

@@ -1,138 +1,260 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { NotificationService } from '../../services/notification.service';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
+import {
+  NotificationService,
+  NotificationResponse
+} from '../../services/notification.service';
 
 @Component({
   selector: 'app-admin-notifications',
-  standalone:true,
-  imports:[
+  standalone: true,
+  imports: [
     CommonModule,
     DatePipe
   ],
-  templateUrl:'./admin-notifications.html',
-  styleUrl:'./admin-notifications.css'
+  templateUrl: './admin-notifications.html',
+  styleUrl: './admin-notifications.css'
 })
-export class AdminNotifications implements OnInit{
+export class AdminNotifications implements OnInit {
 
   constructor(
-    private notificationService:NotificationService,
-    private cdr:ChangeDetectorRef
-  ){}
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  notifications:any[]=[];
+  notifications: NotificationResponse[] = [];
 
-  summary={
+  loading = false;
 
-    total:0,
+  error = '';
 
-    unread:0,
+  summary = {
 
-    alerts:0
+    total: 0,
+
+    unread: 0,
+
+    alerts: 0
 
   };
 
-  ngOnInit(){
+
+  // =====================================================
+  // INIT
+  // =====================================================
+
+  ngOnInit(): void {
 
     this.loadNotifications();
 
   }
 
-  loadNotifications(){
+
+  // =====================================================
+  // LOAD ALL NOTIFICATIONS
+  // =====================================================
+
+  loadNotifications(): void {
+
+    this.loading = true;
+
+    this.error = '';
 
     this.notificationService
+      .getAll()
+      .subscribe({
 
-    .getAll()
+        next: (res) => {
 
-    .subscribe({
+          this.notifications = res;
 
-      next:(res)=>{
+          this.calculateSummary();
 
-        this.notifications=res;
+          this.loading = false;
 
-        this.calculateSummary();
-        
-        this.cdr.detectChanges();
+          this.cdr.detectChanges();
 
+        },
 
-      }
+        error: (err) => {
 
-    });
+          console.error(
+            'NOTIFICATION ERROR:',
+            err
+          );
+
+          this.loading = false;
+
+          if (err.status === 401) {
+
+            this.error =
+              'Authentication required. Please login again.';
+
+          }
+
+          else if (err.status === 403) {
+
+            this.error =
+              'Access denied. Administrator permission required.';
+
+          }
+
+          else {
+
+            this.error =
+              'Failed to load notifications.';
+
+          }
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
 
   }
 
-  calculateSummary(){
 
-    this.summary.total=this.notifications.length;
+  // =====================================================
+  // CALCULATE SUMMARY
+  // =====================================================
 
-    this.summary.unread=
+  calculateSummary(): void {
 
-    this.notifications.filter(
+    this.summary.total =
+      this.notifications.length;
 
-      x=>!x.read
 
-    ).length;
+    this.summary.unread =
+      this.notifications.filter(
+        notification => !notification.read
+      ).length;
 
-    this.summary.alerts=
 
-    this.notifications.filter(
-
-      x=>x.type=="ALERT"
-
-    ).length;
+    this.summary.alerts =
+      this.notifications.filter(
+        notification =>
+          notification.type === 'ALERT'
+      ).length;
 
   }
 
-  markAll(){
+
+  // =====================================================
+  // MARK ALL AS READ
+  // =====================================================
+
+  markAll(): void {
 
     this.notificationService
+      .markAllRead()
+      .subscribe({
 
-    .markAllRead()
+        next: () => {
 
-    .subscribe(()=>{
+          this.loadNotifications();
 
-      this.loadNotifications();
+        },
 
-    });
+        error: (err) => {
+
+          console.error(
+            'MARK ALL ERROR:',
+            err
+          );
+
+        }
+
+      });
 
   }
 
-  markRead(notification:any){
 
-    if(notification.read){
+  // =====================================================
+  // MARK SINGLE AS READ
+  // =====================================================
+
+  markRead(
+    notification: NotificationResponse
+  ): void {
+
+    if (notification.read) {
 
       return;
 
     }
 
     this.notificationService
+      .markRead(notification.id)
+      .subscribe({
 
-    .markRead(notification.id)
+        next: () => {
 
-    .subscribe(()=>{
+          notification.read = true;
 
-      this.loadNotifications();
+          this.calculateSummary();
 
-    });
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'MARK READ ERROR:',
+            err
+          );
+
+        }
+
+      });
 
   }
 
-  delete(notification:any){
 
-    if(!confirm("Delete notification?")){
+  // =====================================================
+  // DELETE
+  // =====================================================
+
+  delete(
+    notification: NotificationResponse
+  ): void {
+
+    if (
+      !confirm(
+        'Delete notification?'
+      )
+    ) {
 
       return;
 
     }
 
     this.notificationService
+      .delete(notification.id)
+      .subscribe({
 
-    .delete(notification.id)
+        next: () => {
 
-    .subscribe(()=>{
+          this.loadNotifications();
 
-      this.loadNotifications();
+        },
 
-    });
+        error: (err) => {
+
+          console.error(
+            'DELETE NOTIFICATION ERROR:',
+            err
+          );
+
+        }
+
+      });
 
   }
 

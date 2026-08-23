@@ -1,234 +1,998 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ComplaintService } from '../../services/complaint.service';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
+
+import {
+  FormsModule
+} from '@angular/forms';
+
+import {
+  ComplaintService
+} from '../../services/complaint.service';
+
+import {
+  AlertService
+} from '../../services/alert.service';
+
 
 @Component({
+
   selector: 'app-complaints',
-  standalone:true,
-  imports:[
+
+  standalone: true,
+
+  imports: [
     CommonModule,
     FormsModule
   ],
-  templateUrl:'./complaints.html',
-  styleUrl:'./complaints.css'
+
+  templateUrl: './complaints.html',
+
+  styleUrl: './complaints.css'
+
 })
 
-export class Complaints implements OnInit{
 
-  private complaintService=inject(ComplaintService);
+export class Complaints implements OnInit {
 
 
-  constructor(private cdr:ChangeDetectorRef){}
+  // =====================================================
+  // SERVICES
+  // =====================================================
 
-  complaints:any[]=[];
+  private complaintService =
+    inject(ComplaintService);
 
-  filteredComplaints:any[]=[];
+  private alertService =
+    inject(AlertService);
 
-  selectedComplaint:any;
+  private cdr =
+    inject(ChangeDetectorRef);
 
-  search='';
 
-  status='ALL';
+  // =====================================================
+  // DATA
+  // =====================================================
 
-  response='';
+  complaints: any[] = [];
 
-  showViewModal=false;
+  filteredComplaints: any[] = [];
 
-  showResponseModal=false;
 
-  total=0;
+  // =====================================================
+  // SELECTED COMPLAINT
+  // =====================================================
 
-  pending=0;
+  selectedComplaint: any = null;
 
-  progress=0;
 
-  resolved=0;
+  // =====================================================
+  // SEARCH / FILTER
+  // =====================================================
 
-  ngOnInit(){
+  search = '';
+
+  status = 'ALL';
+
+
+  // =====================================================
+  // ADMIN RESPONSE
+  // =====================================================
+
+  response = '';
+
+
+  // =====================================================
+  // MODALS
+  // =====================================================
+
+  showViewModal = false;
+
+  showResponseModal = false;
+
+
+  // =====================================================
+  // LOADING
+  // =====================================================
+
+  loading = false;
+
+  actionLoading = false;
+
+
+  // =====================================================
+  // SUMMARY
+  // =====================================================
+
+  total = 0;
+
+  pending = 0;
+
+  progress = 0;
+
+  resolved = 0;
+
+  rejected = 0;
+
+
+  // =====================================================
+  // INIT
+  // =====================================================
+
+  ngOnInit(): void {
 
     this.load();
 
   }
 
-  load(){
+
+  // =====================================================
+  // LOAD COMPLAINTS
+  // =====================================================
+
+  load(): void {
+
+    if (this.actionLoading) {
+      return;
+    }
+
+
+    this.loading = true;
+
+    this.cdr.detectChanges();
+
+
+    this.alertService.loading(
+      'Loading complaints...'
+    );
+
 
     this.complaintService
+      .getAll()
+      .subscribe({
 
-    .getAll()
+        next: (data) => {
 
-    .subscribe({
+          this.complaints =
+            Array.isArray(data)
+              ? data
+              : [];
 
-      next:(data:any)=>{
 
-        this.complaints=data;
+          this.calculate();
 
-        this.filteredComplaints=data;
+          this.filter();
 
-        this.calculate();
-        this.cdr.detectChanges();
 
-      }
+          this.loading = false;
 
-    });
+          this.alertService.close();
 
-  }
 
-  calculate(){
+          this.cdr.detectChanges();
 
-    this.total=this.complaints.length;
+        },
 
-    this.pending=this.complaints
 
-      .filter(x=>x.status=='PENDING')
+        error: (error) => {
 
-      .length;
+          console.error(
+            'LOAD COMPLAINTS ERROR:',
+            error
+          );
 
-    this.progress=this.complaints
 
-      .filter(x=>x.status=='IN_PROGRESS')
+          this.loading = false;
 
-      .length;
+          this.alertService.close();
 
-    this.resolved=this.complaints
 
-      .filter(x=>x.status=='RESOLVED')
+          let message =
+            'Unable to load complaints. Please try again.';
 
-      .length;
 
-  }
+          if (error?.status === 401) {
 
-  filter(){
+            message =
+              'Your session has expired. Please login again.';
 
-    this.filteredComplaints=this.complaints.filter(c=>{
+          }
 
-      const text=
+          else if (error?.status === 403) {
 
-      c.complaintNumber.toLowerCase().includes(this.search.toLowerCase())
+            message =
+              'You are not authorized to access complaints.';
 
-      ||
+          }
 
-      c.title.toLowerCase().includes(this.search.toLowerCase())
+          else if (error?.status === 404) {
 
-      ||
+            message =
+              'Complaint service could not be found.';
 
-      c.location.toLowerCase().includes(this.search.toLowerCase());
+          }
 
-      const state=
+          else if (error?.status >= 500) {
 
-      this.status=='ALL'
+            message =
+              'The server encountered an error. Please try again later.';
 
-      ||
+          }
 
-      c.status==this.status;
 
-      return text && state;
+          this.alertService.error(
 
-    });
+            'Unable to Load Complaints',
 
-  }
+            message
 
-  openView(c:any){
+          );
 
-    this.selectedComplaint=c;
 
-    this.showViewModal=true;
+          this.cdr.detectChanges();
 
-  }
+        }
 
-  openResponse(c:any){
-
-    this.selectedComplaint=c;
-
-    this.response='';
-
-    this.showResponseModal=true;
+      });
 
   }
 
-  progressComplaint(){
+
+  // =====================================================
+  // CALCULATE SUMMARY
+  // =====================================================
+
+  calculate(): void {
+
+    this.total =
+      this.complaints.length;
+
+
+    this.pending =
+      this.complaints.filter(
+        complaint =>
+          complaint.status === 'PENDING'
+      ).length;
+
+
+    this.progress =
+      this.complaints.filter(
+        complaint =>
+          complaint.status === 'IN_PROGRESS'
+      ).length;
+
+
+    this.resolved =
+      this.complaints.filter(
+        complaint =>
+          complaint.status === 'RESOLVED'
+      ).length;
+
+
+    this.rejected =
+      this.complaints.filter(
+        complaint =>
+          complaint.status === 'REJECTED'
+      ).length;
+
+  }
+
+
+  // =====================================================
+  // FILTER
+  // =====================================================
+
+  filter(): void {
+
+    const search =
+      this.search
+        .trim()
+        .toLowerCase();
+
+
+    this.filteredComplaints =
+      this.complaints.filter(
+        complaint => {
+
+
+          const complaintNumber =
+            String(
+              complaint.complaintNumber || ''
+            ).toLowerCase();
+
+
+          const title =
+            String(
+              complaint.title || ''
+            ).toLowerCase();
+
+
+          const location =
+            String(
+              complaint.location || ''
+            ).toLowerCase();
+
+
+          const category =
+            String(
+              complaint.category || ''
+            ).toLowerCase();
+
+
+          const matchesSearch =
+            !search ||
+
+            complaintNumber.includes(search) ||
+
+            title.includes(search) ||
+
+            location.includes(search) ||
+
+            category.includes(search);
+
+
+          const matchesStatus =
+            this.status === 'ALL' ||
+
+            complaint.status ===
+              this.status;
+
+
+          return (
+            matchesSearch &&
+            matchesStatus
+          );
+
+        }
+      );
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // OPEN VIEW MODAL
+  // =====================================================
+
+  openView(
+    complaint: any
+  ): void {
+
+    this.selectedComplaint =
+      complaint;
+
+    this.showViewModal = true;
+
+    this.showResponseModal = false;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // OPEN RESPONSE MODAL
+  // =====================================================
+
+  openResponse(
+    complaint: any
+  ): void {
+
+    this.selectedComplaint =
+      complaint;
+
+
+    this.response =
+      complaint.adminResponse || '';
+
+
+    this.showResponseModal = true;
+
+    this.showViewModal = false;
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // MARK IN PROGRESS
+  // =====================================================
+
+  progressComplaint(): void {
+
+    if (!this.selectedComplaint) {
+      return;
+    }
+
+
+    if (this.actionLoading) {
+      return;
+    }
+
+
+    this.actionLoading = true;
+
+
+    this.alertService.loading(
+      'Updating complaint...'
+    );
+
 
     this.complaintService
+      .progress(
+        this.selectedComplaint.id
+      )
+      .subscribe({
 
-    .progress(this.selectedComplaint.id)
+        next: (response) => {
 
-    .subscribe(()=>{
+          console.log(
+            'COMPLAINT PROGRESSED:',
+            response
+          );
 
-      this.close();
 
-      this.load();
+          this.actionLoading = false;
 
-    });
+          this.alertService.close();
+
+
+          this.close();
+
+
+          this.alertService.success(
+
+            'Complaint Under Review',
+
+            `Complaint ${
+              this.selectedComplaint?.complaintNumber || ''
+            } has been moved to In Progress.`
+
+          );
+
+
+          this.load();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'PROGRESS COMPLAINT ERROR:',
+            error
+          );
+
+
+          this.actionLoading = false;
+
+          this.alertService.close();
+
+
+          this.handleActionError(
+            error,
+            'Unable to update the complaint.'
+          );
+
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
 
   }
 
-  resolveComplaint(){
+
+  // =====================================================
+  // RESOLVE COMPLAINT
+  // =====================================================
+
+  resolveComplaint(): void {
+
+    if (!this.selectedComplaint) {
+      return;
+    }
+
+
+    if (!this.response.trim()) {
+
+      this.alertService.warning(
+
+        'Response Required',
+
+        'Please write an administrator response before resolving the complaint.'
+
+      );
+
+      return;
+
+    }
+
+
+    if (this.actionLoading) {
+      return;
+    }
+
+
+    this.actionLoading = true;
+
+
+    this.alertService.loading(
+      'Resolving complaint...'
+    );
+
 
     this.complaintService
+      .resolve(
 
-    .resolve(
+        this.selectedComplaint.id,
 
-      this.selectedComplaint.id,
+        this.response.trim()
 
-      this.response
+      )
+      .subscribe({
 
-    )
+        next: (response) => {
 
-    .subscribe(()=>{
+          console.log(
+            'COMPLAINT RESOLVED:',
+            response
+          );
 
-      this.close();
 
-      this.load();
+          this.actionLoading = false;
 
-    });
+          this.alertService.close();
+
+
+          const number =
+            this.selectedComplaint?.complaintNumber || '';
+
+
+          this.close();
+
+
+          this.alertService.success(
+
+            'Complaint Resolved',
+
+            `Complaint ${number} has been resolved successfully.`
+
+          );
+
+
+          this.load();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'RESOLVE COMPLAINT ERROR:',
+            error
+          );
+
+
+          this.actionLoading = false;
+
+          this.alertService.close();
+
+
+          this.handleActionError(
+
+            error,
+
+            'Unable to resolve the complaint.'
+
+          );
+
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
 
   }
 
-  rejectComplaint(){
+
+  // =====================================================
+  // REJECT COMPLAINT
+  // =====================================================
+
+  rejectComplaint(): void {
+
+    if (!this.selectedComplaint) {
+      return;
+    }
+
+
+    if (!this.response.trim()) {
+
+      this.alertService.warning(
+
+        'Response Required',
+
+        'Please provide a reason before rejecting the complaint.'
+
+      );
+
+      return;
+
+    }
+
+
+    if (this.actionLoading) {
+      return;
+    }
+
+
+    this.actionLoading = true;
+
+
+    this.alertService.loading(
+      'Rejecting complaint...'
+    );
+
 
     this.complaintService
+      .reject(
 
-    .reject(
+        this.selectedComplaint.id,
 
-      this.selectedComplaint.id,
+        this.response.trim()
 
-      this.response
+      )
+      .subscribe({
 
-    )
+        next: (response) => {
 
-    .subscribe(()=>{
+          console.log(
+            'COMPLAINT REJECTED:',
+            response
+          );
 
-      this.close();
 
-      this.load();
+          this.actionLoading = false;
 
-    });
+          this.alertService.close();
+
+
+          const number =
+            this.selectedComplaint?.complaintNumber || '';
+
+
+          this.close();
+
+
+          this.alertService.success(
+
+            'Complaint Rejected',
+
+            `Complaint ${number} has been rejected.`
+
+          );
+
+
+          this.load();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'REJECT COMPLAINT ERROR:',
+            error
+          );
+
+
+          this.actionLoading = false;
+
+          this.alertService.close();
+
+
+          this.handleActionError(
+
+            error,
+
+            'Unable to reject the complaint.'
+
+          );
+
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
 
   }
 
-  delete(c:any){
 
-    if(!confirm('Delete complaint?'))
+  // =====================================================
+  // DELETE
+  // =====================================================
 
-    return;
+  delete(
+    complaint: any
+  ): void {
 
-    this.complaintService
+    if (!complaint?.id) {
+      return;
+    }
 
-    .delete(c.id)
 
-    .subscribe(()=>{
+    if (this.actionLoading) {
+      return;
+    }
 
-      this.load();
 
-    });
+    this.alertService
+      .confirm(
+
+        'Delete Complaint?',
+
+        `Are you sure you want to permanently delete ${
+          complaint.complaintNumber || 'this complaint'
+        }? This action cannot be undone.`,
+
+        'Delete'
+
+      )
+      .then((confirmed) => {
+
+        if (!confirmed) {
+          return;
+        }
+
+
+        this.actionLoading = true;
+
+
+        this.alertService.loading(
+          'Deleting complaint...'
+        );
+
+
+        this.complaintService
+          .delete(complaint.id)
+          .subscribe({
+
+            next: () => {
+
+              this.actionLoading = false;
+
+              this.alertService.close();
+
+
+              this.alertService.success(
+
+                'Complaint Deleted',
+
+                `${complaint.complaintNumber || 'Complaint'} has been deleted successfully.`
+
+              );
+
+
+              this.load();
+
+            },
+
+
+            error: (error) => {
+
+              console.error(
+                'DELETE COMPLAINT ERROR:',
+                error
+              );
+
+
+              this.actionLoading = false;
+
+              this.alertService.close();
+
+
+              this.handleActionError(
+
+                error,
+
+                'Unable to delete the complaint.'
+
+              );
+
+
+              this.cdr.detectChanges();
+
+            }
+
+          });
+
+      });
 
   }
 
-  close(){
 
-    this.showViewModal=false;
+  // =====================================================
+  // ERROR HANDLER
+  // =====================================================
 
-    this.showResponseModal=false;
+  private handleActionError(
+    error: any,
+    defaultMessage: string
+  ): void {
+
+    let message =
+      defaultMessage;
+
+
+    if (error?.status === 400) {
+
+      message =
+        typeof error?.error === 'string'
+          ? error.error
+          : error?.error?.message ||
+            'Invalid request. Please check the information.';
+
+    }
+
+    else if (error?.status === 401) {
+
+      message =
+        'Your login session has expired. Please login again.';
+
+    }
+
+    else if (error?.status === 403) {
+
+      message =
+        'You are not authorized to perform this action.';
+
+    }
+
+    else if (error?.status === 404) {
+
+      message =
+        'The complaint could not be found.';
+
+    }
+
+    else if (error?.status >= 500) {
+
+      message =
+        'A server error occurred. Please try again later.';
+
+    }
+
+
+    this.alertService.error(
+
+      'Action Failed',
+
+      message
+
+    );
+
+  }
+
+
+  // =====================================================
+  // CLOSE MODALS
+  // =====================================================
+
+  close(): void {
+
+    if (this.actionLoading) {
+      return;
+    }
+
+
+    this.showViewModal = false;
+
+    this.showResponseModal = false;
+
+    this.selectedComplaint = null;
+
+    this.response = '';
+
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // STATUS LABEL
+  // =====================================================
+
+  getStatusLabel(
+    status: string
+  ): string {
+
+    switch (status) {
+
+      case 'PENDING':
+        return 'Pending';
+
+      case 'IN_PROGRESS':
+        return 'In Progress';
+
+      case 'RESOLVED':
+        return 'Resolved';
+
+      case 'REJECTED':
+        return 'Rejected';
+
+      default:
+        return status || 'Unknown';
+
+    }
+
+  }
+
+
+  // =====================================================
+  // CATEGORY LABEL
+  // =====================================================
+
+  getCategoryLabel(
+    category: string
+  ): string {
+
+    switch (category) {
+
+      case 'POLLUTION':
+        return 'Pollution';
+
+      case 'ILLEGAL_FISHING':
+        return 'Illegal Fishing';
+
+      case 'ILLEGAL_ACTIVITY':
+        return 'Illegal Activity';
+
+      case 'WASTE_DISPOSAL':
+        return 'Waste Disposal';
+
+      case 'MARINE_DAMAGE':
+        return 'Marine / Coastal Damage';
+
+      case 'OTHER':
+        return 'Other';
+
+      default:
+        return category || 'Other';
+
+    }
+
+  }
+
+
+  // =====================================================
+  // IMAGE CHECK
+  // =====================================================
+
+  hasImage(
+    complaint: any
+  ): boolean {
+
+    return !!(
+      complaint?.imageUrl &&
+      complaint.imageUrl.trim()
+    );
 
   }
 

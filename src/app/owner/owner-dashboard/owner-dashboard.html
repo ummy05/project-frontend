@@ -1,82 +1,164 @@
 <div class="dashboard-page">
 
+    <!-- ================================================= -->
     <!-- HERO -->
+    <!-- ================================================= -->
 
     <div class="hero-card">
 
-        <div>
+        <div class="hero-content">
 
-            <h2>Welcome Back, Ali Hassan 👋</h2>
+            <span class="hero-eyebrow">
+                BUSINESS OWNER DASHBOARD
+            </span>
+
+            <h2>
+                Welcome Back,
+                {{ user?.fullName || 'Business Owner' }}
+                👋
+            </h2>
 
             <p>
-                Manage licenses, monitor payments and
-                track your coastal business activities.
+                Manage your licenses, payments and
+                coastal business activities from one place.
             </p>
 
-            <button>
+            <button
+                type="button"
+                (click)="applyLicense()">
+
                 <i class="fas fa-plus"></i>
+
                 Apply New License
+
             </button>
 
         </div>
 
-        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-             alt="Beach">
+
+        <img
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+            alt="Coastal Business"
+        >
+
     </div>
 
 
+
+    <!-- ================================================= -->
     <!-- SUMMARY -->
+    <!-- ================================================= -->
 
     <div class="summary-grid">
 
-        <div class="summary-card">
+
+        <!-- ACTIVE LICENSES -->
+
+        <div
+            class="summary-card"
+            (click)="viewLicenses()">
 
             <div class="icon active">
+
                 <i class="fas fa-id-card"></i>
+
             </div>
 
             <div>
-                <h3>3</h3>
-                <span>Active Licenses</span>
+
+                <h3>
+                    {{ dashboard.approvedLicenses }}
+                </h3>
+
+                <span>
+                    Active Licenses
+                </span>
+
             </div>
 
         </div>
 
-        <div class="summary-card">
+
+
+        <!-- PENDING -->
+
+        <div
+            class="summary-card"
+            (click)="viewLicenses()">
 
             <div class="icon pending">
+
                 <i class="fas fa-clock"></i>
+
             </div>
 
             <div>
-                <h3>1</h3>
-                <span>Pending Applications</span>
+
+                <h3>
+                    {{ dashboard.pendingLicenses }}
+                </h3>
+
+                <span>
+                    Pending Applications
+                </span>
+
             </div>
 
         </div>
 
-        <div class="summary-card">
+
+
+        <!-- PAYMENTS -->
+
+        <div
+            class="summary-card"
+            (click)="viewPayments()">
 
             <div class="icon payment">
+
                 <i class="fas fa-credit-card"></i>
+
             </div>
 
             <div>
-                <h3>TZS 2.5M</h3>
-                <span>Total Payments</span>
+
+                <h3>
+                    TZS
+                    {{ formatAmount(dashboard.totalPaid) }}
+                </h3>
+
+                <span>
+                    Total Payments
+                </span>
+
             </div>
 
         </div>
 
-        <div class="summary-card">
+
+
+        <!-- TOTAL PAYMENTS -->
+
+        <div
+            class="summary-card"
+            (click)="viewPayments()">
 
             <div class="icon notification">
-                <i class="fas fa-bell"></i>
+
+                <i class="fas fa-receipt"></i>
+
             </div>
 
             <div>
-                <h3>5</h3>
-                <span>Notifications</span>
+
+                <h3>
+                    {{ dashboard.myPayments }}
+                </h3>
+
+                <span>
+                    Total Payment Records
+                </span>
+
             </div>
 
         </div>
@@ -84,34 +166,82 @@
     </div>
 
 
+
+    <!-- ================================================= -->
     <!-- QUICK ACTIONS -->
+    <!-- ================================================= -->
 
     <div class="section-card">
 
         <div class="section-header">
-            <h3>Quick Actions</h3>
+
+            <div>
+
+                <h3>
+                    Quick Actions
+                </h3>
+
+                <p>
+                    Access your most frequently used services.
+                </p>
+
+            </div>
+
         </div>
+
 
         <div class="actions-grid">
 
-            <button>
+
+            <button
+                type="button"
+                (click)="applyLicense()">
+
                 <i class="fas fa-file-signature"></i>
-                Apply License
+
+                <span>
+                    Apply License
+                </span>
+
             </button>
 
-            <button>
+
+            <button
+                type="button"
+                (click)="viewPayments()">
+
                 <i class="fas fa-credit-card"></i>
-                Make Payment
+
+                <span>
+                    Make Payment
+                </span>
+
             </button>
 
-            <button>
+
+            <button
+                type="button"
+                (click)="viewLicenses()">
+
                 <i class="fas fa-download"></i>
-                Download License
+
+                <span>
+                    View Licenses
+                </span>
+
             </button>
 
-            <button>
+
+            <button
+                type="button"
+                (click)="viewProfile()">
+
                 <i class="fas fa-user"></i>
-                Update Profile
+
+                <span>
+                    Update Profile
+                </span>
+
             </button>
 
         </div>
@@ -119,46 +249,95 @@
     </div>
 
 
+
+    <!-- ================================================= -->
     <!-- MIDDLE -->
+    <!-- ================================================= -->
 
     <div class="middle-grid">
 
+
+        <!-- ================================================= -->
         <!-- LICENSE STATUS -->
+        <!-- ================================================= -->
 
         <div class="section-card">
 
             <div class="section-header">
-                <h3>License Status</h3>
+
+                <div>
+
+                    <h3>
+                        License Status
+                    </h3>
+
+                    <p>
+                        Current status of your license applications.
+                    </p>
+
+                </div>
+
             </div>
+
 
             <div class="license-status">
 
+
                 <div class="status-item">
 
-                    <span>Tourism License</span>
+                    <span>
+                        Total Licenses
+                    </span>
 
                     <span class="badge active-badge">
-                        Active
+
+                        {{ dashboard.myLicenses }}
+
                     </span>
 
                 </div>
 
+
                 <div class="status-item">
 
-                    <span>Boat Service License</span>
+                    <span>
+                        Approved
+                    </span>
 
-                    <span class="badge pending-badge">
+                    <span class="badge active-badge">
+
+                        {{ dashboard.approvedLicenses }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="status-item">
+
+                    <span>
                         Pending
                     </span>
 
+                    <span class="badge pending-badge">
+
+                        {{ dashboard.pendingLicenses }}
+
+                    </span>
+
                 </div>
+
 
                 <div class="status-item">
 
-                    <span>Water Sports License</span>
+                    <span>
+                        Rejected
+                    </span>
 
-                    <span class="badge active-badge">
-                        Active
+                    <span class="badge rejected-badge">
+
+                        {{ dashboard.rejectedLicenses }}
+
                     </span>
 
                 </div>
@@ -168,24 +347,94 @@
         </div>
 
 
+
+        <!-- ================================================= -->
         <!-- RECENT ACTIVITIES -->
+        <!-- ================================================= -->
 
         <div class="section-card">
 
             <div class="section-header">
-                <h3>Recent Activities</h3>
-            </div>
-
-            <div class="activity-item"
-                 *ngFor="let activity of activities">
-
-                <div class="activity-icon">
-                    <i [class]="activity.icon"></i>
-                </div>
 
                 <div>
-                    <h4>{{activity.title}}</h4>
-                    <span>{{activity.time}}</span>
+
+                    <h3>
+                        Recent Activities
+                    </h3>
+
+                    <p>
+                        Latest updates from Coastal Monitor.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- EMPTY -->
+
+            <div
+                class="empty-state"
+                *ngIf="activities.length === 0">
+
+                <i class="fas fa-bell-slash"></i>
+
+                <p>
+                    No recent activities.
+                </p>
+
+            </div>
+
+
+            <!-- ACTIVITIES -->
+
+            <div
+                class="activity-item"
+                *ngFor="let activity of activities">
+
+
+                <div class="activity-icon">
+
+                    <i
+                        class="fas"
+                        [ngClass]="{
+
+                            'fa-credit-card':
+                                activity.type === 'PAYMENT',
+
+                            'fa-id-card':
+                                activity.type === 'LICENSE',
+
+                            'fa-file-circle-check':
+                                activity.type === 'PERMIT',
+
+                            'fa-circle-info':
+                                activity.type !== 'PAYMENT'
+                                &&
+                                activity.type !== 'LICENSE'
+                                &&
+                                activity.type !== 'PERMIT'
+
+                        }">
+                    </i>
+
+                </div>
+
+
+                <div class="activity-content">
+
+                    <h4>
+                        {{ activity.title }}
+                    </h4>
+
+                    <span>
+                        {{ activity.message }}
+                    </span>
+
+                    <small>
+                        {{ formatDate(activity.createdAt) }}
+                    </small>
+
                 </div>
 
             </div>
@@ -195,50 +444,163 @@
     </div>
 
 
+
+    <!-- ================================================= -->
     <!-- PAYMENTS -->
+    <!-- ================================================= -->
 
     <div class="section-card">
 
         <div class="section-header">
-            <h3>Recent Payments</h3>
+
+            <div>
+
+                <h3>
+                    Recent Payments
+                </h3>
+
+                <p>
+                    Your latest payment transactions.
+                </p>
+
+            </div>
+
+
+            <button
+                class="view-all-btn"
+                type="button"
+                (click)="viewPayments()">
+
+                View All
+
+                <i class="fas fa-arrow-right"></i>
+
+            </button>
+
         </div>
 
-        <div class="table-container">
+
+        <!-- EMPTY -->
+
+        <div
+            class="empty-state"
+            *ngIf="recentPayments.length === 0">
+
+            <i class="fas fa-receipt"></i>
+
+            <h4>
+                No Payments Yet
+            </h4>
+
+            <p>
+                Your payment transactions will appear here.
+            </p>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+            class="table-container"
+            *ngIf="recentPayments.length > 0">
 
             <table>
 
                 <thead>
-                <tr>
-                    <th>Reference</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
+
+                    <tr>
+
+                        <th>
+                            Reference
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
                 </thead>
+
 
                 <tbody>
 
-                <tr>
-                    <td>PAY-2026-001</td>
-                    <td>TZS 500,000</td>
-                    <td>20 Jun 2026</td>
-                    <td>
-                        <span class="badge success">
-                            Paid
-                        </span>
-                    </td>
-                </tr>
+                    <tr
+                        *ngFor="
+                            let payment of recentPayments
+                        ">
 
-                <tr>
-                    <td>PAY-2026-002</td>
-                    <td>TZS 250,000</td>
-                    <td>15 Jun 2026</td>
-                    <td>
-                        <span class="badge success">
-                            Paid
-                        </span>
-                    </td>
-                </tr>
+                        <td>
+
+                            <strong>
+                                {{
+                                    payment.paymentNumber
+                                    || '-'
+                                }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            TZS
+                            {{
+                                formatAmount(
+                                    payment.amount
+                                )
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                formatDate(
+                                    payment.paymentDate
+                                )
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="badge"
+                                [ngClass]="{
+
+                                    success:
+                                        payment.status === 'APPROVED',
+
+                                    'pending-badge':
+                                        payment.status === 'PENDING',
+
+                                    'rejected-badge':
+                                        payment.status === 'REJECTED'
+
+                                }">
+
+                                {{
+                                    payment.status
+                                    || 'UNKNOWN'
+                                }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
 
                 </tbody>
 

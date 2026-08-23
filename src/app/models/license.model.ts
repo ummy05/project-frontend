@@ -1,33 +1,48 @@
+// src/app/models/license.model.ts
+
 export interface License {
 
-  id:number;
+  id: number;
 
-  licenseNumber:string;
+  licenseNumber: string;
 
-  businessName:string;
+  controlNumber: string;
 
-  ownerName:string;
+  businessName: string;
 
-  ownerEmail:string;
+  ownerName: string;
 
-  phoneNumber:string;
+  ownerEmail: string;
 
-  licenseType:string;
+  phoneNumber: string;
 
-  district:string;
+  licenseType: string;
 
-  location:string;
+  district: string;
 
-  issueDate:string;
+  location: string;
 
-  expiryDate:string;
+  issueDate: string | null;
 
-  licenseFee:number;
+  expiryDate: string | null;
 
-  status:string;
+  durationMonths: number;
 
-  remarks:string;
+  renewalStartDate?: string | null;
 
-  createdAt:string;
+  renewalEndDate?: string | null;
 
+  licenseFee: number;
+
+  paidAmount: number;
+
+  status: string;
+
+  remarks?: string | null;
+
+  renewal: boolean;
+
+  renewalCount: number;
+
+  createdAt: string;
 }

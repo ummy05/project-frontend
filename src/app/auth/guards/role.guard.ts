@@ -5,70 +5,125 @@ import {
   CanActivateFn,
   Router
 } from '@angular/router';
+
 import { AuthService } from '../../services/auth.service';
 
+
 export const roleGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot
+) => {
 
-route:ActivatedRouteSnapshot
+  const auth = inject(AuthService);
 
-)=>{
+  const router = inject(Router);
 
-const auth=inject(AuthService);
 
-const router=inject(Router);
+  // ==========================================
+  // EXPECTED ROLE FROM ROUTE
+  // ==========================================
 
-const expectedRole=
+  const expectedRole =
+    route.data['role'];
 
-route.data['role'];
 
-const currentRole=
+  // ==========================================
+  // CURRENT LOGGED-IN USER ROLE
+  // ==========================================
 
-auth.getRole();
+  const currentRole =
+    auth.getRole();
 
-if(currentRole===expectedRole){
 
-return true;
+  // ==========================================
+  // ROLE MATCH
+  // ==========================================
 
-}
+  if (
+    currentRole &&
+    currentRole === expectedRole
+  ) {
 
-switch(currentRole){
+    return true;
 
-case 'ADMIN':
+  }
 
-router.navigate(
 
-['/admin/dashboard']
+  // ==========================================
+  // REDIRECT USER TO THEIR OWN DASHBOARD
+  // ==========================================
 
-);
+  switch (currentRole) {
 
-break;
 
-case 'BUSINESS_OWNER':
+    // ========================================
+    // ADMIN
+    // ========================================
 
-router.navigate(
+    case 'ADMIN':
 
-['/owner/dashboard']
+      router.navigate([
+        '/admin/dashboard'
+      ]);
 
-);
+      break;
 
-break;
 
-case 'TOURIST':
+    // ========================================
+    // SHEHA
+    // ========================================
 
-router.navigate(
+    case 'SHEHA':
 
-['/tourist/dashboard']
+      router.navigate([
+        '/sheha/dashboard'
+      ]);
 
-);
+      break;
 
-break;
 
-default:
+    // ========================================
+    // BUSINESS OWNER
+    // ========================================
 
-router.navigate(['/login']);
+    case 'BUSINESS_OWNER':
 
-}
+      router.navigate([
+        '/business-owner/dashboard'
+      ]);
 
-return false;
+      break;
+
+
+    // ========================================
+    // TOURIST
+    // ========================================
+
+    case 'TOURIST':
+
+      router.navigate([
+        '/tourist/dashboard'
+      ]);
+
+      break;
+
+
+    // ========================================
+    // NO ROLE / INVALID ROLE
+    // ========================================
+
+    default:
+
+      auth.logout();
+
+      router.navigate([
+        '/login'
+      ]);
+
+      break;
+
+  }
+
+
+  return false;
 
 };

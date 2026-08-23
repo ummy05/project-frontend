@@ -1,102 +1,29 @@
 <div class="register-container">
 
     <!-- ========================================= -->
-    <!-- LEFT PANEL -->
+    <!-- REGISTRATION PAGE -->
     <!-- ========================================= -->
 
-    <div class="left-panel">
-
-        <div class="overlay"></div>
-
-        <div class="left-content">
-
-            <div class="brand">
-
-                <div class="brand-logo">
-
-                    <img
-                        src="/img/logo-1.png"
-                        alt="Coastal Monitor Logo">
-
-                </div>
-
-                <div>
-
-                    <h1>COASTAL</h1>
-
-                    <h2>MONITOR</h2>
-
-                </div>
-
-            </div>
-
-
-            <p class="tagline">
-                MONITOR. CONSERVE. SUSTAIN.
-            </p>
-
-
-            <div class="line"></div>
-
-
-            <h3>
-                Join the future of
-                sustainable coastal
-                management
-            </h3>
-
-
-            <div class="small-line"></div>
-
-
-            <p class="description">
-
-                Register to access digital licensing,
-                environmental reporting and coastal
-                management services.
-
-            </p>
-
-
-            <div class="info-card">
-
-                <i class="fas fa-leaf"></i>
-
-                <div>
-
-                    <h4>
-                        Protect Our Coastlines
-                    </h4>
-
-                    <p>
-                        Together we can ensure a cleaner
-                        and sustainable environment.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ========================================= -->
-    <!-- RIGHT PANEL -->
-    <!-- ========================================= -->
-
-    <div class="right-panel">
+    <main class="right-panel">
 
         <div class="register-card">
 
-            <h2>
-                Create Account
-            </h2>
+            <!-- HEADER -->
+            <div class="register-header">
 
-            <p class="subtitle">
-                Choose how you want to use Coastal Monitor
-            </p>
+                <div class="header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+
+                <div>
+                    <h2>Create Account</h2>
+
+                    <p class="subtitle">
+                        Choose how you want to use Coastal Monitor
+                    </p>
+                </div>
+
+            </div>
 
 
             <!-- ================================= -->
@@ -105,9 +32,7 @@
 
             <div class="registration-options">
 
-
                 <!-- TOURIST -->
-
                 <button
                     type="button"
                     class="registration-option"
@@ -123,12 +48,11 @@
                     <div class="option-content">
 
                         <strong>
-                            Register as Tourist
+                            Register as Tourist/Ccitizen
                         </strong>
 
                         <span>
-                            Explore coastal services and
-                            tourism opportunities.
+                            Explore coastal services and tourism opportunities.
                         </span>
 
                     </div>
@@ -139,7 +63,6 @@
 
 
                 <!-- BUSINESS OWNER -->
-
                 <button
                     type="button"
                     class="registration-option"
@@ -159,8 +82,7 @@
                         </strong>
 
                         <span>
-                            Manage your coastal business
-                            and related services.
+                            Manage your coastal business and related services.
                         </span>
 
                     </div>
@@ -195,8 +117,7 @@
                         </h3>
 
                         <p>
-                            Enter your personal information
-                            to create your account.
+                            Enter your personal information to create your account.
                         </p>
 
                     </div>
@@ -210,9 +131,7 @@
 
                     <div class="form-grid">
 
-
                         <!-- FULL NAME -->
-
                         <div class="input-group">
 
                             <label>
@@ -236,7 +155,6 @@
 
 
                         <!-- EMAIL -->
-
                         <div class="input-group">
 
                             <label>
@@ -260,7 +178,6 @@
 
 
                         <!-- PHONE -->
-
                         <div class="input-group">
 
                             <label>
@@ -284,7 +201,6 @@
 
 
                         <!-- AGE -->
-
                         <div class="input-group">
 
                             <label>
@@ -309,7 +225,6 @@
 
 
                         <!-- GENDER -->
-
                         <div class="input-group">
 
                             <label>
@@ -345,31 +260,148 @@
 
 
                         <!-- NATIONALITY -->
+                        <!-- NATIONALITY -->
+<div class="input-group">
 
-                        <div class="input-group">
+    <label>
+        Nationality
+        <small>(Optional)</small>
+    </label>
 
-                            <label>
-                                Nationality
-                            </label>
+    <div class="input-wrapper select-wrapper">
 
-                            <div class="input-wrapper">
+        <i class="fas fa-flag"></i>
 
-                                <i class="fas fa-flag"></i>
+        <select
+            name="touristNationality"
+            [(ngModel)]="touristData.nationality">
 
-                                <input
-                                    type="text"
-                                    name="touristNationality"
-                                    [(ngModel)]="touristData.nationality"
-                                    required
-                                    placeholder="Enter nationality">
+            <option value="">
+                Select Nationality (Optional)
+            </option>
 
-                            </div>
+            <option value="Tanzanian">
+                Tanzanian
+            </option>
+
+            <option value="Kenyan">
+                Kenyan
+            </option>
+
+            <option value="Ugandan">
+                Ugandan
+            </option>
+
+            <option value="Rwandan">
+                Rwandan
+            </option>
+
+            <option value="Burundian">
+                Burundian
+            </option>
+
+            <option value="Congolese">
+                Congolese
+            </option>
+
+            <option value="Zambian">
+                Zambian
+            </option>
+
+            <option value="Malawian">
+                Malawian
+            </option>
+
+            <option value="Mozambican">
+                Mozambican
+            </option>
+
+            <option value="South African">
+                South African
+            </option>
+
+            <option value="Ethiopian">
+                Ethiopian
+            </option>
+
+            <option value="Somali">
+                Somali
+            </option>
+
+            <option value="Nigerian">
+                Nigerian
+            </option>
+
+            <option value="Ghanaian">
+                Ghanaian
+            </option>
+
+            <option value="Egyptian">
+                Egyptian
+            </option>
+
+            <option value="Sudanese">
+                Sudanese
+            </option>
+
+            <option value="Indian">
+                Indian
+            </option>
+
+            <option value="Pakistani">
+                Pakistani
+            </option>
+
+            <option value="Chinese">
+                Chinese
+            </option>
+
+            <option value="British">
+                British
+            </option>
+
+            <option value="American">
+                American
+            </option>
+
+            <option value="Canadian">
+                Canadian
+            </option>
+
+            <option value="Australian">
+                Australian
+            </option>
+
+            <option value="German">
+                German
+            </option>
+
+            <option value="French">
+                French
+            </option>
+
+            <option value="Italian">
+                Italian
+            </option>
+
+            <option value="Spanish">
+                Spanish
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+  
+
+</div>
 
                         </div>
 
 
                         <!-- ADDRESS -->
-
                         <div class="input-group full-width">
 
                             <label>
@@ -393,7 +425,6 @@
 
 
                         <!-- PASSWORD -->
-
                         <div class="input-group full-width">
 
                             <label>
@@ -433,7 +464,6 @@
 
 
                     <!-- TERMS -->
-
                     <label class="terms">
 
                         <input
@@ -448,6 +478,7 @@
                     </label>
 
 
+                    <!-- BUTTON -->
                     <button
                         type="submit"
                         class="register-btn"
@@ -455,7 +486,9 @@
 
                         <i class="fas fa-user-plus"></i>
 
-                        Create Tourist Account
+                        <span>
+                            Create Tourist Account
+                        </span>
 
                     </button>
 
@@ -487,8 +520,7 @@
                         </h3>
 
                         <p>
-                            Enter your personal and business
-                            information.
+                            Enter your personal and business information.
                         </p>
 
                     </div>
@@ -502,9 +534,7 @@
 
                     <div class="form-grid">
 
-
                         <!-- FULL NAME -->
-
                         <div class="input-group">
 
                             <label>
@@ -528,7 +558,6 @@
 
 
                         <!-- BUSINESS NAME -->
-
                         <div class="input-group">
 
                             <label>
@@ -552,7 +581,6 @@
 
 
                         <!-- EMAIL -->
-
                         <div class="input-group">
 
                             <label>
@@ -576,7 +604,6 @@
 
 
                         <!-- PHONE -->
-
                         <div class="input-group">
 
                             <label>
@@ -600,7 +627,6 @@
 
 
                         <!-- AGE -->
-
                         <div class="input-group">
 
                             <label>
@@ -625,7 +651,6 @@
 
 
                         <!-- GENDER -->
-
                         <div class="input-group">
 
                             <label>
@@ -661,31 +686,146 @@
 
 
                         <!-- NATIONALITY -->
+                        <!-- NATIONALITY -->
+<div class="input-group">
 
-                        <div class="input-group">
+    <label>
+        Nationality
+        <small>(Optional)</small>
+    </label>
 
-                            <label>
-                                Nationality
-                            </label>
+    <div class="input-wrapper select-wrapper">
 
-                            <div class="input-wrapper">
+        <i class="fas fa-flag"></i>
 
-                                <i class="fas fa-flag"></i>
+        <select
+            name="businessNationality"
+            [(ngModel)]="businessData.nationality">
 
-                                <input
-                                    type="text"
-                                    name="businessNationality"
-                                    [(ngModel)]="businessData.nationality"
-                                    required
-                                    placeholder="Enter nationality">
+            <option value="">
+                Select Nationality (Optional)
+            </option>
 
-                            </div>
+            <option value="Tanzanian">
+                Tanzanian
+            </option>
 
-                        </div>
+            <option value="Kenyan">
+                Kenyan
+            </option>
+
+            <option value="Ugandan">
+                Ugandan
+            </option>
+
+            <option value="Rwandan">
+                Rwandan
+            </option>
+
+            <option value="Burundian">
+                Burundian
+            </option>
+
+            <option value="Congolese">
+                Congolese
+            </option>
+
+            <option value="Zambian">
+                Zambian
+            </option>
+
+            <option value="Malawian">
+                Malawian
+            </option>
+
+            <option value="Mozambican">
+                Mozambican
+            </option>
+
+            <option value="South African">
+                South African
+            </option>
+
+            <option value="Ethiopian">
+                Ethiopian
+            </option>
+
+            <option value="Somali">
+                Somali
+            </option>
+
+            <option value="Nigerian">
+                Nigerian
+            </option>
+
+            <option value="Ghanaian">
+                Ghanaian
+            </option>
+
+            <option value="Egyptian">
+                Egyptian
+            </option>
+
+            <option value="Sudanese">
+                Sudanese
+            </option>
+
+            <option value="Indian">
+                Indian
+            </option>
+
+            <option value="Pakistani">
+                Pakistani
+            </option>
+
+            <option value="Chinese">
+                Chinese
+            </option>
+
+            <option value="British">
+                British
+            </option>
+
+            <option value="American">
+                American
+            </option>
+
+            <option value="Canadian">
+                Canadian
+            </option>
+
+            <option value="Australian">
+                Australian
+            </option>
+
+            <option value="German">
+                German
+            </option>
+
+            <option value="French">
+                French
+            </option>
+
+            <option value="Italian">
+                Italian
+            </option>
+
+            <option value="Spanish">
+                Spanish
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
 
 
                         <!-- PERSONAL ADDRESS -->
-
                         <div class="input-group">
 
                             <label>
@@ -709,7 +849,6 @@
 
 
                         <!-- BUSINESS TYPE -->
-
                         <div class="input-group">
 
                             <label>
@@ -761,7 +900,6 @@
 
 
                         <!-- BUSINESS ADDRESS -->
-
                         <div class="input-group full-width">
 
                             <label>
@@ -785,7 +923,6 @@
 
 
                         <!-- PASSWORD -->
-
                         <div class="input-group full-width">
 
                             <label>
@@ -825,7 +962,6 @@
 
 
                     <!-- TERMS -->
-
                     <label class="terms">
 
                         <input
@@ -840,6 +976,7 @@
                     </label>
 
 
+                    <!-- BUTTON -->
                     <button
                         type="submit"
                         class="register-btn"
@@ -847,7 +984,9 @@
 
                         <i class="fas fa-building"></i>
 
-                        Create Business Account
+                        <span>
+                            Create Business Account
+                        </span>
 
                     </button>
 
@@ -857,7 +996,6 @@
 
 
             <!-- LOGIN -->
-
             <div class="login-link">
 
                 Already have an account?
@@ -872,7 +1010,6 @@
 
 
         <!-- FOOTER -->
-
         <div class="page-footer">
 
             © 2026
@@ -883,6 +1020,7 @@
 
         </div>
 
-    </div>
+    </main>
 
 </div>
+

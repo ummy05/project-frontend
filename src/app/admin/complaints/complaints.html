@@ -1,266 +1,774 @@
 <div class="page-container">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="page-header">
 
         <div>
 
-            <h2>Complaints Management</h2>
+            <div class="title-area">
 
-            <p>
-                Manage environmental complaints and public reports.
-            </p>
+                <div class="title-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+
+                <div>
+
+                    <h2>
+                        Complaints Management
+                    </h2>
+
+                    <p>
+                        Manage environmental complaints and public reports.
+                    </p>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <button class="export-btn">
 
-            <i class="fas fa-download"></i>
+        <button
+            class="refresh-btn"
+            (click)="load()"
+            [disabled]="loading || actionLoading">
 
-            Export
+            <i class="fas fa-sync-alt"
+               [class.spin]="loading">
+            </i>
+
+            Refresh
 
         </button>
 
     </div>
 
-    <!-- SUMMARY -->
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
 
     <div class="summary-grid">
 
+
+        <!-- TOTAL -->
+
         <div class="summary-card">
 
-            <i class="fas fa-exclamation-circle"></i>
+            <div class="summary-icon total-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
 
             <div>
 
-                <h3>{{total}}</h3>
+                <h3>
+                    {{ total }}
+                </h3>
 
-                <span>Total Complaints</span>
+                <span>
+                    Total Complaints
+                </span>
 
             </div>
 
         </div>
 
+
+        <!-- PENDING -->
+
         <div class="summary-card">
 
-            <i class="fas fa-clock"></i>
+            <div class="summary-icon pending-icon">
+                <i class="fas fa-clock"></i>
+            </div>
 
             <div>
 
-                <h3>{{pending}}</h3>
+                <h3>
+                    {{ pending }}
+                </h3>
 
-                <span>Pending</span>
+                <span>
+                    Pending
+                </span>
 
             </div>
 
         </div>
 
+
+        <!-- IN PROGRESS -->
+
         <div class="summary-card">
 
-            <i class="fas fa-search"></i>
+            <div class="summary-icon progress-icon">
+                <i class="fas fa-search"></i>
+            </div>
 
             <div>
 
-                <h3>{{progress}}</h3>
+                <h3>
+                    {{ progress }}
+                </h3>
 
-                <span>In Progress</span>
+                <span>
+                    In Progress
+                </span>
 
             </div>
 
         </div>
 
+
+        <!-- RESOLVED -->
+
         <div class="summary-card">
 
-            <i class="fas fa-check-circle"></i>
+            <div class="summary-icon resolved-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
 
             <div>
 
-                <h3>{{resolved}}</h3>
+                <h3>
+                    {{ resolved }}
+                </h3>
 
-                <span>Resolved</span>
+                <span>
+                    Resolved
+                </span>
 
             </div>
 
         </div>
+
 
     </div>
 
-    <!-- FILTER -->
+
+    <!-- =====================================================
+         FILTER
+    ====================================================== -->
 
     <div class="filter-section">
+
 
         <div class="search-box">
 
             <i class="fas fa-search"></i>
 
             <input
-
                 type="text"
-
                 [(ngModel)]="search"
-
                 (input)="filter()"
-
-                placeholder="Search complaint...">
+                placeholder="Search complaint, title, location...">
 
         </div>
 
+
         <select
-
             [(ngModel)]="status"
-
             (change)="filter()">
 
-            <option value="ALL">All Status</option>
+            <option value="ALL">
+                All Status
+            </option>
 
-            <option value="PENDING">Pending</option>
+            <option value="PENDING">
+                Pending
+            </option>
 
-            <option value="IN_PROGRESS">In Progress</option>
+            <option value="IN_PROGRESS">
+                In Progress
+            </option>
 
-            <option value="RESOLVED">Resolved</option>
+            <option value="RESOLVED">
+                Resolved
+            </option>
 
-            <option value="REJECTED">Rejected</option>
+            <option value="REJECTED">
+                Rejected
+            </option>
 
         </select>
 
+
     </div>
 
-    <!-- TABLE -->
+
+    <!-- =====================================================
+         TABLE
+    ====================================================== -->
 
     <div class="table-card">
 
-        <table>
 
-            <thead>
+        <!-- EMPTY STATE -->
 
-            <tr>
+        <div
+            class="empty-state"
+            *ngIf="!loading && filteredComplaints.length === 0">
 
-                <th>No.</th>
+            <div class="empty-icon">
 
-                <th>Title</th>
+                <i class="fas fa-inbox"></i>
 
-                <th>Location</th>
+            </div>
 
-                <th>Category</th>
+            <h3>
+                No complaints found
+            </h3>
 
-                <th>Date</th>
+            <p>
+                There are no complaints matching your current search or filter.
+            </p>
 
-                <th>Status</th>
+        </div>
 
-                <th>Actions</th>
 
-            </tr>
+        <!-- TABLE -->
 
-            </thead>
+        <div
+            class="table-wrapper"
+            *ngIf="filteredComplaints.length > 0">
 
-            <tbody>
+            <table>
 
-            <tr *ngFor="let complaint of filteredComplaints">
+                <thead>
 
-                <td>{{complaint.complaintNumber}}</td>
+                <tr>
 
-                <td>{{complaint.title}}</td>
+                    <th>
+                        Complaint No.
+                    </th>
 
-                <td>{{complaint.location}}</td>
+                    <th>
+                        Title
+                    </th>
 
-                <td>{{complaint.category}}</td>
+                    <th>
+                        Location
+                    </th>
 
-                <td>
+                    <th>
+                        Category
+                    </th>
 
-                    {{complaint.reportedAt | date:'dd MMM yyyy'}}
+                    <th>
+                        Date
+                    </th>
 
-                </td>
+                    <th>
+                        Status
+                    </th>
 
-                <td>
+                    <th>
+                        Actions
+                    </th>
 
-                    <span
+                </tr>
 
-                        class="status"
+                </thead>
 
-                        [ngClass]="{
 
-                        'pending':complaint.status=='PENDING',
+                <tbody>
 
-                        'investigating':complaint.status=='IN_PROGRESS',
+                <tr
+                    *ngFor="let complaint of filteredComplaints">
 
-                        'resolved':complaint.status=='RESOLVED',
 
-                        'rejected':complaint.status=='REJECTED'
+                    <!-- NUMBER -->
 
-                        }">
+                    <td>
 
-                        {{complaint.status}}
+                        <span class="complaint-number">
 
+                            {{ complaint.complaintNumber }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- TITLE -->
+
+                    <td>
+
+                        <div class="title-cell">
+
+                            <strong>
+                                {{ complaint.title }}
+                            </strong>
+
+                            <small>
+                                {{
+                                    complaint.description
+                                    | slice:0:60
+                                }}{{ complaint.description?.length > 60 ? '...' : '' }}
+                            </small>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- LOCATION -->
+
+                    <td>
+
+                        <span class="location-cell">
+
+                            <i class="fas fa-map-marker-alt"></i>
+
+                            {{ complaint.location }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- CATEGORY -->
+
+                    <td>
+
+                        <span class="category-badge">
+
+                            {{
+                                getCategoryLabel(
+                                    complaint.category
+                                )
+                            }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- DATE -->
+
+                    <td>
+
+                        <span class="date-cell">
+
+                            {{
+                                complaint.reportedAt
+                                | date:'dd MMM yyyy'
+                            }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        <span
+                            class="status"
+                            [ngClass]="{
+
+                                'pending':
+                                    complaint.status === 'PENDING',
+
+                                'investigating':
+                                    complaint.status === 'IN_PROGRESS',
+
+                                'resolved':
+                                    complaint.status === 'RESOLVED',
+
+                                'rejected':
+                                    complaint.status === 'REJECTED'
+
+                            }">
+
+                            {{
+                                getStatusLabel(
+                                    complaint.status
+                                )
+                            }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACTIONS -->
+
+                    <td>
+
+                        <div class="actions">
+
+
+                            <!-- VIEW -->
+
+                            <button
+                                class="view-btn"
+                                title="View complaint"
+                                (click)="openView(complaint)">
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+
+                            <!-- RESPONSE -->
+
+                            <button
+                                class="reply-btn"
+                                title="Take action"
+                                (click)="openResponse(complaint)">
+
+                                <i class="fas fa-reply"></i>
+
+                            </button>
+
+
+                            <!-- DELETE -->
+
+                            <button
+                                class="delete-btn"
+                                title="Delete complaint"
+                                (click)="delete(complaint)">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+
+                        </div>
+
+                    </td>
+
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     VIEW MODAL
+====================================================== -->
+
+<div
+    class="modal-overlay"
+    *ngIf="showViewModal"
+    (click)="close()">
+
+
+    <div
+        class="modal view-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-label">
+                    COMPLAINT DETAILS
+                </span>
+
+                <h3>
+
+                    {{
+                        selectedComplaint?.complaintNumber
+                    }}
+
+                </h3>
+
+            </div>
+
+
+            <button
+                class="modal-close"
+                (click)="close()">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- BODY -->
+
+        <div class="details">
+
+
+            <div class="detail-grid">
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Title
                     </span>
 
-                </td>
+                    <strong>
+                        {{ selectedComplaint?.title }}
+                    </strong>
 
-                <td>
+                </div>
 
-                    <div class="actions">
 
-                        <button
+                <div class="detail-item">
 
-                            class="view-btn"
+                    <span>
+                        Category
+                    </span>
 
-                            (click)="openView(complaint)">
+                    <strong>
 
-                            <i class="fas fa-eye"></i>
+                        {{
+                            getCategoryLabel(
+                                selectedComplaint?.category
+                            )
+                        }}
 
-                        </button>
+                    </strong>
 
-                        <button
+                </div>
 
-                            class="reply-btn"
 
-                            (click)="openResponse(complaint)">
+                <div class="detail-item">
 
-                            <i class="fas fa-reply"></i>
+                    <span>
+                        Location
+                    </span>
 
-                        </button>
+                    <strong>
 
-                        <button
+                        <i class="fas fa-map-marker-alt"></i>
 
-                            class="delete-btn"
+                        {{ selectedComplaint?.location }}
 
-                            (click)="delete(complaint)">
+                    </strong>
 
-                            <i class="fas fa-trash"></i>
+                </div>
 
-                        </button>
 
-                    </div>
+                <div class="detail-item">
 
-                </td>
+                    <span>
+                        Reported Date
+                    </span>
 
-            </tr>
+                    <strong>
 
-            </tbody>
+                        {{
+                            selectedComplaint?.reportedAt
+                            | date:'dd MMM yyyy, HH:mm'
+                        }}
 
-        </table>
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong>
+
+                        <span
+                            class="status"
+                            [ngClass]="{
+
+                                'pending':
+                                    selectedComplaint?.status === 'PENDING',
+
+                                'investigating':
+                                    selectedComplaint?.status === 'IN_PROGRESS',
+
+                                'resolved':
+                                    selectedComplaint?.status === 'RESOLVED',
+
+                                'rejected':
+                                    selectedComplaint?.status === 'REJECTED'
+
+                            }">
+
+                            {{
+                                getStatusLabel(
+                                    selectedComplaint?.status
+                                )
+                            }}
+
+                        </span>
+
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="description-section">
+
+                <span>
+                    Description
+                </span>
+
+                <p>
+
+                    {{
+                        selectedComplaint?.description
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <!-- IMAGE -->
+
+            <div
+                class="image-section"
+                *ngIf="hasImage(selectedComplaint)">
+
+                <span>
+                    Attached Image
+                </span>
+
+                <img
+                    [src]="selectedComplaint?.imageUrl"
+                    alt="Complaint image">
+
+            </div>
+
+
+            <!-- ADMIN RESPONSE -->
+
+            <div
+                class="admin-response"
+                *ngIf="selectedComplaint?.adminResponse">
+
+                <span>
+                    Administrator Response
+                </span>
+
+                <p>
+
+                    {{
+                        selectedComplaint?.adminResponse
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <!-- RESOLVED DATE -->
+
+            <div
+                class="resolved-date"
+                *ngIf="selectedComplaint?.resolvedAt">
+
+                <i class="fas fa-check-circle"></i>
+
+                Resolved on
+
+                {{
+                    selectedComplaint?.resolvedAt
+                    | date:'dd MMM yyyy, HH:mm'
+                }}
+
+            </div>
+
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+            <button
+                class="secondary-btn"
+                (click)="close()">
+
+                Close
+
+            </button>
+
+
+            <button
+                class="primary-btn"
+                *ngIf="
+                    selectedComplaint?.status === 'PENDING' ||
+                    selectedComplaint?.status === 'IN_PROGRESS'
+                "
+                (click)="openResponse(selectedComplaint)">
+
+                <i class="fas fa-reply"></i>
+
+                Take Action
+
+            </button>
+
+        </div>
+
 
     </div>
 
 </div>
 
-<!-- ===========================
-VIEW MODAL
-============================ -->
+
+<!-- =====================================================
+     ACTION MODAL
+====================================================== -->
 
 <div
-
     class="modal-overlay"
+    *ngIf="showResponseModal"
+    (click)="close()">
 
-    *ngIf="showViewModal">
 
-    <div class="modal">
+    <div
+        class="modal action-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- HEADER -->
 
         <div class="modal-header">
 
-            <h3>Complaint Details</h3>
+            <div>
 
-            <button (click)="close()">
+                <span class="modal-label">
+                    ADMINISTRATOR ACTION
+                </span>
+
+                <h3>
+                    {{ selectedComplaint?.complaintNumber }}
+                </h3>
+
+            </div>
+
+
+            <button
+                class="modal-close"
+                (click)="close()">
 
                 <i class="fas fa-times"></i>
 
@@ -268,115 +776,46 @@ VIEW MODAL
 
         </div>
 
-        <div class="details">
 
-            <p>
+        <!-- COMPLAINT INFO -->
 
-                <strong>Complaint Number:</strong>
+        <div class="action-info">
 
-                {{selectedComplaint?.complaintNumber}}
+            <div>
 
-            </p>
+                <span>
+                    Issue
+                </span>
 
-            <p>
+                <strong>
+                    {{ selectedComplaint?.title }}
+                </strong>
 
-                <strong>Title:</strong>
+            </div>
 
-                {{selectedComplaint?.title}}
 
-            </p>
+            <div>
 
-            <p>
-
-                <strong>Category:</strong>
-
-                {{selectedComplaint?.category}}
-
-            </p>
-
-            <p>
-
-                <strong>Location:</strong>
-
-                {{selectedComplaint?.location}}
-
-            </p>
-
-            <p>
-
-                <strong>Status:</strong>
-
-                {{selectedComplaint?.status}}
-
-            </p>
-
-            <p>
-
-                <strong>Description</strong>
-
-            </p>
-
-            <p>
-
-                {{selectedComplaint?.description}}
-
-            </p>
-
-            <p *ngIf="selectedComplaint?.adminResponse">
-
-                <strong>Admin Response</strong>
-
-            </p>
-
-            <p *ngIf="selectedComplaint?.adminResponse">
-
-                {{selectedComplaint?.adminResponse}}
-
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ===========================
-ACTION MODAL
-============================ -->
-
-<div
-
-    class="modal-overlay"
-
-    *ngIf="showResponseModal">
-
-    <div class="modal">
-
-        <div class="modal-header">
-
-            <h3>Complaint Action</h3>
-
-            <button (click)="close()">
-
-                <i class="fas fa-times"></i>
-
-            </button>
-
-        </div>
-
-        <div class="details">
-
-            <p>
+                <span>
+                    Current Status
+                </span>
 
                 <strong>
 
-                    {{selectedComplaint?.complaintNumber}}
+                    {{
+                        getStatusLabel(
+                            selectedComplaint?.status
+                        )
+                    }}
 
                 </strong>
 
-            </p>
+            </div>
 
         </div>
+
+
+        <!-- RESPONSE -->
 
         <div class="form-group">
 
@@ -384,38 +823,54 @@ ACTION MODAL
 
                 Administrator Response
 
+                <span>
+                    *
+                </span>
+
             </label>
 
+
             <textarea
-
                 rows="5"
-
                 [(ngModel)]="response"
-
-                placeholder="Write response...">
-
+                [disabled]="actionLoading"
+                placeholder="Write your response to the tourist...">
             </textarea>
+
+
+            <small>
+
+                A response is required when resolving or rejecting a complaint.
+
+            </small>
 
         </div>
 
-        <div style="display:flex;gap:12px;margin-top:20px;">
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="action-buttons">
+
+
+            <!-- PROGRESS -->
 
             <button
-
                 class="progress-btn"
-
+                [disabled]="actionLoading"
                 (click)="progressComplaint()">
 
                 <i class="fas fa-hourglass-half"></i>
 
-                Progress
+                In Progress
 
             </button>
 
+
+            <!-- RESOLVE -->
+
             <button
-
                 class="approve-btn"
-
+                [disabled]="actionLoading"
                 (click)="resolveComplaint()">
 
                 <i class="fas fa-check"></i>
@@ -424,10 +879,12 @@ ACTION MODAL
 
             </button>
 
+
+            <!-- REJECT -->
+
             <button
-
                 class="reject-btn"
-
+                [disabled]="actionLoading"
                 (click)="rejectComplaint()">
 
                 <i class="fas fa-times"></i>
@@ -436,7 +893,9 @@ ACTION MODAL
 
             </button>
 
+
         </div>
+
 
     </div>
 

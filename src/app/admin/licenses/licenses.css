@@ -398,3 +398,34 @@ background:#b71c1c;
 margin-right:8px;
 
 }
+
+.approve-btn{
+    background:#dff7e8;
+    color:#16a34a;
+}
+
+.reject-btn{
+    background:#fde2e2;
+    color:#dc2626;
+}
+
+.empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:#777;
+}
+
+.empty-state i{
+    font-size:42px;
+    margin-bottom:15px;
+    color:#aaa;
+}
+
+.empty-state h3{
+    margin:10px 0 5px;
+    color:#444;
+}
+
+.empty-state p{
+    margin:0;
+}

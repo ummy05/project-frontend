@@ -1,34 +1,63 @@
 <div class="apply-page">
 
-    <!-- PAGE HEADER -->
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
 
     <div class="page-header">
 
         <div>
+
             <h2>Apply for License</h2>
+
             <p>
                 Complete the form below to apply for a new business license.
             </p>
+
         </div>
 
     </div>
 
 
-    <!-- INFO CARD -->
+    <!-- =========================================
+         PAGE LOADING
+    ========================================== -->
+
+    <div
+        class="page-loader"
+        *ngIf="loading">
+
+        <div class="loader-spinner"></div>
+
+        <p>
+            Submitting your license application...
+        </p>
+
+    </div>
+
+
+    <!-- =========================================
+         INFO CARD
+    ========================================== -->
 
     <div class="info-card">
 
         <div class="info-icon">
+
             <i class="fas fa-circle-info"></i>
+
         </div>
 
         <div>
 
-            <h3>License Application Guidelines</h3>
+            <h3>
+                License Application Guidelines
+            </h3>
 
             <p>
-                Ensure all business information and supporting documents
-                are accurate before submitting your application.
+                Ensure all business information and supporting
+                documents are accurate before submitting your
+                application.
             </p>
 
         </div>
@@ -36,100 +65,204 @@
     </div>
 
 
-    <!-- FORM CARD -->
+    <!-- =========================================
+         BUSINESS INFORMATION
+    ========================================== -->
 
     <div class="form-card">
 
-        <h3>Business Information</h3>
+        <h3>
+            Business Information
+        </h3>
 
         <div class="form-grid">
 
+
+            <!-- BUSINESS NAME -->
+
             <div class="form-group">
 
-                <label>Business Name</label>
+                <label>
+                    Business Name
+                    <span>*</span>
+                </label>
 
-                <input type="text"
-                       placeholder="Enter business name">
+                <input
+                    type="text"
+                    [(ngModel)]="application.businessName"
+                    placeholder="Enter business name">
 
             </div>
 
+
+            <!-- PHONE -->
+
             <div class="form-group">
 
-                <label>Business Owner</label>
+                <label>
+                    Phone Number
+                    <span>*</span>
+                </label>
 
-                <input type="text"
-                       placeholder="Enter owner name">
+                <input
+                    type="text"
+                    [(ngModel)]="application.phoneNumber"
+                    placeholder="Enter phone number">
 
             </div>
 
+
+            <!-- BUSINESS TYPE -->
+
             <div class="form-group">
 
-                <label>Business Type</label>
+                <label>
+                    Business / License Type
+                    <span>*</span>
+                </label>
 
                 <select
+                    [(ngModel)]="application.licenseType"
+                    (change)="calculateFee()">
 
-                 [(ngModel)]="application.licenseType"
-
-(change)="calculateFee()">
+                    <option value="">
+                        Select business type
+                    </option>
 
                     <option value="BEACH_HOTEL">
+                        Beach Hotel
+                    </option>
 
-Beach Hotel
+                    <option value="TOUR_OPERATOR">
+                        Tour Operator
+                    </option>
 
-</option>
+                    <option value="BOAT_OPERATOR">
+                        Boat Operator
+                    </option>
 
-<option value="TOUR_OPERATOR">
+                    <option value="FISHING">
+                        Fishing
+                    </option>
 
-Tour Operator
+                    <option value="BEACH_RESTAURANT">
+                        Beach Restaurant
+                    </option>
 
-</option>
+                    <option value="WATER_SPORTS">
+                        Water Sports
+                    </option>
 
-<option value="BOAT_OPERATOR">
+                    <option value="BEACH_EVENT">
+                        Beach Event
+                    </option>
 
-Boat Operator
-
-</option>
-
-<option value="FISHING">
-
-Fishing
-
-</option>
-
-<option value="BEACH_RESTAURANT">
-
-Beach Restaurant
-
-</option>
-
-<option value="WATER_SPORTS">
-
-Water Sports
-
-</option>
-
-<option value="BEACH_EVENT">
-
-Beach Event
-
-</option>
-
-<option value="OTHER">
-
-Other
-
-</option>
+                    <option value="OTHER">
+                        Other
+                    </option>
 
                 </select>
 
             </div>
 
-            <div class="form-group">
 
-                <label>Business Location</label>
+            <!-- DISTRICT -->
 
-                <input type="text"
-                       placeholder="Example: Paje Beach">
+            <!-- DISTRICT -->
+
+<div class="form-group">
+
+    <label>
+        District
+        <span>*</span>
+    </label>
+
+    <select
+        [(ngModel)]="application.district">
+
+        <option value="">
+            Select district
+        </option>
+
+        <!-- ============================= -->
+        <!-- UNGUJA -->
+        <!-- ============================= -->
+
+        <optgroup label="Unguja">
+
+            <option value="Kaskazini A">
+                Kaskazini A
+            </option>
+
+            <option value="Kaskazini B">
+                Kaskazini B
+            </option>
+
+            <option value="Kati">
+                Kati
+            </option>
+
+            <option value="Kusini">
+                Kusini
+            </option>
+
+            <option value="Magharibi A">
+                Magharibi A
+            </option>
+
+            <option value="Magharibi B">
+                Magharibi B
+            </option>
+
+            <option value="Mjini">
+                Mjini
+            </option>
+
+        </optgroup>
+
+
+        <!-- ============================= -->
+        <!-- PEMBA -->
+        <!-- ============================= -->
+
+        <optgroup label="Pemba">
+
+            <option value="Micheweni">
+                Micheweni
+            </option>
+
+            <option value="Wete">
+                Wete
+            </option>
+
+            <option value="Chake Chake">
+                Chake Chake
+            </option>
+
+            <option value="Mkoani">
+                Mkoani
+            </option>
+
+        </optgroup>
+
+    </select>
+
+</div>
+
+
+            <!-- LOCATION -->
+
+            <div class="form-group full">
+
+                <label>
+                    Business Location
+                    <span>*</span>
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="application.location"
+                    placeholder="Example: Paje Beach">
 
             </div>
 
@@ -138,41 +271,59 @@ Other
     </div>
 
 
-    <!-- LICENSE CARD -->
+    <!-- =========================================
+         LICENSE DETAILS
+    ========================================== -->
 
     <div class="form-card">
 
-        <h3>License Details</h3>
+        <h3>
+            License Details
+        </h3>
 
         <div class="form-grid">
 
+
+            <!-- LICENSE TYPE -->
+
             <div class="form-group">
 
-                <label>License Type</label>
+                <label>
+                    License Type
+                </label>
 
-                <select>
-
-                    <option>Select License</option>
-
-                    <option>Tourism License</option>
-                    <option>Beach Vendor License</option>
-                    <option>Water Sports License</option>
-                    <option>Boat Service License</option>
-                    <option>Fishing License</option>
-
-                </select>
+                <input
+                    type="text"
+                    [value]="application.licenseType || 'Not selected'"
+                    readonly>
 
             </div>
 
+
+            <!-- DURATION -->
+
             <div class="form-group">
 
-                <label>Duration</label>
+                <label>
+                    Duration
+                    <span>*</span>
+                </label>
 
-                <select>
+                <select
+                    [(ngModel)]="application.durationMonths"
+                    (change)="calculateFee()">
 
-                    <option>1 Year</option>
-                    <option>2 Years</option>
-                    <option>3 Years</option>
+                    <option [ngValue]="12">
+                        1 Year
+                    </option>
+
+                    <option [ngValue]="24">
+                        2 Years
+                    </option>
+
+                    <option [ngValue]="36">
+                        3 Years
+                    </option>
 
                 </select>
 
@@ -180,12 +331,55 @@ Other
 
         </div>
 
+
+        <!-- =====================================
+             FEE
+        ====================================== -->
+
+        <div class="fee-box">
+
+            <div>
+
+                <span>
+                    Estimated License Fee
+                </span>
+
+                <small>
+                    Based on selected type and duration
+                </small>
+
+            </div>
+
+
+            <strong *ngIf="!feeLoading">
+
+                TZS {{ fee | number }}
+
+            </strong>
+
+
+            <span
+                class="fee-loading"
+                *ngIf="feeLoading">
+
+                Calculating...
+
+            </span>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
         <div class="form-group">
 
-            <label>Business Description</label>
+            <label>
+                Business Description
+            </label>
 
-            <textarea rows="5"
-                      placeholder="Describe your business activities">
+            <textarea
+                rows="5"
+                placeholder="Describe your business activities">
             </textarea>
 
         </div>
@@ -193,38 +387,50 @@ Other
     </div>
 
 
-    <!-- DOCUMENTS -->
+    <!-- =========================================
+         DOCUMENTS
+    ========================================== -->
 
     <div class="form-card">
 
-        <h3>Supporting Documents</h3>
+        <h3>
+            Supporting Documents
+        </h3>
 
         <div class="upload-area">
 
             <i class="fas fa-cloud-upload-alt"></i>
 
-            <h4>Upload Required Documents</h4>
+            <h4>
+                Upload Required Documents
+            </h4>
 
             <p>
-                Business Registration Certificate, Identification Document, etc.
+                Business Registration Certificate,
+                Identification Document, etc.
             </p>
 
-            <input type="file"
-                   id="fileUpload"
-                   hidden
-                   (change)="onFileSelected($event)">
+            <input
+                type="file"
+                id="fileUpload"
+                hidden
+                (change)="onFileSelected($event)">
 
-            <label for="fileUpload"
-                   class="upload-btn">
+
+            <label
+                for="fileUpload"
+                class="upload-btn">
 
                 Choose File
 
             </label>
 
-            <span *ngIf="selectedFileName"
-                  class="file-name">
 
-                {{selectedFileName}}
+            <span
+                *ngIf="selectedFileName"
+                class="file-name">
+
+                {{ selectedFileName }}
 
             </span>
 
@@ -233,32 +439,49 @@ Other
     </div>
 
 
-    <!-- TERMS -->
+    <!-- =========================================
+         TERMS
+    ========================================== -->
 
     <div class="terms-card">
 
         <label>
 
-            <input type="checkbox">
+            <input
+                type="checkbox"
+                [(ngModel)]="accepted">
 
-            I confirm that all information provided is true and correct.
+            <span>
+                I confirm that all information provided
+                is true and correct.
+            </span>
 
         </label>
 
     </div>
 
 
-    <!-- ACTIONS -->
+    <!-- =========================================
+         ACTIONS
+    ========================================== -->
 
     <div class="actions">
 
-        <button class="draft-btn">
+        <button
+            type="button"
+            class="draft-btn"
+            (click)="saveDraft()">
 
             Save Draft
 
         </button>
 
-        <button class="submit-btn">
+
+        <button
+            type="button"
+            class="submit-btn"
+            (click)="submit()"
+            [disabled]="loading">
 
             <i class="fas fa-paper-plane"></i>
 

@@ -1,138 +1,195 @@
+// src/app/services/license.service.ts
+
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../environment/environment';
 import { Observable } from 'rxjs';
+
+import { environment } from '../environment/environment';
 import { License } from '../models/license.model';
 
+export interface LicenseApplicationRequest {
+
+  businessName: string;
+
+  phoneNumber: string;
+
+  licenseType: string;
+
+  district: string;
+
+  location: string;
+
+  durationMonths: number;
+
+}
+
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
-export class LicenseService{
+export class LicenseService {
 
-  private http=inject(HttpClient);
+  private http = inject(HttpClient);
 
-  private api=`${environment.apiUrl}/licenses`;
+  private api = `${environment.apiUrl}/licenses`;
 
-  // =======================
+
+  // =====================================================
   // ADMIN
-  // =======================
+  // =====================================================
 
-  getAll():Observable<License[]>{
-
-    return this.http.get<License[]>(this.api);
-
-  }
-
-  getPending(){
+  getAll(): Observable<License[]> {
 
     return this.http.get<License[]>(
+      this.api
+    );
 
+  }
+
+
+  getPending(): Observable<License[]> {
+
+    return this.http.get<License[]>(
       `${this.api}/pending`
-
     );
 
   }
 
-  approve(id:number){
 
-    return this.http.patch(
+  getById(id: number): Observable<License> {
 
+    return this.http.get<License>(
+      `${this.api}/${id}`
+    );
+
+  }
+
+
+  approve(id: number): Observable<License> {
+
+    return this.http.patch<License>(
       `${this.api}/${id}/approve`,
-
       {}
-
     );
 
   }
 
- reject(id:number, reason:string){
 
-return this.http.patch(
+  reject(
+    id: number,
+    reason: string
+  ): Observable<License> {
 
-`${this.api}/${id}/reject`,
+    return this.http.patch<License>(
+      `${this.api}/${id}/reject`,
+      {
+        reason
+      }
+    );
 
-{
-  reason: reason
-}
+  }
 
-);
 
-}
-
-  delete(id:number){
+  delete(id: number): Observable<string> {
 
     return this.http.delete(
-
-      `${this.api}/${id}`
-
+      `${this.api}/${id}`,
+      {
+        responseType: 'text'
+      }
     );
 
   }
 
-  // =======================
-  // BUSINESS OWNER
-  // =======================
 
-  myLicenses(){
+  // =====================================================
+  // BUSINESS OWNER
+  // =====================================================
+
+  myLicenses(): Observable<License[]> {
 
     return this.http.get<License[]>(
-
       `${this.api}/my`
-
     );
 
   }
+
+
+  // =====================================================
+  // CALCULATE FEE
+  // =====================================================
 
   calculateFee(
-
-      type:string,
-
-      duration:number){
+    type: string,
+    durationMonths: number
+  ): Observable<number> {
 
     return this.http.get<number>(
-
-      `${this.api}/calculate-fee?type=${type}&durationMonths=${duration}`
-
+      `${this.api}/calculate-fee`,
+      {
+        params: {
+          type,
+          durationMonths: durationMonths.toString()
+        }
+      }
     );
 
   }
 
-  apply(data:any){
 
-    return this.http.post(
+  // =====================================================
+  // APPLY
+  // =====================================================
 
+  apply(
+    data: LicenseApplicationRequest
+  ): Observable<License> {
+
+    return this.http.post<License>(
       `${this.api}/apply`,
-
       data
-
     );
 
   }
+
+
+  // =====================================================
+  // RENEW
+  // =====================================================
 
   renew(
+    id: number,
+    months: number
+  ): Observable<License> {
 
-      id:number,
-
-      months:number){
-
-    return this.http.post(
-
-      `${this.api}/${id}/renew?durationMonths=${months}`,
-
-      {}
-
+    return this.http.post<License>(
+      `${this.api}/${id}/renew`,
+      {},
+      {
+        params: {
+          durationMonths: months.toString()
+        }
+      }
     );
 
   }
 
-  getById(id:number){
 
-    return this.http.get(
+  // =====================================================
+  // DOWNLOAD LICENSE PDF
+  // =====================================================
+// =====================================================
+// DOWNLOAD LICENSE PDF
+// =====================================================
 
-      `${this.api}/${id}`
+downloadPdf(id: number): Observable<Blob> {
 
-    );
+  return this.http.get(
+    `${this.api}/${id}/pdf`,
+    {
+      responseType: 'blob'
+    }
+  );
 
-  }
+}
 
 }

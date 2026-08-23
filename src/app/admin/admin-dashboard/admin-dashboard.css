@@ -227,3 +227,13 @@
     height:100% !important;
 
 }
+
+.chart-card {
+  position: relative;
+  min-height: 360px;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 300px !important;
+}

@@ -1,0 +1,1524 @@
+<!-- =========================================================
+     TOURIST PAYMENT PAGE
+========================================================= -->
+
+<div class="payment-page">
+
+  <!-- =======================================================
+       PAGE HEADER
+  ======================================================== -->
+
+  <section class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-text">
+
+        <span class="eyebrow">
+          <i class="fas fa-credit-card"></i>
+          TOURIST SERVICES
+        </span>
+
+        <h1>
+          Permit Payments
+        </h1>
+
+        <p>
+          Manage your event permits and complete outstanding
+          permit payments securely.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="primary-btn"
+        (click)="openPaymentModal()"
+        [disabled]="payablePermits.length === 0"
+      >
+
+        <i class="fas fa-credit-card"></i>
+
+        Make Payment
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       SUMMARY CARDS
+  ======================================================== -->
+
+  <section class="summary-grid">
+
+    <!-- TOTAL PAID -->
+
+    <div class="summary-card">
+
+      <div class="summary-icon paid">
+
+        <i class="fas fa-money-bill-wave"></i>
+
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          Total Paid
+        </span>
+
+        <h2>
+          TZS {{ formatAmount(totalPaid) }}
+        </h2>
+
+        <span class="summary-description">
+          Permit payments made
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- PENDING -->
+
+    <div class="summary-card">
+
+      <div class="summary-icon pending">
+
+        <i class="fas fa-clock"></i>
+
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          Pending
+        </span>
+
+        <h2>
+          {{ pendingCount }}
+        </h2>
+
+        <span class="summary-description">
+          Permits awaiting approval
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- APPROVED -->
+
+    <div class="summary-card">
+
+      <div class="summary-icon approved">
+
+        <i class="fas fa-circle-check"></i>
+
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          Approved
+        </span>
+
+        <h2>
+          {{ approvedCount }}
+        </h2>
+
+        <span class="summary-description">
+          Approved permits
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- PAYABLE -->
+
+    <div class="summary-card">
+
+      <div class="summary-icon payable">
+
+        <i class="fas fa-wallet"></i>
+
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          Payment Due
+        </span>
+
+        <h2>
+          {{ payablePermits.length }}
+        </h2>
+
+        <span class="summary-description">
+          Permits awaiting payment
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       MAIN CONTENT
+  ======================================================== -->
+
+  <section class="content-section">
+
+    <!-- SECTION HEADER -->
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="section-eyebrow">
+          PAYMENT HISTORY
+        </span>
+
+        <h2>
+          My Permit Payments
+        </h2>
+
+        <p>
+          View your permit payment status and outstanding
+          payment requirements.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="outline-btn"
+        (click)="loadPermits()"
+        [disabled]="loading"
+      >
+
+        <i
+          class="fas fa-rotate-right"
+          [class.fa-spin]="loading"
+        ></i>
+
+        Refresh
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
+
+    <div
+      class="loading-state"
+      *ngIf="loading"
+    >
+
+      <div class="loader"></div>
+
+      <h3>
+        Loading permits...
+      </h3>
+
+      <p>
+        Please wait while we retrieve your permit information.
+      </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         EMPTY STATE
+    ====================================================== -->
+
+    <div
+      class="empty-state"
+      *ngIf="!loading && permits.length === 0"
+    >
+
+      <div class="empty-icon">
+
+        <i class="fas fa-file-circle-xmark"></i>
+
+      </div>
+
+      <h3>
+        No Permits Found
+      </h3>
+
+      <p>
+        You do not have any permit applications yet.
+      </p>
+
+      <button
+        type="button"
+        class="primary-btn"
+        routerLink="/tourist/permits"
+      >
+
+        <i class="fas fa-plus"></i>
+
+        Apply for Permit
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         PAYMENT TABLE
+    ====================================================== -->
+
+    <div
+      class="table-wrapper"
+      *ngIf="!loading && permits.length > 0"
+    >
+
+      <table class="payment-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Permit
+            </th>
+
+            <th>
+              Event
+            </th>
+
+            <th>
+              Control Number
+            </th>
+
+            <th>
+              Permit Fee
+            </th>
+
+            <th>
+              Paid
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Action
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr
+            *ngFor="
+              let permit of permits;
+              trackBy: trackByPermitId
+            "
+          >
+
+            <!-- PERMIT TYPE -->
+
+            <td>
+
+              <div class="permit-cell">
+
+                <div class="permit-icon">
+
+                  <i class="fas fa-file-contract"></i>
+
+                </div>
+
+                <div>
+
+                  <strong>
+                    {{ getPermitTypeLabel(permit.permitType) }}
+                  </strong>
+
+                  <small>
+                    Permit #{{ permit.permitNumber || permit.id }}
+                  </small>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- EVENT -->
+
+            <td>
+
+              <div class="event-cell">
+
+                <strong>
+                  {{ permit.eventName }}
+                </strong>
+
+                <small
+                  *ngIf="permit.eventDate"
+                >
+
+                  {{ permit.eventDate | date:'dd MMM yyyy' }}
+
+                </small>
+
+              </div>
+
+            </td>
+
+
+            <!-- CONTROL NUMBER -->
+
+            <td>
+
+              <span
+                class="control-number"
+                *ngIf="permit.controlNumber"
+              >
+
+                {{ permit.controlNumber }}
+
+              </span>
+
+              <span
+                class="not-available"
+                *ngIf="!permit.controlNumber"
+              >
+
+                N/A
+
+              </span>
+
+            </td>
+
+
+            <!-- FEE -->
+
+            <td>
+
+              <strong class="amount">
+
+                TZS
+                {{ formatAmount(permit.permitFee) }}
+
+              </strong>
+
+            </td>
+
+
+            <!-- PAID -->
+
+            <td>
+
+              <strong
+                class="paid-amount"
+                [class.zero]="
+                  !permit.paidAmount ||
+                  permit.paidAmount <= 0
+                "
+              >
+
+                TZS
+                {{ formatAmount(permit.paidAmount || 0) }}
+
+              </strong>
+
+            </td>
+
+
+            <!-- STATUS -->
+
+            <td>
+
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(permit.status)"
+              >
+
+                <i
+                  [class]="getStatusIcon(permit.status)"
+                ></i>
+
+                {{ getStatusLabel(permit.status) }}
+
+              </span>
+
+            </td>
+
+
+            <!-- ACTION -->
+
+            <td>
+
+              <div class="action-buttons">
+
+                <!-- PAY -->
+
+                <button
+                  *ngIf="
+                    permit.status === 'WAITING_PAYMENT' &&
+                    (permit.paidAmount || 0) <
+                    permit.permitFee
+                  "
+                  type="button"
+                  class="pay-btn"
+                  (click)="
+                    selectPermitForPayment(permit, true)
+                  "
+                >
+
+                  <i class="fas fa-credit-card"></i>
+
+                  Pay
+
+                </button>
+
+
+                <!-- VIEW -->
+
+                <button
+                  type="button"
+                  class="view-btn"
+                  (click)="
+                    selectedPermit = permit
+                  "
+                  title="View permit"
+                >
+
+                  <i class="fas fa-eye"></i>
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       PAYMENT MODAL
+  ======================================================== -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showPaymentModal"
+    (click)="closePaymentModal($event)"
+  >
+
+    <div
+      class="payment-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- MODAL HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span class="modal-eyebrow">
+            PERMIT PAYMENT
+          </span>
+
+          <h2>
+            Complete Payment
+          </h2>
+
+          <p>
+            Make payment for your selected permit.
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closePaymentModal()"
+          [disabled]="paymentLoading"
+        >
+
+          <i class="fas fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- MODAL BODY -->
+
+      <div class="modal-body">
+
+        <!-- =================================================
+             PERMIT SELECTOR
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label for="permit">
+
+            Select Permit
+
+            <span>*</span>
+
+          </label>
+
+          <div class="select-wrapper">
+
+            <i class="fas fa-file-contract"></i>
+
+            <select
+              id="permit"
+              name="permitId"
+              [(ngModel)]="paymentForm.permitId"
+              (ngModelChange)="onPermitChange()"
+              [disabled]="paymentLoading"
+            >
+
+              <option
+                [ngValue]="null"
+              >
+
+                Select a permit
+
+              </option>
+
+              <option
+                *ngFor="
+                  let permit of payablePermits;
+                  trackBy: trackByPermitId
+                "
+                [ngValue]="permit.id"
+              >
+
+                {{ getPermitTypeLabel(permit.permitType) }}
+
+                —
+                {{ permit.eventName }}
+
+                —
+                TZS
+                {{ formatAmount(permit.permitFee) }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SELECTED PERMIT DETAILS
+        ================================================== -->
+
+        <div
+          class="selected-permit"
+          *ngIf="selectedPermit"
+        >
+
+          <div class="selected-permit-header">
+
+            <div class="permit-preview-icon">
+
+              <i class="fas fa-file-contract"></i>
+
+            </div>
+
+            <div>
+
+              <span>
+                Selected Permit
+              </span>
+
+              <h3>
+                {{ getPermitTypeLabel(
+                  selectedPermit.permitType
+                ) }}
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div class="permit-info-grid">
+
+            <div class="info-item">
+
+              <span>
+                Event
+              </span>
+
+              <strong>
+                {{ selectedPermit.eventName }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Permit Number
+              </span>
+
+              <strong>
+                {{ selectedPermit.permitNumber || 'N/A' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Event Date
+              </span>
+
+              <strong>
+
+                {{
+                  selectedPermit.eventDate
+                    ? (selectedPermit.eventDate | date:'dd MMM yyyy')
+                    : 'N/A'
+                }}
+
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Location
+              </span>
+
+              <strong>
+                {{ selectedPermit.location || 'N/A' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTROL NUMBER
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label for="controlNumber">
+
+            Control Number
+
+            <span>*</span>
+
+          </label>
+
+          <div class="input-wrapper">
+
+            <i class="fas fa-hashtag"></i>
+
+            <input
+              id="controlNumber"
+              type="text"
+              name="controlNumber"
+              [(ngModel)]="paymentForm.controlNumber"
+              placeholder="Enter control number"
+              [disabled]="paymentLoading"
+            />
+
+          </div>
+
+          <small>
+            Use the control number provided with your permit.
+          </small>
+
+        </div>
+
+
+        <!-- =================================================
+             AMOUNT
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label for="amount">
+
+            Payment Amount
+
+            <span>*</span>
+
+          </label>
+
+          <div class="input-wrapper amount-input">
+
+            <span class="currency-prefix">
+              TZS
+            </span>
+
+            <input
+              id="amount"
+              type="number"
+              name="amount"
+              [(ngModel)]="paymentForm.amount"
+              min="1"
+              readonly
+              [disabled]="paymentLoading"
+            />
+
+          </div>
+
+          <small>
+            The amount is automatically taken from the permit fee.
+          </small>
+
+        </div>
+
+
+        <!-- =================================================
+             PAYMENT METHOD
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label>
+
+            Payment Method
+
+            <span>*</span>
+
+          </label>
+
+          <div class="payment-methods">
+
+            <!-- MOBILE MONEY -->
+
+            <label
+              class="method-card"
+              [class.selected]="
+                paymentForm.paymentMethod ===
+                'MOBILE_MONEY'
+              "
+            >
+
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="MOBILE_MONEY"
+                [(ngModel)]="
+                  paymentForm.paymentMethod
+                "
+                [disabled]="paymentLoading"
+              />
+
+              <div class="method-icon">
+
+                <i class="fas fa-mobile-screen-button"></i>
+
+              </div>
+
+              <div class="method-info">
+
+                <strong>
+                  Mobile Money
+                </strong>
+
+                <span>
+                  Mobile payment
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-circle-check method-check"
+              ></i>
+
+            </label>
+
+
+            <!-- BANK -->
+
+            <label
+              class="method-card"
+              [class.selected]="
+                paymentForm.paymentMethod ===
+                'BANK_TRANSFER'
+              "
+            >
+
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="BANK_TRANSFER"
+                [(ngModel)]="
+                  paymentForm.paymentMethod
+                "
+                [disabled]="paymentLoading"
+              />
+
+              <div class="method-icon">
+
+                <i class="fas fa-building-columns"></i>
+
+              </div>
+
+              <div class="method-info">
+
+                <strong>
+                  Bank Transfer
+                </strong>
+
+                <span>
+                  Bank payment
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-circle-check method-check"
+              ></i>
+
+            </label>
+
+
+            <!-- CASH -->
+
+            <label
+              class="method-card"
+              [class.selected]="
+                paymentForm.paymentMethod ===
+                'CASH'
+              "
+            >
+
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="CASH"
+                [(ngModel)]="
+                  paymentForm.paymentMethod
+                "
+                [disabled]="paymentLoading"
+              />
+
+              <div class="method-icon">
+
+                <i class="fas fa-money-bill"></i>
+
+              </div>
+
+              <div class="method-info">
+
+                <strong>
+                  Cash
+                </strong>
+
+                <span>
+                  Cash payment
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-circle-check method-check"
+              ></i>
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PAYMENT SUMMARY
+        ================================================== -->
+
+        <div
+          class="payment-summary"
+          *ngIf="selectedPermit"
+        >
+
+          <div class="summary-row">
+
+            <span>
+              Permit Fee
+            </span>
+
+            <strong>
+              TZS
+              {{ formatAmount(selectedPermit.permitFee) }}
+            </strong>
+
+          </div>
+
+          <div class="summary-row">
+
+            <span>
+              Amount Paid
+            </span>
+
+            <strong>
+              TZS
+              {{ formatAmount(selectedPermit.paidAmount || 0) }}
+            </strong>
+
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row total">
+
+            <span>
+              Amount Due
+            </span>
+
+            <strong>
+              TZS
+              {{ formatAmount(
+                (selectedPermit.permitFee || 0) -
+                (selectedPermit.paidAmount || 0)
+              ) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SECURITY NOTE
+        ================================================== -->
+
+        <div class="security-note">
+
+          <div class="security-icon">
+
+            <i class="fas fa-shield-halved"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Secure Payment
+            </strong>
+
+            <p>
+              Your payment information is securely
+              processed and linked to your permit.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- MODAL FOOTER -->
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closePaymentModal()"
+          [disabled]="paymentLoading"
+        >
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="button"
+          class="submit-payment-btn"
+          (click)="submitPayment()"
+          [disabled]="
+            paymentLoading ||
+            !isPaymentFormValid()
+          "
+        >
+
+          <i
+            *ngIf="!paymentLoading"
+            class="fas fa-lock"
+          ></i>
+
+          <i
+            *ngIf="paymentLoading"
+            class="fas fa-spinner fa-spin"
+          ></i>
+
+          <span>
+            {{
+              paymentLoading
+                ? 'Processing...'
+                : 'Pay Now'
+            }}
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       RECEIPT MODAL
+  ======================================================== -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showReceiptModal"
+    (click)="closeReceiptModal($event)"
+  >
+
+    <div
+      class="receipt-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="receipt-header">
+
+        <div class="receipt-success-icon">
+
+          <i class="fas fa-circle-check"></i>
+
+        </div>
+
+        <h2>
+          Payment Receipt
+        </h2>
+
+        <p>
+          Permit payment information
+        </p>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeReceiptModal()"
+        >
+
+          <i class="fas fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+
+      <div
+        class="receipt-body"
+        *ngIf="selectedPayment"
+      >
+
+        <div class="receipt-row">
+
+          <span>
+            Payment ID
+          </span>
+
+          <strong>
+            {{ selectedPayment.id || 'N/A' }}
+          </strong>
+
+        </div>
+
+        <div class="receipt-row">
+
+          <span>
+            Control Number
+          </span>
+
+          <strong>
+            {{ selectedPayment.controlNumber || 'N/A' }}
+          </strong>
+
+        </div>
+
+        <div class="receipt-row">
+
+          <span>
+            Amount
+          </span>
+
+          <strong>
+            TZS
+            {{ formatAmount(selectedPayment.amount || 0) }}
+          </strong>
+
+        </div>
+
+        <div class="receipt-row">
+
+          <span>
+            Payment Method
+          </span>
+
+          <strong>
+
+            {{
+              formatPaymentMethod(
+                selectedPayment.paymentMethod
+              )
+            }}
+
+          </strong>
+
+        </div>
+
+        <div class="receipt-row">
+
+          <span>
+            Status
+          </span>
+
+          <strong
+            class="receipt-status"
+          >
+
+            {{ selectedPayment.status || 'N/A' }}
+
+          </strong>
+
+        </div>
+
+        <div class="receipt-row">
+
+          <span>
+            Date
+          </span>
+
+          <strong>
+
+            {{
+              selectedPayment.createdAt
+                ? (
+                    selectedPayment.createdAt
+                    | date:'dd MMM yyyy, HH:mm'
+                  )
+                : 'N/A'
+            }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="receipt-footer">
+
+        <button
+          type="button"
+          class="primary-btn"
+          (click)="closeReceiptModal()"
+        >
+
+          <i class="fas fa-check"></i>
+
+          Done
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       PERMIT QUICK DETAILS
+  ======================================================== -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="
+      selectedPermit &&
+      !showPaymentModal &&
+      !showReceiptModal
+    "
+    (click)="selectedPermit = null"
+  >
+
+    <div
+      class="details-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+
+        <div>
+
+          <span class="modal-eyebrow">
+            PERMIT DETAILS
+          </span>
+
+          <h2>
+            {{ selectedPermit.eventName }}
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="selectedPermit = null"
+        >
+
+          <i class="fas fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="details-body">
+
+        <div class="detail-item">
+
+          <span>
+            Permit Type
+          </span>
+
+          <strong>
+            {{ getPermitTypeLabel(
+              selectedPermit.permitType
+            ) }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Permit Number
+          </span>
+
+          <strong>
+            {{ selectedPermit.permitNumber || 'N/A' }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Control Number
+          </span>
+
+          <strong>
+            {{ selectedPermit.controlNumber || 'N/A' }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Event Date
+          </span>
+
+          <strong>
+
+            {{
+              selectedPermit.eventDate
+                ? (
+                    selectedPermit.eventDate
+                    | date:'dd MMM yyyy'
+                  )
+                : 'N/A'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Event Time
+          </span>
+
+          <strong>
+            {{ selectedPermit.eventTime || 'N/A' }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Location
+          </span>
+
+          <strong>
+            {{ selectedPermit.location || 'N/A' }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Shehia
+          </span>
+
+          <strong>
+            {{ selectedPermit.shehia || 'N/A' }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Status
+          </span>
+
+          <span
+            class="status-badge"
+            [ngClass]="
+              getStatusClass(selectedPermit.status)
+            "
+          >
+
+            <i
+              [class]="
+                getStatusIcon(selectedPermit.status)
+              "
+            ></i>
+
+            {{ getStatusLabel(selectedPermit.status) }}
+
+          </span>
+
+        </div>
+
+
+        <div class="detail-fee-box">
+
+          <div>
+
+            <span>
+              Permit Fee
+            </span>
+
+            <strong>
+              TZS
+              {{ formatAmount(
+                selectedPermit.permitFee
+              ) }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              Paid
+            </span>
+
+            <strong>
+              TZS
+              {{ formatAmount(
+                selectedPermit.paidAmount || 0
+              ) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="selectedPermit = null"
+        >
+
+          Close
+
+        </button>
+
+
+        <button
+          *ngIf="
+            selectedPermit.status ===
+            'WAITING_PAYMENT'
+          "
+          type="button"
+          class="submit-payment-btn"
+          (click)="
+            selectPermitForPayment(
+              selectedPermit,
+              true
+            )
+          "
+        >
+
+          <i class="fas fa-credit-card"></i>
+
+          Pay Permit
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

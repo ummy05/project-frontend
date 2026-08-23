@@ -1,173 +1,434 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { LicenseService } from '../../services/license.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-apply-license',
-  imports: [CommonModule,FormsModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './apply-license.html',
-  styleUrl: './apply-license.css',
+  styleUrl: './apply-license.css'
 })
-export class ApplyLicense implements OnInit{
+export class ApplyLicense implements OnInit {
 
-selectedFileName='';
+  /* =========================================
+     UI STATE
+  ========================================= */
 
-loading=false;
+  loading = false;
 
-fee=0;
+  feeLoading = false;
 
-application={
+  selectedFileName = '';
 
-businessName:'',
+  accepted = false;
 
-phoneNumber:'',
-
-licenseType:'',
-
-district:'',
-
-location:'',
-
-durationMonths:12
-
-};
-
-accepted=false;
-
-constructor(
-
-private licenseService:LicenseService,
-
-private auth:AuthService,
-
-private router:Router
-
-){}
+  fee = 0;
 
 
-  onFileSelected(event: any) {
+  /* =========================================
+     APPLICATION DATA
+  ========================================= */
 
-    if (event.target.files.length > 0) {
-      this.selectedFileName = event.target.files[0].name;
+  application = {
+
+    businessName: '',
+
+    phoneNumber: '',
+
+    licenseType: '',
+
+    district: '',
+
+    location: '',
+
+    durationMonths: 12
+
+  };
+
+
+  constructor(
+
+    private licenseService: LicenseService,
+
+    private auth: AuthService,
+
+    private router: Router,
+
+    private alert: AlertService
+
+  ) {}
+
+
+  /* =========================================
+     INIT
+  ========================================= */
+
+  ngOnInit(): void {
+
+    this.loadProfile();
+
+  }
+
+
+  /* =========================================
+     LOAD CURRENT USER PROFILE
+  ========================================= */
+
+  loadProfile(): void {
+
+    this.auth.getProfile().subscribe({
+
+      next: (res: any) => {
+
+        this.application.phoneNumber =
+          res?.phoneNumber ?? '';
+
+      },
+
+      error: () => {
+
+        this.alert.error(
+          'Unable to load your profile information.'
+        );
+
+      }
+
+    });
+
+  }
+
+
+  /* =========================================
+     FILE SELECTION
+  ========================================= */
+
+  onFileSelected(event: Event): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    if (
+      input.files &&
+      input.files.length > 0
+    ) {
+
+      this.selectedFileName =
+        input.files[0].name;
+
     }
 
   }
 
-  ngOnInit(){
 
-this.auth
+  /* =========================================
+     CALCULATE LICENSE FEE
+  ========================================= */
 
-.getProfile()
+  calculateFee(): void {
 
-.subscribe(res=>{
+    if (
+      !this.application.licenseType ||
+      !this.application.durationMonths
+    ) {
 
-this.application.phoneNumber=res.phoneNumber;
+      this.fee = 0;
 
-});
+      return;
 
-}
+    }
 
-calculateFee(){
+    this.feeLoading = true;
 
-if(
+    this.licenseService
 
-!this.application.licenseType ||
+      .calculateFee(
 
-!this.application.durationMonths
+        this.application.licenseType,
 
-){
+        this.application.durationMonths
 
-return;
+      )
 
-}
+      .subscribe({
 
-this.licenseService
+        next: (res: number) => {
 
-.calculateFee(
+          this.fee = Number(res);
 
-this.application.licenseType,
+          this.feeLoading = false;
 
-this.application.durationMonths
+        },
 
-)
+        error: () => {
 
-.subscribe(res=>{
+          this.fee = 0;
 
-this.fee=res;
+          this.feeLoading = false;
 
-});
+          this.alert.error(
+            'Unable to calculate license fee.'
+          );
 
-}
+        }
 
-submit(){
+      });
 
-if(!this.accepted){
+  }
 
-alert(
 
-'Please accept terms and conditions.'
+  /* =========================================
+     VALIDATION
+  ========================================= */
 
-);
+  validateForm(): boolean {
 
-return;
+    if (!this.application.businessName.trim()) {
 
-}
+      this.alert.warning(
+        'Please enter the business name.'
+      );
 
-const payload={
+      return false;
 
-...this.application,
+    }
 
-licenseFee:this.fee
 
-};
+    if (!this.application.phoneNumber.trim()) {
 
-this.loading=true;
+      this.alert.warning(
+        'Phone number is required.'
+      );
 
-this.licenseService
+      return false;
 
-.apply(payload)
+    }
 
-.subscribe({
 
-next:(license)=>{
+    if (!this.application.licenseType) {
 
-this.loading=false;
+      this.alert.warning(
+        'Please select a business/license type.'
+      );
 
-this.router.navigate(
+      return false;
 
-['/owner/payments'],
+    }
 
-{
 
-state:{
+    if (!this.application.district.trim()) {
 
-license:license
+      this.alert.warning(
+        'Please enter the business district.'
+      );
 
-}
+      return false;
 
-}
+    }
 
-);
 
-},
+    if (!this.application.location.trim()) {
 
-error:()=>{
+      this.alert.warning(
+        'Please enter the business location.'
+      );
 
-this.loading=false;
+      return false;
 
-alert(
+    }
 
-'Application failed.'
 
-);
+    if (!this.application.durationMonths) {
 
-}
+      this.alert.warning(
+        'Please select license duration.'
+      );
 
-});
+      return false;
 
-}
+    }
+
+
+    if (!this.accepted) {
+
+      this.alert.warning(
+        'Please accept the terms and conditions.'
+      );
+
+      return false;
+
+    }
+
+
+    return true;
+
+  }
+
+
+  /* =========================================
+     SUBMIT APPLICATION
+  ========================================= */
+
+  submit(): void {
+
+    if (!this.validateForm()) {
+
+      return;
+
+    }
+
+
+    /*
+      IMPORTANT:
+
+      Do NOT send:
+      - ownerName
+      - licenseFee
+      - ownerEmail
+      - status
+
+      Backend generates these values.
+    */
+
+    const payload = {
+
+      businessName:
+        this.application.businessName.trim(),
+
+      phoneNumber:
+        this.application.phoneNumber.trim(),
+
+      licenseType:
+        this.application.licenseType,
+
+      district:
+        this.application.district.trim(),
+
+      location:
+        this.application.location.trim(),
+
+      durationMonths:
+        Number(this.application.durationMonths)
+
+    };
+
+
+    this.loading = true;
+
+
+    this.licenseService
+
+      .apply(payload)
+
+      .subscribe({
+
+        next: (license: any) => {
+
+          this.loading = false;
+
+
+          this.alert.success(
+            'License application submitted successfully.'
+          );
+
+
+          /*
+             Navigate to payment page after
+             backend creates the license.
+
+             The backend response contains:
+             - licenseNumber
+             - controlNumber
+             - licenseFee
+             - status
+             etc.
+          */
+
+          this.router.navigate(
+
+            ['/owner/payments'],
+
+            {
+
+              state: {
+
+                license: license
+
+              }
+
+            }
+
+          );
+
+        },
+
+
+        error: (error) => {
+
+          this.loading = false;
+
+          console.error(
+            'LICENSE APPLICATION ERROR:',
+            error
+          );
+
+
+          let message =
+            'License application failed.';
+
+
+          if (error?.error) {
+
+            if (typeof error.error === 'string') {
+
+              message = error.error;
+
+            }
+
+            else if (error.error?.message) {
+
+              message = error.error.message;
+
+            }
+
+          }
+
+
+          this.alert.error(message);
+
+        }
+
+      });
+
+  }
+
+
+  /* =========================================
+     SAVE DRAFT
+  ========================================= */
+
+  saveDraft(): void {
+
+    /*
+      Backend currently has no
+      /licenses/draft endpoint.
+
+      Therefore we do NOT pretend to save
+      a draft to the backend.
+    */
+
+    this.alert.info(
+      'Draft saving is not available yet.'
+    );
+
+  }
 
 }

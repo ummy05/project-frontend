@@ -1,11 +1,21 @@
+// src/app/services/auth.service.ts
+
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+
 import { environment } from '../environment/environment';
-import { ChangePasswordRequest, ForgotPasswordRequest, LoginRequest, LoginResponse, RegisterRequest, ResetPasswordRequest, UserProfile, VerifyOtpRequest } from '../models/auth.model';
 
-
-
+import {
+  ChangePasswordRequest,
+  ForgotPasswordRequest,
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  ResetPasswordRequest,
+  UserProfile,
+  VerifyOtpRequest
+} from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,194 +26,235 @@ export class AuthService {
 
   private api = `${environment.apiUrl}/auth`;
 
-  // ==========================
+
+  // =====================================================
   // LOGIN
-  // ==========================
+  // =====================================================
 
-  login(data: LoginRequest): Observable<LoginResponse>{
+  login(data: LoginRequest): Observable<LoginResponse> {
 
-    return this.http.post<LoginResponse>(
-      `${this.api}/login`,
-      data
-    ).pipe(
+    return this.http
+      .post<LoginResponse>(
+        `${this.api}/login`,
+        data
+      )
+      .pipe(
 
-      tap(response => {
+        tap(response => {
 
-        localStorage.setItem(
-          'token',
-          response.token
-        );
+          localStorage.setItem(
+            'token',
+            response.token
+          );
 
-        localStorage.setItem(
-          'role',
-          response.role
-        );
+          localStorage.setItem(
+            'role',
+            response.role
+          );
 
-        localStorage.setItem(
-          'fullName',
-          response.fullName
-        );
+          localStorage.setItem(
+            'fullName',
+            response.fullName
+          );
 
-        localStorage.setItem(
-          'email',
-          response.email
-        );
+          localStorage.setItem(
+            'email',
+            response.email
+          );
 
-      })
+        })
 
-    );
-
+      );
   }
 
-  // ==========================
+
+  // =====================================================
   // REGISTER
-  // ==========================
+  // =====================================================
 
-register(data: RegisterRequest) {
+  register(
+    data: RegisterRequest
+  ): Observable<string> {
 
-  return this.http.post(
-    `${this.api}/register`,
-    data,
-    {
-      responseType: 'text'
-    }
-  );
+    return this.http.post(
+      `${this.api}/register`,
+      data,
+      {
+        responseType: 'text'
+      }
+    );
+  }
 
-}
 
-  // ==========================
-  // PROFILE
-  // ==========================
+  // =====================================================
+  // GET CURRENT USER
+  // =====================================================
 
-  getProfile(): Observable<UserProfile>{
+  getProfile(): Observable<UserProfile> {
 
     return this.http.get<UserProfile>(
       `${this.api}/me`
     );
-
   }
 
-  updateProfile(data:any){
 
-    return this.http.put(
+  // =====================================================
+  // UPDATE CURRENT USER
+  // =====================================================
+
+  updateProfile(
+    data: Partial<UserProfile>
+  ): Observable<UserProfile> {
+
+    return this.http.put<UserProfile>(
       `${this.api}/me`,
       data
     );
-
   }
 
-  // ==========================
+
+  // =====================================================
   // CHANGE PASSWORD
-  // ==========================
+  // =====================================================
 
   changePassword(
-      data: ChangePasswordRequest){
+    data: ChangePasswordRequest
+  ): Observable<string> {
 
     return this.http.patch(
       `${this.api}/change-password`,
-      data
+      data,
+      {
+        responseType: 'text'
+      }
     );
-
   }
 
-  // ==========================
-// FORGOT PASSWORD
-// ==========================
 
-forgotPassword(
-  data: ForgotPasswordRequest
-): Observable<string> {
+  // =====================================================
+  // FORGOT PASSWORD
+  // =====================================================
 
-  return this.http.post(
-    `${this.api}/forgot-password`,
-    data,
-    {
-      responseType: 'text'
-    }
-  );
+  forgotPassword(
+    data: ForgotPasswordRequest
+  ): Observable<string> {
 
-}
-
- // ==========================
-// VERIFY OTP
-// ==========================
-
-verifyOtp(
-  data: VerifyOtpRequest
-): Observable<string> {
-
-  return this.http.post(
-    `${this.api}/verify-otp`,
-    data,
-    {
-      responseType: 'text'
-    }
-  );
-
-}
-
- // ==========================
-// RESET PASSWORD
-// ==========================
-
-resetPassword(
-  data: ResetPasswordRequest
-): Observable<string> {
-
-  return this.http.post(
-    `${this.api}/reset-password`,
-    data,
-    {
-      responseType: 'text'
-    }
-  );
-
-}
-
-  // ==========================
-  // TOKEN
-  // ==========================
-
-  getToken(): string | null{
-
-    return localStorage.getItem(
-      'token'
+    return this.http.post(
+      `${this.api}/forgot-password`,
+      data,
+      {
+        responseType: 'text'
+      }
     );
-
   }
 
-  // ==========================
-  // ROLE
-  // ==========================
 
-  getRole(): string | null{
+  // =====================================================
+  // VERIFY OTP
+  // =====================================================
 
-    return localStorage.getItem(
-      'role'
+  verifyOtp(
+    data: VerifyOtpRequest
+  ): Observable<string> {
+
+    return this.http.post(
+      `${this.api}/verify-otp`,
+      data,
+      {
+        responseType: 'text'
+      }
     );
-
   }
 
-  // ==========================
+
+  // =====================================================
+  // RESET PASSWORD
+  // =====================================================
+
+  resetPassword(
+    data: ResetPasswordRequest
+  ): Observable<string> {
+
+    return this.http.post(
+      `${this.api}/reset-password`,
+      data,
+      {
+        responseType: 'text'
+      }
+    );
+  }
+
+
+  // =====================================================
+  // GET TOKEN
+  // =====================================================
+
+  getToken(): string | null {
+
+    return localStorage.getItem('token');
+  }
+
+
+  // =====================================================
+  // GET ROLE
+  // =====================================================
+
+  getRole(): string | null {
+
+    return localStorage.getItem('role');
+  }
+
+
+  // =====================================================
+  // GET FULL NAME
+  // =====================================================
+
+  getFullName(): string | null {
+
+    return localStorage.getItem('fullName');
+  }
+
+
+  // =====================================================
+  // GET EMAIL
+  // =====================================================
+
+  getEmail(): string | null {
+
+    return localStorage.getItem('email');
+  }
+
+
+  // =====================================================
   // LOGIN STATUS
-  // ==========================
+  // =====================================================
 
-  isLoggedIn(): boolean{
+  isLoggedIn(): boolean {
 
-    return !!localStorage.getItem(
-      'token'
-    );
-
+    return !!this.getToken();
   }
 
-  // ==========================
+
+  // =====================================================
+  // CHECK ROLE
+  // =====================================================
+
+  hasRole(role: string): boolean {
+
+    return this.getRole() === role;
+  }
+
+
+  // =====================================================
   // LOGOUT
-  // ==========================
+  // =====================================================
 
-  logout(){
+  logout(): void {
 
-    localStorage.clear();
-
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('email');
   }
 
 }

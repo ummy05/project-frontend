@@ -1,9 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
+export const authInterceptor: HttpInterceptorFn = (
+  req,
+  next
+) => {
 
-  const token = localStorage.getItem('token');
-
+  const token =
+    localStorage.getItem('token');
 
   // ==========================================
   // PUBLIC AUTH ENDPOINTS
@@ -16,23 +19,29 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     req.url.includes('/api/auth/verify-otp') ||
     req.url.includes('/api/auth/reset-password');
 
-
-  // =A=========================================
-  // ATTACH TOKEN ONLY TO PROTECTED REQUESTS
+  // ==========================================
+  // PROTECTED REQUEST
   // ==========================================
 
-  if (token && !isPublicAuthEndpoint) {
+  if (
+    token &&
+    !isPublicAuthEndpoint
+  ) {
 
     return next(
       req.clone({
+
         setHeaders: {
-          Authorization: `Bearer ${token}`
+
+          Authorization:
+            `Bearer ${token}`
+
         }
+
       })
     );
 
   }
-
 
   return next(req);
 

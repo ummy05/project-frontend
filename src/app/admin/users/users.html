@@ -1,77 +1,146 @@
 <div class="page-container">
 
+    <!-- ================================================= -->
     <!-- HEADER -->
+    <!-- ================================================= -->
 
     <div class="page-header">
 
         <div>
+
             <h2>Users Management</h2>
+
             <p>
                 Manage all registered system users.
             </p>
+
         </div>
+
 
         <div class="header-actions">
 
-            <button class="add-btn"
-                    (click)="showAddModal=true">
+            <button
+                class="add-btn"
+                type="button"
+                (click)="openAdd()">
 
                 <i class="fas fa-plus"></i>
+
                 Add User
 
             </button>
-
-            
 
         </div>
 
     </div>
 
 
+    <!-- ================================================= -->
     <!-- SUMMARY -->
+    <!-- ================================================= -->
 
     <div class="summary-grid">
+
+        <!-- TOTAL -->
 
         <div class="summary-card">
 
             <i class="fas fa-users"></i>
 
             <div>
-                <h3>{{summary.total}}</h3>
-                <span>Total Users</span>
+
+                <h3>
+                    {{summary.total}}
+                </h3>
+
+                <span>
+                    Total Users
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- BUSINESS OWNERS -->
 
         <div class="summary-card">
 
             <i class="fas fa-store"></i>
 
             <div>
-                <h3>{{summary.businessOwners}}</h3>
-                <span>Business Owners</span>
+
+                <h3>
+                    {{summary.businessOwners}}
+                </h3>
+
+                <span>
+                    Business Owners
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- TOURISTS -->
 
         <div class="summary-card">
 
             <i class="fas fa-suitcase-rolling"></i>
 
             <div>
-                <h3>{{summary.tourists}}</h3>
-                <span>Tourists</span>
+
+                <h3>
+                    {{summary.tourists}}
+                </h3>
+
+                <span>
+                    Tourists
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- SHEHAS -->
+
+        <div class="summary-card">
+
+            <i class="fas fa-user-tie"></i>
+
+            <div>
+
+                <h3>
+                    {{summary.shehas}}
+                </h3>
+
+                <span>
+                    Shehas
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIVE -->
 
         <div class="summary-card">
 
             <i class="fas fa-user-check"></i>
 
             <div>
-                <h3>{{summary.active}}</h3>
-                <span>Active Users</span>
+
+                <h3>
+                    {{summary.active}}
+                </h3>
+
+                <span>
+                    Active Users
+                </span>
+
             </div>
 
         </div>
@@ -79,46 +148,57 @@
     </div>
 
 
+    <!-- ================================================= -->
     <!-- FILTERS -->
+    <!-- ================================================= -->
 
     <div class="filter-section">
 
-    <div class="search-box">
+        <div class="search-box">
 
-        <i class="fas fa-search"></i>
+            <i class="fas fa-search"></i>
 
-        <input
-            type="text"
-            [(ngModel)]="search"
-            (input)="filterUsers()"
-            placeholder="Search user...">
+            <input
+                type="text"
+                [(ngModel)]="search"
+                (input)="filterUsers()"
+                placeholder="Search name, email, phone, shehia or business...">
+
+        </div>
+
+
+        <select
+            [(ngModel)]="role"
+            (change)="filterUsers()">
+
+            <option value="ALL">
+                All Roles
+            </option>
+
+            <option value="ADMIN">
+                Admin
+            </option>
+
+            <option value="SHEHA">
+                Sheha
+            </option>
+
+            <option value="BUSINESS_OWNER">
+                Business Owner
+            </option>
+
+            <option value="TOURIST">
+                Tourist
+            </option>
+
+        </select>
 
     </div>
 
-    <select
-        [(ngModel)]="role"
-        (change)="filterUsers()">
 
-        <option value="ALL">All Roles</option>
-
-        <option value="BUSINESS_OWNER">
-            Business Owner
-        </option>
-
-        <option value="TOURIST">
-            Tourist
-        </option>
-
-        <option value="ADMIN">
-            Admin
-        </option>
-
-    </select>
-
-</div>
-
-
+    <!-- ================================================= -->
     <!-- TABLE -->
+    <!-- ================================================= -->
 
     <div class="table-card">
 
@@ -126,124 +206,223 @@
 
             <thead>
 
-            <tr>
+                <tr>
 
-                <th>User</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
+                    <th>User</th>
 
-            </tr>
+                    <th>Email</th>
+
+                    <th>Phone</th>
+
+                    <th>Role</th>
+
+                    <th>Status</th>
+
+                    <th>Actions</th>
+
+                </tr>
 
             </thead>
 
+
             <tbody>
 
-            <tr *ngFor="let user of filteredUsers">
+                <tr
+                    *ngFor="let user of filteredUsers">
 
-                <td>
+                    <!-- USER -->
 
-                    <div class="user-info">
+                    <td>
 
-                        <img
-                           class="user-avatar"
-                           [src]="user.profileImage || 'assets/images/default-user.png'"
-                           [alt]="user.fullName">
+                        <div class="user-info">
 
-                        <span>{{user.fullName}}</span>
+                            <img
+                                class="user-avatar"
+                                [src]="
+                                    user.profileImage ||
+                                    'assets/images/default-user.png'
+                                "
+                                [alt]="user.fullName">
 
-                    </div>
+                            <div>
 
-                </td>
+                                <span>
+                                    {{user.fullName}}
+                                </span>
 
-                <td>{{user.email}}</td>
+                                <small
+                                    *ngIf="user.shehia">
 
-                <td>{{user.phoneNumber}}</td>
+                                    {{user.shehia}}
 
-                <td>
+                                </small>
 
-                    <span class="role-badge"
+                            </div>
 
-                        [ngClass]="{
+                        </div>
 
-                        'owner':user.role=='BUSINESS_OWNER',
+                    </td>
 
-                        'tourist':user.role=='TOURIST',
 
-                         'admin':user.role=='ADMIN'
+                    <!-- EMAIL -->
 
-                         }">
+                    <td>
+                        {{user.email}}
+                    </td>
 
-                        {{user.role.replace('_',' ')}}
 
-                    </span>
+                    <!-- PHONE -->
 
-                </td>
+                    <td>
+                        {{user.phoneNumber}}
+                    </td>
 
-                <td>
 
-                    <span class="status-badge"
+                    <!-- ROLE -->
 
-                        [ngClass]="{
+                    <td>
 
-                         'active':user.enabled,
+                        <span
+                            class="role-badge"
+                            [ngClass]="{
 
-                         'blocked':!user.enabled
+                                'owner':
+                                    user.role === 'BUSINESS_OWNER',
 
-                         }">
-                       {{user.enabled?'Active':'Blocked'}}
-                    </span>
+                                'tourist':
+                                    user.role === 'TOURIST',
 
-                </td>
+                                'admin':
+                                    user.role === 'ADMIN',
 
-                <td>
+                                'sheha':
+                                    user.role === 'SHEHA'
 
-                    <div class="actions">
+                            }">
 
-                        <button
-                            class="view-btn"
-                            (click)="openView(user)">
+                            {{roleLabel(user.role)}}
 
-                            <i class="fas fa-eye"></i>
+                        </span>
 
-                        </button>
+                    </td>
 
-                        <button
-                            class="edit-btn"
-                            (click)="openEdit(user)">
 
-                            <i class="fas fa-edit"></i>
+                    <!-- STATUS -->
 
-                        </button>
+                    <td>
 
-                        <button
-                             class="status-btn"
-                           (click)="changeStatus(user)">
+                        <span
+                            class="status-badge"
+                            [ngClass]="{
 
-                            <i class="fas"
-                             [ngClass]="user.enabled
-                            ?'fa-user-lock'
-                            :'fa-user-check'">
+                                'active':
+                                    user.enabled,
 
-                            </i>
+                                'blocked':
+                                    !user.enabled
 
-                        </button>
+                            }">
 
-                        <button
-                            class="delete-btn"
-                            (click)="delete(user)">
+                            {{
+                                user.enabled
+                                    ? 'Active'
+                                    : 'Blocked'
+                            }}
 
-                            <i class="fas fa-trash"></i>
+                        </span>
 
-                        </button>
+                    </td>
 
-                   </div>
 
-                </td>
+                    <!-- ACTIONS -->
 
-            </tr>
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                type="button"
+                                class="view-btn"
+                                title="View User"
+                                (click)="openView(user)">
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="edit-btn"
+                                title="Edit User"
+                                (click)="openEdit(user)">
+
+                                <i class="fas fa-edit"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="status-btn"
+                                [title]="
+                                    user.enabled
+                                        ? 'Block User'
+                                        : 'Activate User'
+                                "
+                                (click)="changeStatus(user)">
+
+                                <i
+                                    class="fas"
+                                    [ngClass]="
+                                        user.enabled
+                                            ? 'fa-user-lock'
+                                            : 'fa-user-check'
+                                    ">
+                                </i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="delete-btn"
+                                title="Delete User"
+                                (click)="delete(user)">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- EMPTY -->
+
+                <tr
+                    *ngIf="filteredUsers.length === 0">
+
+                    <td
+                        colspan="6"
+                        class="empty-state">
+
+                        <i class="fas fa-users-slash"></i>
+
+                        <h3>
+                            No users found
+                        </h3>
+
+                        <p>
+                            No users match your current search or filter.
+                        </p>
+
+                    </td>
+
+                </tr>
 
             </tbody>
 
@@ -254,40 +433,149 @@
 </div>
 
 
+<!-- ===================================================== -->
 <!-- VIEW MODAL -->
+<!-- ===================================================== -->
 
-<div class="modal-overlay"
-     *ngIf="showViewModal">
+<div
+    class="modal-overlay"
+    *ngIf="showViewModal">
 
-    <div class="modal">
+    <div class="modal large-modal">
+
+        <!-- HEADER -->
 
         <div class="modal-header">
 
-            <h3>User Details</h3>
+            <h3>
+                User Details
+            </h3>
 
-            <button (click)="closeModals()">
+            <button
+                type="button"
+                (click)="closeModals()">
+
                 <i class="fas fa-times"></i>
+
             </button>
 
         </div>
 
+
+        <!-- PROFILE -->
+
         <div class="profile-view">
 
-            <img src="https://i.pravatar.cc/150?img=12">
+            <img
+                [src]="
+                    selectedUser?.profileImage ||
+                    'assets/images/default-user.png'
+                "
+                [alt]="selectedUser?.fullName">
 
-            <h3>{{selectedUser?.fullName}}</h3>
+            <h3>
+                {{selectedUser?.fullName}}
+            </h3>
 
-            <p>{{selectedUser?.email}}</p>
+            <p>
+                {{selectedUser?.email}}
+            </p>
+
+            <span
+                class="role-badge">
+
+                {{roleLabel(selectedUser?.role)}}
+
+            </span>
 
         </div>
 
+
+        <!-- DETAILS -->
+
         <div class="details">
 
-            <p><strong>Phone:</strong> {{selectedUser?.phoneNumber}}</p>
+            <p>
+                <strong>Phone:</strong>
+                {{selectedUser?.phoneNumber || 'Not provided'}}
+            </p>
 
-            <p><strong>Role:</strong> {{selectedUser?.role?.replace('_',' ')}}</p>
+            <p>
+                <strong>Age:</strong>
+                {{selectedUser?.age || 'Not provided'}}
+            </p>
 
-            <p><strong>Status:</strong> {{selectedUser?.enabled?'Active':'Blocked'}}</p>
+            <p>
+                <strong>Gender:</strong>
+                {{selectedUser?.gender || 'Not provided'}}
+            </p>
+
+            <p>
+                <strong>Nationality:</strong>
+                {{selectedUser?.nationality || 'Not provided'}}
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                {{selectedUser?.address || 'Not provided'}}
+            </p>
+
+            <p>
+                <strong>Shehia:</strong>
+                {{selectedUser?.shehia || 'Not provided'}}
+            </p>
+
+            <p>
+                <strong>Role:</strong>
+                {{roleLabel(selectedUser?.role)}}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+
+                {{
+                    selectedUser?.enabled
+                        ? 'Active'
+                        : 'Blocked'
+                }}
+
+            </p>
+
+            <!-- BUSINESS -->
+
+            <ng-container
+                *ngIf="selectedUser?.role === 'BUSINESS_OWNER'">
+
+                <hr>
+
+                <h4>
+                    Business Information
+                </h4>
+
+                <p>
+                    <strong>Business Name:</strong>
+                    {{selectedUser?.businessName || 'Not provided'}}
+                </p>
+
+                <p>
+                    <strong>Business Type:</strong>
+                    {{selectedUser?.businessType || 'Not provided'}}
+                </p>
+
+                <p>
+                    <strong>Business Address:</strong>
+                    {{selectedUser?.businessAddress || 'Not provided'}}
+                </p>
+
+                <p>
+                    <strong>Registration Number:</strong>
+                    {{
+                        selectedUser?.businessRegistrationNumber ||
+                        'Not assigned'
+                    }}
+                </p>
+
+            </ng-container>
 
         </div>
 
@@ -296,10 +584,13 @@
 </div>
 
 
+<!-- ===================================================== -->
 <!-- EDIT MODAL -->
+<!-- ===================================================== -->
 
-<div class="modal-overlay"
-     *ngIf="showEditModal">
+<div
+    class="modal-overlay"
+    *ngIf="showEditModal">
 
     <div class="modal large-modal">
 
@@ -307,25 +598,34 @@
 
         <div class="modal-header">
 
-            <h3>Edit User</h3>
+            <h3>
+                Edit User
+            </h3>
 
-            <button (click)="closeModals()">
+            <button
+                type="button"
+                (click)="closeModals()">
+
                 <i class="fas fa-times"></i>
+
             </button>
 
         </div>
+
 
         <!-- PROFILE IMAGE -->
 
         <div class="profile-upload">
 
             <img
-            [src]="selectedUser.profileImage || 'assets/images/default-user.png'">
+                [src]="
+                    selectedUser?.profileImage ||
+                    'assets/images/default-user.png'
+                "
+                [alt]="selectedUser?.fullName">
 
-            <label class="upload-label">
-
+            <label>
                 Profile Image URL
-
             </label>
 
             <input
@@ -335,138 +635,330 @@
 
         </div>
 
-        <!-- FULL NAME -->
 
-        <div class="form-group">
+        <!-- PERSONAL INFORMATION -->
 
-            <label>Full Name</label>
+        <div class="section-title">
 
-            <input
-                type="text"
-                [(ngModel)]="selectedUser.fullName">
+            <i class="fas fa-user"></i>
 
-        </div>
-
-        <!-- EMAIL -->
-
-        <div class="form-group">
-
-            <label>Email Address</label>
-
-            <input
-                type="email"
-                [(ngModel)]="selectedUser.email">
+            Personal Information
 
         </div>
 
-        <!-- PHONE -->
 
-        <div class="form-group">
+        <div class="form-grid">
 
-            <label>Phone Number</label>
+            <!-- FULL NAME -->
 
-            <input
-                type="text"
-                [(ngModel)]="selectedUser.phoneNumber">
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="selectedUser.fullName">
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label>
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    [(ngModel)]="selectedUser.email">
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label>
+                    Phone Number
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="selectedUser.phoneNumber">
+
+            </div>
+
+
+            <!-- AGE -->
+
+            <div class="form-group">
+
+                <label>
+                    Age
+                </label>
+
+                <input
+                    type="number"
+                    min="1"
+                    [(ngModel)]="selectedUser.age">
+
+            </div>
+
+
+            <!-- GENDER -->
+
+            <div class="form-group">
+
+                <label>
+                    Gender
+                </label>
+
+                <select
+                    [(ngModel)]="selectedUser.gender">
+
+                    <option value="Male">
+                        Male
+                    </option>
+
+                    <option value="Female">
+                        Female
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NATIONALITY -->
+
+           <div class="form-group">
+
+    <label>
+        Nationality
+        <span class="optional">
+            (Optional)
+        </span>
+    </label>
+
+    <select
+        [(ngModel)]="selectedUser.nationality">
+
+        <option value="">
+            Select nationality
+        </option>
+
+        <option
+            *ngFor="let country of countries"
+            [value]="country">
+            {{ country }}
+        </option>
+
+    </select>
+
+</div>
+
+
+            <!-- SHEHIA -->
+
+            <div class="form-group">
+
+                <label>
+                    Shehia
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="selectedUser.shehia"
+                    placeholder="Enter shehia">
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Address
+                </label>
+
+                <textarea
+                    rows="3"
+                    [(ngModel)]="selectedUser.address">
+                </textarea>
+
+            </div>
 
         </div>
 
-        <!-- AGE -->
 
-        <div class="form-group">
+        <!-- BUSINESS INFORMATION -->
 
-            <label>Age</label>
+        <div
+            class="section-title"
+            *ngIf="
+                selectedUser?.role === 'BUSINESS_OWNER'
+            ">
 
-            <input
-                type="number"
-                [(ngModel)]="selectedUser.age">
+            <i class="fas fa-store"></i>
 
-        </div>
-
-        <!-- GENDER -->
-
-        <div class="form-group">
-
-            <label>Gender</label>
-
-            <select
-                [(ngModel)]="selectedUser.gender">
-
-                <option value="Male">
-                    Male
-                </option>
-
-                <option value="Female">
-                    Female
-                </option>
-
-            </select>
+            Business Information
 
         </div>
 
-        <!-- ADDRESS -->
 
-        <div class="form-group">
+        <div
+            class="form-grid"
+            *ngIf="
+                selectedUser?.role === 'BUSINESS_OWNER'
+            ">
 
-            <label>Address</label>
+            <!-- BUSINESS NAME -->
 
-            <textarea
-                rows="3"
-                [(ngModel)]="selectedUser.address">
+            <div class="form-group">
 
-            </textarea>
+                <label>
+                    Business Name
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="selectedUser.businessName">
+
+            </div>
+
+
+            <!-- BUSINESS TYPE -->
+
+            <div class="form-group">
+
+                <label>
+                    Business Type
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="selectedUser.businessType">
+
+            </div>
+
+
+            <!-- BUSINESS ADDRESS -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Business Address
+                </label>
+
+                <textarea
+                    rows="3"
+                    [(ngModel)]="selectedUser.businessAddress">
+                </textarea>
+
+            </div>
+
+
+            <!-- REGISTRATION NUMBER -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Business Registration Number
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="
+                        selectedUser.businessRegistrationNumber
+                    "
+                    readonly>
+
+            </div>
 
         </div>
 
-        <!-- ROLE -->
 
-        <div class="form-group">
+        <!-- ACCOUNT INFORMATION -->
 
-            <label>User Role</label>
+        <div class="section-title">
 
-            <select
-                [(ngModel)]="selectedUser.role">
+            <i class="fas fa-user-shield"></i>
 
-                <option value="ADMIN">
-                    Admin
-                </option>
-
-                <option value="BUSINESS_OWNER">
-                    Business Owner
-                </option>
-
-                <option value="TOURIST">
-                    Tourist
-                </option>
-
-            </select>
+            Account Information
 
         </div>
 
-        <!-- STATUS -->
 
-        <div class="form-group">
+        <div class="form-grid">
 
-            <label>Account Status</label>
+            <!-- ROLE -->
 
-            <select
-                [(ngModel)]="selectedUser.enabled">
+            <div class="form-group">
 
-                <option [ngValue]="true">
-                    Active
-                </option>
+                <label>
+                    User Role
+                </label>
 
-                <option [ngValue]="false">
-                    Blocked
-                </option>
+                <select
+                    [(ngModel)]="selectedUser.role">
 
-            </select>
+                    <option value="ADMIN">
+                        Admin
+                    </option>
+
+                    <option value="SHEHA">
+                        Sheha
+                    </option>
+
+                    <option value="BUSINESS_OWNER">
+                        Business Owner
+                    </option>
+
+                    <option value="TOURIST">
+                        Tourist
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+                <label>
+                    Account Status
+                </label>
+
+                <select
+                    [(ngModel)]="selectedUser.enabled">
+
+                    <option [ngValue]="true">
+                        Active
+                    </option>
+
+                    <option [ngValue]="false">
+                        Blocked
+                    </option>
+
+                </select>
+
+            </div>
 
         </div>
+
 
         <!-- SAVE -->
 
         <button
+            type="button"
             class="save-btn"
             (click)="updateUser()">
 
@@ -480,191 +972,395 @@
 
 </div>
 
-<div class="modal-overlay"
-     *ngIf="showAddModal">
+
+<!-- ===================================================== -->
+<!-- ADD USER MODAL -->
+<!-- ===================================================== -->
+
+<div
+    class="modal-overlay"
+    *ngIf="showAddModal">
 
     <div class="modal large-modal">
 
+        <!-- HEADER -->
+
         <div class="modal-header">
 
-            <h3>Add New User</h3>
+            <h3>
+                Add New User
+            </h3>
 
-            <button (click)="closeModals()">
+            <button
+                type="button"
+                (click)="closeModals()">
+
                 <i class="fas fa-times"></i>
+
             </button>
 
         </div>
 
-        <!-- IMAGE -->
+
+        <!-- PROFILE -->
 
         <div class="profile-upload">
 
             <img
-            [src]="newUser.profileImage || 'assets/images/default-user.png'">
+                [src]="
+                    newUser.profileImage ||
+                    'assets/images/default-user.png'
+                "
+                [alt]="newUser.fullName">
+
+            <label>
+                Profile Image URL
+            </label>
 
             <input
-            type="text"
-            placeholder="Profile Image URL"
-            [(ngModel)]="newUser.profileImage">
+                type="text"
+                [(ngModel)]="newUser.profileImage"
+                placeholder="https://example.com/profile.jpg">
 
         </div>
 
-        <!-- FULL NAME -->
 
-        <div class="form-group">
+        <!-- PERSONAL -->
 
-            <label>Full Name</label>
+        <div class="section-title">
 
-            <input
-            type="text"
-            [(ngModel)]="newUser.fullName">
+            <i class="fas fa-user"></i>
 
-        </div>
-
-        <!-- EMAIL -->
-
-        <div class="form-group">
-
-            <label>Email</label>
-
-            <input
-            type="email"
-            [(ngModel)]="newUser.email">
+            Personal Information
 
         </div>
 
-        <!-- PHONE -->
 
-        <div class="form-group">
+        <div class="form-grid">
 
-            <label>Phone Number</label>
+            <!-- FULL NAME -->
 
-            <input
-            type="text"
-            [(ngModel)]="newUser.phoneNumber">
+            <div class="form-group">
+
+                <label>
+                    Full Name *
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newUser.fullName"
+                    placeholder="Enter full name">
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label>
+                    Email Address *
+                </label>
+
+                <input
+                    type="email"
+                    [(ngModel)]="newUser.email"
+                    placeholder="Enter email">
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label>
+                    Phone Number *
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newUser.phoneNumber"
+                    placeholder="Enter phone number">
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label>
+                    Initial Password *
+                </label>
+
+                <input
+                    type="password"
+                    [(ngModel)]="newUser.password"
+                    placeholder="Enter initial password">
+
+            </div>
+
+
+            <!-- AGE -->
+
+            <div class="form-group">
+
+                <label>
+                    Age
+                </label>
+
+                <input
+                    type="number"
+                    min="1"
+                    [(ngModel)]="newUser.age">
+
+            </div>
+
+
+            <!-- GENDER -->
+
+            <div class="form-group">
+
+                <label>
+                    Gender
+                </label>
+
+                <select
+                    [(ngModel)]="newUser.gender">
+
+                    <option value="Male">
+                        Male
+                    </option>
+
+                    <option value="Female">
+                        Female
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NATIONALITY -->
+
+<div class="form-group">
+
+    <label>
+        Nationality
+        <span class="optional">
+            (Optional)
+        </span>
+    </label>
+
+    <select
+        [(ngModel)]="newUser.nationality">
+
+        <option value="">
+            Select nationality
+        </option>
+
+        <option
+            *ngFor="let country of countries"
+            [value]="country">
+            {{ country }}
+        </option>
+
+    </select>
+
+</div>
+
+
+            <!-- SHEHIA -->
+
+            <div class="form-group">
+
+                <label>
+                    Shehia
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newUser.shehia"
+                    placeholder="Enter shehia">
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Address
+                </label>
+
+                <textarea
+                    rows="3"
+                    [(ngModel)]="newUser.address"
+                    placeholder="Enter residential address">
+                </textarea>
+
+            </div>
 
         </div>
 
-        <!-- PASSWORD -->
 
-        <div class="form-group">
+        <!-- BUSINESS -->
 
-            <label>Password</label>
+        <div
+            class="section-title"
+            *ngIf="
+                newUser.role === 'BUSINESS_OWNER'
+            ">
 
-            <input
-            type="password"
-            [(ngModel)]="newUser.password">
+            <i class="fas fa-store"></i>
 
-        </div>
-
-        <!-- AGE -->
-
-        <div class="form-group">
-
-            <label>Age</label>
-
-            <input
-            type="number"
-            [(ngModel)]="newUser.age">
+            Business Information
 
         </div>
 
-        <!-- GENDER -->
 
-        <div class="form-group">
+        <div
+            class="form-grid"
+            *ngIf="
+                newUser.role === 'BUSINESS_OWNER'
+            ">
 
-            <label>Gender</label>
+            <!-- BUSINESS NAME -->
 
-            <select
-            [(ngModel)]="newUser.gender">
+            <div class="form-group">
 
-                <option value="Male">Male</option>
+                <label>
+                    Business Name
+                </label>
 
-                <option value="Female">Female</option>
+                <input
+                    type="text"
+                    [(ngModel)]="newUser.businessName"
+                    placeholder="Business name">
 
-            </select>
+            </div>
 
-        </div>
 
-        <!-- ADDRESS -->
+            <!-- BUSINESS TYPE -->
 
-        <div class="form-group">
+            <div class="form-group">
 
-            <label>Address</label>
+                <label>
+                    Business Type
+                </label>
 
-            <textarea
-            rows="3"
-            [(ngModel)]="newUser.address">
+                <input
+                    type="text"
+                    [(ngModel)]="newUser.businessType"
+                    placeholder="e.g. Restaurant">
 
-            </textarea>
+            </div>
 
-        </div>
 
-        <!-- ROLE -->
+            <!-- BUSINESS ADDRESS -->
 
-        <div class="form-group">
+            <div class="form-group full-width">
 
-            <label>Role</label>
+                <label>
+                    Business Address
+                </label>
 
-            <select
-            [(ngModel)]="newUser.role">
+                <textarea
+                    rows="3"
+                    [(ngModel)]="newUser.businessAddress"
+                    placeholder="Business location">
+                </textarea>
 
-                <option value="ADMIN">
-
-                    Admin
-
-                </option>
-
-                <option value="BUSINESS_OWNER">
-
-                    Business Owner
-
-                </option>
-
-                <option value="TOURIST">
-
-                    Tourist
-
-                </option>
-
-            </select>
+            </div>
 
         </div>
 
-        <!-- STATUS -->
 
-        <div class="form-group">
+        <!-- ACCOUNT -->
 
-            <label>Status</label>
+        <div class="section-title">
 
-            <select
-            [(ngModel)]="newUser.enabled">
+            <i class="fas fa-user-shield"></i>
 
-                <option [ngValue]="true">
-
-                    Active
-
-                </option>
-
-                <option [ngValue]="false">
-
-                    Blocked
-
-                </option>
-
-            </select>
+            Account Information
 
         </div>
+
+
+        <div class="form-grid">
+
+            <!-- ROLE -->
+
+            <div class="form-group">
+
+                <label>
+                    User Role *
+                </label>
+
+                <select
+                    [(ngModel)]="newUser.role">
+
+                    <option value="ADMIN">
+                        Admin
+                    </option>
+
+                    <option value="SHEHA">
+                        Sheha
+                    </option>
+
+                    <option value="BUSINESS_OWNER">
+                        Business Owner
+                    </option>
+
+                    <option value="TOURIST">
+                        Tourist
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+                <label>
+                    Account Status
+                </label>
+
+                <select
+                    [(ngModel)]="newUser.enabled">
+
+                    <option [ngValue]="true">
+                        Active
+                    </option>
+
+                    <option [ngValue]="false">
+                        Blocked
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- SAVE -->
 
         <button
+            type="button"
             class="save-btn"
             (click)="saveUser()">
 
-<i class="fas fa-save"></i>
+            <i class="fas fa-save"></i>
 
-Save User
+            Save User
 
-</button>
+        </button>
 
     </div>
 

@@ -20,15 +20,22 @@ import { OwnerNotifications } from './owner/owner-notifications/owner-notificati
 import { OwnerProfile } from './owner/owner-profile/owner-profile';
 import { TouristLayout } from './tourist/tourist-layout/tourist-layout';
 import { TouristDashboard } from './tourist/tourist-dashboard/tourist-dashboard';
-import { ReportIssue } from './tourist/report-issue/report-issue';
 import { MyReports } from './tourist/my-reports/my-reports';
 import { TouristNotifictions } from './tourist/tourist-notifictions/tourist-notifictions';
 import { MyProfile } from './tourist/my-profile/my-profile';
 import { VerifyOtp } from './auth/verify-otp/verify-otp';
 import { ResetPassword } from './auth/reset-password/reset-password';
-import { Inspections } from './admin/inspections/inspections';
 import { authGuard } from './auth/guards/auth.guard';
 import { roleGuard } from './auth/guards/role.guard';
+import { ShehaLayout } from './sheha/sheha-layout/sheha-layout';
+import { ShehaDashboard } from './sheha/sheha-dashboard/sheha-dashboard';
+import { Permits } from './sheha/permits/permits';
+import { ShehaProfile } from './sheha/sheha-profile/sheha-profile';
+import { OwnerPermits } from './owner/owner-permits/owner-permits';
+import { TouristPayment } from './tourist/tourist-payment/tourist-payment';
+import { TouristPermit } from './tourist/tourist-permit/tourist-permit';
+import { ShehaNotifications } from './sheha/sheha-notifications/sheha-notifications';
+import { AdminPermits } from './admin/admin-permits/admin-permits';
 
 export const routes: Routes = [
     {path: '',component:Home},
@@ -48,11 +55,11 @@ export const routes: Routes = [
       {path: 'dashboard',component: AdminDashboard},
       {path: 'licenses',component: Licenses},
       {path: 'payments',component: AdminPayment},
-      {path: 'Complaints',component: Complaints},
+      {path: 'complaints',component: Complaints},
       {path: 'users',component: Users},
       {path: 'reports',component: Reports},
       {path: 'notifications',component: AdminNotifications},
-      {path: 'inspections',component: Inspections}
+      {path: 'permits',component: AdminPermits}
     ]
    },
    
@@ -67,13 +74,13 @@ export const routes: Routes = [
       {path: 'my-licenses',component: MyLicenses},
       {path: 'payments',component: OwnerPayment},
       {path: 'notifications',component: OwnerNotifications},
-      {path: 'profile',component: OwnerProfile}
-
+      {path: 'profile',component: OwnerProfile},
+      {path: 'permits',component: OwnerPermits}
     ]
    },
 
-    //TOURIST/CITIZEN
-    {path:'tourist',
+  //TOURIST/CITIZEN
+  {path:'tourist',
     component:TouristLayout,
     canActivate:[
     authGuard,roleGuard],
@@ -81,12 +88,28 @@ export const routes: Routes = [
     children: [
       {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
       {path: 'dashboard',component: TouristDashboard},
-      {path: 'report-issue',component: ReportIssue},
-      {path: 'my-reports',component: MyReports},
+      {path: 'complaints',component: MyReports},
       {path: 'notifications',component: TouristNotifictions},
-       {path: 'profile',component: MyProfile}
+      {path: 'profile',component: MyProfile},
+      {path: 'payments', component:TouristPayment},
+      {path: 'permits', component:TouristPermit}
     ]
-  }
+  },
+
+  //SHEHA
+    {path:'sheha',
+    component:ShehaLayout,
+    canActivate:[
+    authGuard,roleGuard],
+    data:{role:'SHEHA'},
+    children: [
+      {path: '',redirectTo: 'dashboard',pathMatch: 'full'},
+      {path: 'dashboard',component: ShehaDashboard},
+      {path: 'permits',component: Permits},
+      {path: 'profile',component: ShehaProfile},
+      {path: 'notifications', component:ShehaNotifications}
+    ]
+  },
 ];
 
 

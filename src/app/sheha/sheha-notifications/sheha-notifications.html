@@ -1,0 +1,231 @@
+<div class="notifications-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                SHEHA PANEL
+            </span>
+
+            <h1>
+                Notifications
+            </h1>
+
+            <p>
+                Stay updated with permit applications,
+                approvals and other system activities.
+            </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                class="refresh-btn"
+                (click)="refresh()">
+
+                <i class="fas fa-rotate-right"></i>
+
+                Refresh
+
+            </button>
+
+            <button
+                class="mark-all-btn"
+                (click)="markAllAsRead()"
+                [disabled]="unreadCount === 0">
+
+                <i class="fas fa-check-double"></i>
+
+                Mark All Read
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="notification-summary">
+
+        <div class="summary-card">
+
+            <div class="summary-icon total">
+
+                <i class="fas fa-bell"></i>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    {{ notifications.length }}
+                </strong>
+
+                <span>
+                    Total Notifications
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon unread">
+
+                <i class="fas fa-envelope"></i>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    {{ unreadCount }}
+                </strong>
+
+                <span>
+                    Unread Notifications
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="notification-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Recent Notifications
+                </h2>
+
+                <span>
+                    Your latest system updates
+                </span>
+
+            </div>
+
+            <span
+                class="unread-badge"
+                *ngIf="unreadCount > 0">
+
+                {{ unreadCount }} unread
+
+            </span>
+
+        </div>
+
+
+        <!-- EMPTY -->
+
+        <div
+            class="empty-state"
+            *ngIf="!loading && notifications.length === 0">
+
+            <div class="empty-icon">
+
+                <i class="fas fa-bell-slash"></i>
+
+            </div>
+
+            <h3>
+                No Notifications
+            </h3>
+
+            <p>
+                You currently have no notifications.
+            </p>
+
+        </div>
+
+
+        <!-- LIST -->
+
+        <div
+            class="notification-list"
+            *ngIf="notifications.length > 0">
+
+            <div
+                class="notification-item"
+                *ngFor="let notification of notifications"
+                [class.unread]="!notification.read"
+                (click)="openNotification(notification)">
+
+
+                <div
+                    class="notification-icon"
+                    [ngClass]="getNotificationClass(notification.type)">
+
+                    <i
+                        [class]="getNotificationIcon(notification.type)">
+                    </i>
+
+                </div>
+
+
+                <div class="notification-content">
+
+                    <div class="notification-top">
+
+                        <h3>
+                            {{ notification.title }}
+                        </h3>
+
+                        <span
+                            class="new-dot"
+                            *ngIf="!notification.read">
+
+                            NEW
+
+                        </span>
+
+                    </div>
+
+
+                    <p>
+                        {{ notification.message }}
+                    </p>
+
+
+                    <span class="notification-date">
+
+                        <i class="far fa-clock"></i>
+
+                        {{ formatDate(notification.createdAt) }}
+
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="delete-btn"
+                    title="Delete notification"
+                    (click)="deleteNotification(notification); $event.stopPropagation()">
+
+                    <i class="fas fa-trash"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

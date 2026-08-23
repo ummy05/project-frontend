@@ -30,15 +30,73 @@
 
         <div class="nav-buttons">
 
-            <button class="login-btn" routerLink="/login">
-                Login
-            </button>
+    <!-- LANGUAGE SWITCHER -->
 
-            <button class="register-btn" routerLink="/register">
-                Register
-            </button>
+    <div class="language-switcher">
 
-        </div>
+        <button
+            type="button"
+            class="language-btn"
+            [class.active]="currentLanguage === 'en'"
+            (click)="changeLanguage('en')">
+
+            <span class="flag">
+                🇬🇧
+            </span>
+
+            <span>
+                EN
+            </span>
+
+        </button>
+
+
+        <span class="language-divider">
+            |
+        </span>
+
+
+        <button
+            type="button"
+            class="language-btn"
+            [class.active]="currentLanguage === 'sw'"
+            (click)="changeLanguage('sw')">
+
+            <span class="flag">
+                🇹🇿
+            </span>
+
+            <span>
+                SW
+            </span>
+
+        </button>
+
+    </div>
+
+
+    <!-- LOGIN -->
+
+    <button
+        class="login-btn"
+        routerLink="/login">
+
+        Login
+
+    </button>
+
+
+    <!-- REGISTER -->
+
+    <button
+        class="register-btn"
+        routerLink="/register">
+
+        Register
+
+    </button>
+
+</div>
 
     </ul>
 

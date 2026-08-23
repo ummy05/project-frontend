@@ -1,0 +1,440 @@
+
+<div class="dashboard-page">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                SHEHA PORTAL
+            </span>
+
+            <h1>
+                Welcome, {{ fullName }} 👋
+            </h1>
+
+            <p>
+                Review and manage permit applications
+                submitted within your area.
+            </p>
+
+        </div>
+
+
+        <button
+            class="refresh-btn"
+            type="button"
+            (click)="refresh()">
+
+            <i class="fas fa-rotate"></i>
+
+            Refresh
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- SUMMARY -->
+    <!-- ================================================= -->
+
+    <div class="summary-grid">
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon total">
+
+                <i class="fas fa-file-lines"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Total Permits
+                </span>
+
+                <h2>
+                    {{ totalPermits }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon pending">
+
+                <i class="fas fa-clock"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Pending Review
+                </span>
+
+                <h2>
+                    {{ pendingPermits }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon approved">
+
+                <i class="fas fa-circle-check"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Approved
+                </span>
+
+                <h2>
+                    {{ approvedPermits }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon rejected">
+
+                <i class="fas fa-circle-xmark"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Rejected
+                </span>
+
+                <h2>
+                    {{ rejectedPermits }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- QUICK ACTIONS -->
+    <!-- ================================================= -->
+
+    <div class="quick-grid">
+
+
+        <a
+            routerLink="/sheha/permits"
+            class="quick-card">
+
+            <div>
+
+                <div class="quick-icon">
+
+                    <i class="fas fa-file-circle-check"></i>
+
+                </div>
+
+                <h3>
+                    Review Permits
+                </h3>
+
+                <p>
+                    View permit applications that
+                    require your attention.
+                </p>
+
+            </div>
+
+            <i class="fas fa-arrow-right arrow"></i>
+
+        </a>
+
+
+        <a
+            routerLink="/sheha/notifications"
+            class="quick-card">
+
+            <div>
+
+                <div class="quick-icon notification">
+
+                    <i class="fas fa-bell"></i>
+
+                </div>
+
+                <h3>
+                    Notifications
+                </h3>
+
+                <p>
+                    You currently have
+                    {{ unreadNotifications }}
+                    unread notification(s).
+                </p>
+
+            </div>
+
+            <i class="fas fa-arrow-right arrow"></i>
+
+        </a>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- PENDING PERMITS -->
+    <!-- ================================================= -->
+
+    <div class="section-card">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span>
+                    REVIEW QUEUE
+                </span>
+
+                <h2>
+                    Permit Applications
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                (click)="viewAllPermits()">
+
+                View All
+
+                <i class="fas fa-arrow-right"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+            class="table-wrapper"
+            *ngIf="permits.length > 0">
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Reference
+                        </th>
+
+                        <th>
+                            Applicant
+                        </th>
+
+                        <th>
+                            Business
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr
+                        *ngFor="
+                            let permit
+                            of permits.slice(0, 5)
+                        ">
+
+
+                        <td>
+
+                            <strong>
+                                {{ getPermitNumber(permit) }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ getApplicant(permit) }}
+                        </td>
+
+
+                        <td>
+                            {{ getBusinessName(permit) }}
+                        </td>
+
+
+                        <td>
+                            {{
+                                getDate(permit)
+                                | date:'dd MMM yyyy'
+                            }}
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="status"
+                                [ngClass]="{
+                                    pending:
+                                        getStatus(permit) === 'PENDING',
+
+                                    approved:
+                                        getStatus(permit) === 'APPROVED',
+
+                                    rejected:
+                                        getStatus(permit) === 'REJECTED'
+                                }">
+
+                                <i
+                                    class="fas"
+                                    [ngClass]="{
+                                        'fa-clock':
+                                            getStatus(permit) === 'PENDING',
+
+                                        'fa-check':
+                                            getStatus(permit) === 'APPROVED',
+
+                                        'fa-xmark':
+                                            getStatus(permit) === 'REJECTED'
+                                    }">
+                                </i>
+
+                                {{ getStatus(permit) || 'N/A' }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div
+                                class="action-buttons"
+                                *ngIf="
+                                    getStatus(permit) === 'PENDING'
+                                ">
+
+
+                                <button
+                                    class="approve-btn"
+                                    type="button"
+                                    title="Approve"
+                                    (click)="approvePermit(permit)">
+
+                                    <i class="fas fa-check"></i>
+
+                                </button>
+
+
+                                <button
+                                    class="reject-btn"
+                                    type="button"
+                                    title="Reject"
+                                    (click)="rejectPermit(permit)">
+
+                                    <i class="fas fa-xmark"></i>
+
+                                </button>
+
+                            </div>
+
+
+                            <span
+                                class="reviewed"
+                                *ngIf="
+                                    getStatus(permit) !== 'PENDING'
+                                ">
+
+                                Reviewed
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- EMPTY -->
+
+        <div
+            class="empty-state"
+            *ngIf="permits.length === 0">
+
+            <div class="empty-icon">
+
+                <i class="fas fa-folder-open"></i>
+
+            </div>
+
+            <h3>
+                No Permit Applications
+            </h3>
+
+            <p>
+                There are currently no permit
+                applications available for review.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</div>

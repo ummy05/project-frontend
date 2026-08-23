@@ -7,14 +7,18 @@ import {
 } from '@angular/common/http';
 
 import { inject } from '@angular/core';
+
 import { Router } from '@angular/router';
+
 import {
   Observable,
   catchError,
   throwError
 } from 'rxjs';
 
-import { AlertService } from '../services/alert.service';
+import {
+  AlertService
+} from '../services/alert.service';
 
 
 export const jwtInterceptor: HttpInterceptorFn = (
@@ -25,78 +29,114 @@ export const jwtInterceptor: HttpInterceptorFn = (
 
 ): Observable<HttpEvent<unknown>> => {
 
-  const router = inject(Router);
+  const router =
+    inject(Router);
 
-  const alertService = inject(AlertService);
+  const alertService =
+    inject(AlertService);
 
+
+  // =====================================================
+  // GET TOKEN
+  // =====================================================
 
   const token =
     localStorage.getItem('token');
 
 
+  // =====================================================
+  // PUBLIC ENDPOINTS
+  // =====================================================
+
+  const isPublicEndpoint =
+
+    // Authentication
+    req.url.includes('/api/auth/login') ||
+
+    req.url.includes('/api/auth/register') ||
+
+    req.url.includes('/api/auth/forgot-password') ||
+
+    req.url.includes('/api/auth/verify-otp') ||
+
+    req.url.includes('/api/auth/reset-password') ||
+
+    // Language
+    req.url.includes('/api/languages/');
+
+
+  // =====================================================
+  // REQUEST
+  // =====================================================
+
   let request = req;
 
 
-  // ==========================================
-  // DO NOT ATTACH TOKEN TO PUBLIC AUTH ENDPOINTS
-  // ==========================================
-
-  const isPublicAuthEndpoint =
-    req.url.includes('/api/auth/login') ||
-    req.url.includes('/api/auth/register') ||
-    req.url.includes('/api/auth/forgot-password') ||
-    req.url.includes('/api/auth/verify-otp') ||
-    req.url.includes('/api/auth/reset-password');
-
+  // =====================================================
+  // ATTACH JWT
+  // =====================================================
 
   if (
     token &&
-    !isPublicAuthEndpoint
+    !isPublicEndpoint
   ) {
 
-    request = req.clone({
+    request =
+      req.clone({
 
-      setHeaders: {
+        setHeaders: {
 
-        Authorization:
-          `Bearer ${token}`
+          Authorization:
+            `Bearer ${token}`
 
-      }
+        }
 
-    });
+      });
 
   }
 
 
+  // =====================================================
+  // SEND REQUEST
+  // =====================================================
+
   return next(request).pipe(
 
     catchError(
+
       (error: HttpErrorResponse) => {
+
+        // =================================================
+        // SESSION EXPIRED
+        // =================================================
 
         if (
           error.status === 401 &&
-          !isPublicAuthEndpoint
+          !isPublicEndpoint &&
+          !!token
         ) {
 
-          localStorage.clear();
+          localStorage.removeItem('token');
+
+          localStorage.removeItem('user');
+
+          localStorage.removeItem('role');
 
           alertService.error(
             'Session Expired',
             'Your session has expired. Please login again.'
           );
 
-          router.navigate([
-            '/login'
-          ]);
+          router.navigate(['/login']);
 
         }
-
 
         return throwError(
           () => error
         );
 
       }
+
     )
 
   );

@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
@@ -10,7 +9,6 @@ import { AlertService } from '../../services/alert.service';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     RouterLink
   ],
@@ -20,43 +18,69 @@ import { AlertService } from '../../services/alert.service';
 export class Login {
 
   private authService = inject(AuthService);
-  private router = inject(Router);
   private alertService = inject(AlertService);
+  private router = inject(Router);
 
-  showPassword = false;
-
-  loading = false;
+  // =====================================================
+  // LOGIN DATA
+  // =====================================================
 
   loginData = {
     email: '',
     password: ''
   };
 
-  togglePassword() {
+  // =====================================================
+  // UI STATE
+  // =====================================================
+
+  showPassword = false;
+
+  loading = false;
+
+  // =====================================================
+  // TOGGLE PASSWORD
+  // =====================================================
+
+  togglePassword(): void {
 
     this.showPassword = !this.showPassword;
 
   }
 
-  login() {
+  // =====================================================
+  // LOGIN
+  // =====================================================
 
-    // =========================
-    // BASIC VALIDATION
-    // =========================
+  login(): void {
 
-    if (!this.loginData.email || !this.loginData.password) {
+    // ===================================================
+    // VALIDATION
+    // ===================================================
+
+    if (!this.loginData.email.trim()) {
 
       this.alertService.warning(
-        'Missing Information',
-        'Please enter your email address and password.'
+        'Email Required',
+        'Please enter your email address.'
       );
 
       return;
     }
 
-    // =========================
-    // START LOADING
-    // =========================
+    if (!this.loginData.password.trim()) {
+
+      this.alertService.warning(
+        'Password Required',
+        'Please enter your password.'
+      );
+
+      return;
+    }
+
+    // ===================================================
+    // LOADING
+    // ===================================================
 
     this.loading = true;
 
@@ -64,126 +88,123 @@ export class Login {
       'Signing you in...'
     );
 
-    // =========================
+    // ===================================================
     // LOGIN REQUEST
-    // =========================
+    // ===================================================
 
-    this.authService.login(
-      this.loginData
-    ).subscribe({
+    this.authService.login({
 
-      next: (response) => {
+      email: this.loginData.email.trim(),
 
-        /*
-         * SweetAlert loading should remain visible
-         * for approximately 3 seconds as requested.
-         */
+      password: this.loginData.password
 
-        setTimeout(() => {
+    }).subscribe({
 
-          this.loading = false;
+      // =================================================
+      // SUCCESS
+      // =================================================
 
-          this.alertService.close();
+      next: response => {
 
-          // =========================
-          // SUCCESS ALERT
-          // =========================
+        this.loading = false;
 
-          this.alertService.success(
-            'Login Successful',
-            'Welcome back. You have been successfully signed in.'
-          );
+        this.alertService.close();
 
-          // =========================
-          // REDIRECT BY ROLE
-          // =========================
+        this.alertService.success(
+          'Login Successful',
+          `Welcome back, ${response.fullName}.`
+        );
 
-          setTimeout(() => {
+        // ===============================================
+        // ROLE REDIRECTION
+        // ===============================================
 
-            switch (response.role) {
+        switch (response.role) {
 
-              case 'ADMIN':
+          case 'ADMIN':
 
-                this.router.navigate(['/admin']);
+            this.router.navigate([
+              '/admin/dashboard'
+            ]);
 
-                break;
+            break;
 
-              case 'BUSINESS_OWNER':
 
-                this.router.navigate(['/owner']);
+          case 'SHEHA':
 
-                break;
+            this.router.navigate([
+              '/sheha/dashboard'
+            ]);
 
-              case 'TOURIST':
+            break;
 
-                this.router.navigate(['/tourist']);
 
-                break;
+          case 'BUSINESS_OWNER':
 
-              default:
+            this.router.navigate([
+              '/owner/dashboard'
+            ]);
 
-                this.router.navigate(['/']);
+            break;
 
-                break;
 
-            }
+          case 'TOURIST':
 
-          }, 1200);
+            this.router.navigate([
+              '/tourist/dashboard'
+            ]);
 
-        }, 3000);
+            break;
+
+
+          default:
+
+            this.alertService.error(
+              'Unknown Role',
+              'Your account role is not recognized by the system.'
+            );
+
+            this.authService.logout();
+
+            this.router.navigate(['/login']);
+
+            break;
+        }
 
       },
 
-      error: (err) => {
+      // =================================================
+      // ERROR
+      // =================================================
 
-        setTimeout(() => {
+      error: error => {
 
-          this.loading = false;
+        this.loading = false;
 
-          this.alertService.close();
+        this.alertService.close();
 
-          // =========================
-          // ERROR MESSAGE
-          // =========================
+        let message =
+          'Invalid email or password.';
 
-          let message =
-            'Invalid email or password. Please check your credentials and try again.';
+        if (
+          typeof error?.error === 'string'
+        ) {
 
-          if (err?.status === 401) {
+          message = error.error;
 
-            message =
-              'The email or password you entered is incorrect.';
+        }
+        else if (
+          error?.error?.message
+        ) {
 
-          } else if (err?.status === 403) {
+          message = error.error.message;
 
-            message =
-              'You are not authorized to access this system.';
+        }
 
-          } else if (err?.status === 0) {
-
-            message =
-              'Unable to connect to the server. Please try again later.';
-
-          } else if (typeof err?.error === 'string') {
-
-            message = err.error;
-
-          } else if (err?.error?.message) {
-
-            message = err.error.message;
-
-          }
-
-          // =========================
-          // ERROR ALERT
-          // =========================
-
-          this.alertService.error(
-            'Login Failed',
-            message
-          );
-
-        }, 3000);
+        this.alertService.error(
+          'Login Failed',
+          message
+        );
 
       }
 

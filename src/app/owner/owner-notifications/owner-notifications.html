@@ -1,66 +1,135 @@
-<p>owner-notifications works!</p>
 <div class="notifications-page">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="page-header">
 
         <div>
-            <h2>Notifications</h2>
+
+            <span class="page-label">
+                NOTIFICATIONS
+            </span>
+
+            <h2>
+                Notifications
+            </h2>
+
             <p>
-                Stay updated with your business activities and system alerts.
+                Stay updated with your business activities
+                and system alerts.
             </p>
+
         </div>
 
-        <button class="mark-btn">
 
-            <i class="fas fa-check-double"></i>
-            Mark All as Read
+        <button
+            class="mark-btn"
+            type="button"
+            (click)="markAllAsRead()"
+            [disabled]="
+                markingAll ||
+                unreadCount === 0
+            ">
+
+            <i
+                class="fas"
+                [ngClass]="
+                    markingAll
+                        ? 'fa-spinner fa-spin'
+                        : 'fa-check-double'
+                ">
+            </i>
+
+            {{
+                markingAll
+                    ? 'Marking...'
+                    : 'Mark All as Read'
+            }}
 
         </button>
 
     </div>
 
 
-    <!-- SUMMARY -->
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
 
     <div class="summary-grid">
+
+
+        <!-- TOTAL -->
 
         <div class="summary-card">
 
             <div class="icon total">
+
                 <i class="fas fa-bell"></i>
+
             </div>
 
             <div>
-                <h3>15</h3>
-                <span>Total Notifications</span>
+
+                <h3>
+                    {{ totalNotifications }}
+                </h3>
+
+                <span>
+                    Total Notifications
+                </span>
+
             </div>
 
         </div>
+
+
+        <!-- UNREAD -->
 
         <div class="summary-card">
 
             <div class="icon unread">
+
                 <i class="fas fa-envelope"></i>
+
             </div>
 
             <div>
-                <h3>5</h3>
-                <span>Unread</span>
+
+                <h3>
+                    {{ unreadCount }}
+                </h3>
+
+                <span>
+                    Unread
+                </span>
+
             </div>
 
         </div>
 
+
+        <!-- IMPORTANT -->
+
         <div class="summary-card">
 
             <div class="icon alerts">
+
                 <i class="fas fa-triangle-exclamation"></i>
+
             </div>
 
             <div>
-                <h3>3</h3>
-                <span>Important Alerts</span>
+
+                <h3>
+                    {{ importantAlerts }}
+                </h3>
+
+                <span>
+                    Important Alerts
+                </span>
+
             </div>
 
         </div>
@@ -68,45 +137,182 @@
     </div>
 
 
-    <!-- NOTIFICATION LIST -->
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
 
-    <div class="notification-list">
+    <div
+        class="loading-state"
+        *ngIf="loading">
 
-        <div class="notification-card"
-             *ngFor="let notification of notifications"
-             [class.unread-card]="notification.unread">
+        <div class="loading-spinner">
 
-            <div class="notification-icon"
-                 [ngClass]="notification.type">
+            <i class="fas fa-spinner fa-spin"></i>
 
-                <i class="fas fa-check-circle"
-                   *ngIf="notification.type === 'success'"></i>
+        </div>
 
-                <i class="fas fa-credit-card"
-                   *ngIf="notification.type === 'payment'"></i>
+        <p>
+            Loading notifications...
+        </p>
 
-                <i class="fas fa-clock"
-                   *ngIf="notification.type === 'warning'"></i>
+    </div>
 
-                <i class="fas fa-info-circle"
-                   *ngIf="notification.type === 'info'"></i>
 
-                <i class="fas fa-bullhorn"
-                   *ngIf="notification.type === 'system'"></i>
+    <!-- =====================================================
+         EMPTY STATE
+    ====================================================== -->
+
+    <div
+        class="empty-state"
+        *ngIf="
+            !loading &&
+            notifications.length === 0
+        ">
+
+        <div class="empty-icon">
+
+            <i class="fas fa-bell-slash"></i>
+
+        </div>
+
+        <h3>
+            No Notifications
+        </h3>
+
+        <p>
+            You don't have any notifications yet.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         NOTIFICATION LIST
+    ====================================================== -->
+
+    <div
+        class="notification-list"
+        *ngIf="
+            !loading &&
+            notifications.length > 0
+        ">
+
+
+        <div
+            class="notification-card"
+            *ngFor="
+                let notification of notifications;
+                trackBy: trackByNotificationId
+            "
+            [class.unread-card]="
+                !notification.read
+            "
+            [class.read-card]="
+                notification.read
+            "
+            (click)="markAsRead(notification)"
+            [attr.title]="
+                notification.read
+                    ? ''
+                    : 'Click to mark as read'
+            ">
+
+
+            <!-- ICON -->
+
+            <div
+                class="notification-icon"
+                [ngClass]="
+                    getNotificationType(
+                        notification.type
+                    )
+                ">
+
+                <i
+                    [class]="
+                        getNotificationIcon(
+                            notification.type
+                        )
+                    ">
+                </i>
 
             </div>
 
+
+            <!-- CONTENT -->
+
             <div class="notification-content">
+
 
                 <div class="top-row">
 
-                    <h4>{{notification.title}}</h4>
+                    <div class="title-wrapper">
 
-                    <span>{{notification.time}}</span>
+                        <h4>
+                            {{ notification.title }}
+                        </h4>
+
+
+                        <!-- UNREAD INDICATOR -->
+
+                        <span
+                            class="unread-dot"
+                            *ngIf="
+                                !notification.read
+                            ">
+                        </span>
+
+                    </div>
+
+
+                    <span class="notification-time">
+
+                        <i class="far fa-clock"></i>
+
+                        {{
+                            formatNotificationDate(
+                                notification.createdAt
+                            )
+                        }}
+
+                    </span>
 
                 </div>
 
-                <p>{{notification.message}}</p>
+
+                <p>
+                    {{ notification.message }}
+                </p>
+
+
+                <!-- READ STATUS -->
+
+                <div class="notification-footer">
+
+                    <span
+                        class="read-status"
+                        [class.unread-status]="
+                            !notification.read
+                        ">
+
+                        <i
+                            class="fas"
+                            [ngClass]="
+                                notification.read
+                                    ? 'fa-check-double'
+                                    : 'fa-envelope'
+                            ">
+                        </i>
+
+                        {{
+                            notification.read
+                                ? 'Read'
+                                : 'Unread'
+                        }}
+
+                    </span>
+
+                </div>
 
             </div>
 

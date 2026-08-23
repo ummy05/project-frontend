@@ -1,0 +1,1046 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f7f8fa;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+
+    width: 280px;
+
+    min-width: 280px;
+
+    height: 100vh;
+
+    position: sticky;
+    top: 0;
+
+    background: #101c86;
+
+    color: #fff;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 25px 20px;
+
+    z-index: 2000;
+
+    transition: .3s;
+
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 40px;
+
+}
+
+.logo img {
+
+    width: 52px;
+    height: 52px;
+
+    object-fit: contain;
+
+}
+
+.logo h2 {
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+}
+
+.logo span {
+
+    display: block;
+
+    font-size: 12px;
+
+    color: rgba(255,255,255,.7);
+
+    margin-top: 3px;
+
+}
+
+
+/* =====================================================
+   NAV
+===================================================== */
+
+nav {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+}
+
+nav a {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 15px;
+
+    color: rgba(255,255,255,.78);
+
+    text-decoration: none;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+}
+
+nav a i {
+
+    width: 21px;
+
+    text-align: center;
+
+}
+
+nav a:hover,
+nav a.active {
+
+    background: rgba(255,255,255,.14);
+
+    color: #fff;
+
+}
+
+nav a.active {
+
+    box-shadow:
+        inset 3px 0 0 #D4A437;
+
+}
+
+nav .logout-link {
+
+    margin-top: 10px;
+
+    color: #ffd8d8;
+
+}
+
+
+/* =====================================================
+   BADGE
+===================================================== */
+
+.nav-badge {
+
+    margin-left: auto;
+
+    min-width: 23px;
+
+    height: 23px;
+
+    padding: 0 6px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: #D4A437;
+
+    color: #fff;
+
+    border-radius: 50px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+
+.profile-card {
+
+    width: 100%;
+
+    margin-top: auto;
+
+    border: 0;
+
+    color: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px;
+
+    border-radius: 15px;
+
+    background: rgba(255,255,255,.10);
+
+    cursor: pointer;
+
+    text-align: left;
+
+}
+
+.profile-card:hover {
+
+    background: rgba(255,255,255,.17);
+
+}
+
+.profile-card img {
+
+    width: 47px;
+    height: 47px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 2px solid rgba(255,255,255,.5);
+
+}
+
+.profile-card div {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+.profile-card h4 {
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+.profile-card span {
+
+    font-size: 11px;
+
+    color: rgba(255,255,255,.65);
+
+}
+
+.profile-card > i {
+
+    font-size: 11px;
+
+    color: rgba(255,255,255,.6);
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.main-content {
+
+    flex: 1;
+
+    min-width: 0;
+
+    min-height: 100vh;
+
+}
+
+
+/* =====================================================
+   STICKY TOPBAR
+===================================================== */
+
+.topbar {
+
+    height: 80px;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1500;
+
+    background: rgba(255,255,255,.96);
+
+    backdrop-filter: blur(15px);
+
+    border-bottom: 1px solid #e8e8e8;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 30px;
+
+}
+
+.top-right {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+.welcome h3 {
+
+    font-size: 16px;
+
+    color: #1f2937;
+
+}
+
+.welcome span {
+
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: #7b8190;
+
+}
+
+.top-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+.menu-btn {
+
+    display: none;
+
+    border: 0;
+
+    background: transparent;
+
+    font-size: 22px;
+
+    margin-right: 15px;
+
+    cursor: pointer;
+
+}
+
+
+/* =====================================================
+   NOTIFICATION
+===================================================== */
+
+.notification-wrapper {
+
+    position: relative;
+
+}
+
+.notification-btn {
+
+    width: 43px;
+    height: 43px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: #f3f5f5;
+
+    color: #0B4F4A;
+
+    cursor: pointer;
+
+    position: relative;
+
+}
+
+.notification-btn:hover {
+
+    background: #e9eeee;
+
+}
+
+.notification-badge {
+
+    position: absolute;
+
+    top: -4px;
+
+    right: -3px;
+
+    min-width: 19px;
+
+    height: 19px;
+
+    padding: 0 5px;
+
+    border-radius: 20px;
+
+    background: #d9534f;
+
+    color: #fff;
+
+    border: 2px solid #fff;
+
+    font-size: 9px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   DROPDOWN
+===================================================== */
+
+.notification-dropdown {
+
+    position: absolute;
+
+    right: 0;
+
+    top: 53px;
+
+    width: 370px;
+
+    max-width: calc(100vw - 30px);
+
+    background: #fff;
+
+    border-radius: 17px;
+
+    box-shadow: 0 15px 45px rgba(0,0,0,.14);
+
+    border: 1px solid #eee;
+
+    overflow: hidden;
+
+    animation: dropdownIn .18s ease;
+
+}
+
+@keyframes dropdownIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(-8px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+.dropdown-header {
+
+    padding: 17px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid #eee;
+
+}
+
+.dropdown-header h4 {
+
+    color: #1f2937;
+
+    font-size: 15px;
+
+}
+
+.dropdown-header span {
+
+    font-size: 11px;
+
+    color: #888;
+
+}
+
+.dropdown-header > i {
+
+    color: #0B4F4A;
+
+}
+
+.notification-list {
+
+    max-height: 330px;
+
+    overflow-y: auto;
+
+}
+
+.notification-item {
+
+    width: 100%;
+
+    border: 0;
+
+    background: #fff;
+
+    padding: 14px 17px;
+
+    display: flex;
+
+    gap: 12px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid #f0f0f0;
+
+}
+
+.notification-item:hover {
+
+    background: #f8faf9;
+
+}
+
+.notification-icon {
+
+    width: 36px;
+    height: 36px;
+
+    min-width: 36px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #e5f2f0;
+
+    color: #0B4F4A;
+
+}
+
+.notification-content {
+
+    min-width: 0;
+
+}
+
+.notification-content strong {
+
+    display: block;
+
+    font-size: 12px;
+
+    color: #333;
+
+}
+
+.notification-content p {
+
+    margin-top: 4px;
+
+    font-size: 11px;
+
+    color: #777;
+
+    line-height: 1.5;
+
+}
+
+.notification-content small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #aaa;
+
+    font-size: 9px;
+
+}
+
+.empty-notifications {
+
+    text-align: center;
+
+    padding: 35px 15px;
+
+    color: #aaa;
+
+}
+
+.empty-notifications i {
+
+    font-size: 28px;
+
+    margin-bottom: 10px;
+
+}
+
+.empty-notifications p {
+
+    font-size: 12px;
+
+}
+
+.view-all {
+
+    width: 100%;
+
+    border: 0;
+
+    border-top: 1px solid #eee;
+
+    background: #fff;
+
+    padding: 14px;
+
+    color: #0B4F4A;
+
+    font-weight: 600;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+}
+
+.view-all i {
+
+    margin-left: 7px;
+
+}
+
+
+/* =====================================================
+   TOP PROFILE
+===================================================== */
+
+.top-profile {
+
+    border: 0;
+
+    background: transparent;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+    padding: 4px;
+
+}
+
+.top-profile img {
+
+    width: 43px;
+    height: 43px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+}
+
+.top-profile div {
+
+    text-align: left;
+
+}
+
+.top-profile strong {
+
+    display: block;
+
+    color: #333;
+
+    font-size: 12px;
+
+    max-width: 130px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+}
+
+.top-profile span {
+
+    display: block;
+
+    color: #999;
+
+    font-size: 10px;
+
+    margin-top: 2px;
+
+}
+
+.top-profile > i {
+
+    color: #999;
+
+    font-size: 10px;
+
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.page-content {
+
+    min-height: calc(100vh - 80px);
+
+}
+
+
+/* =====================================================
+   OVERLAY
+===================================================== */
+
+.overlay {
+
+    display: none;
+
+}
+
+
+/* =====================================================
+   CLOSE
+===================================================== */
+
+.close-btn {
+
+    display: none;
+
+}
+
+
+/* =====================================================
+   LOGOUT MODAL
+===================================================== */
+
+.modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.45);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 99999;
+
+}
+
+.logout-modal {
+
+    width: 420px;
+
+    max-width: 92%;
+
+    padding: 35px;
+
+    background: #fff;
+
+    border-radius: 22px;
+
+    text-align: center;
+
+}
+
+.logout-icon {
+
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #fff1f0;
+
+    color: #d9534f;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+}
+
+.logout-modal h3 {
+
+    color: #222;
+
+    margin-bottom: 10px;
+
+}
+
+.logout-modal p {
+
+    color: #777;
+
+    line-height: 1.7;
+
+    font-size: 13px;
+
+    margin-bottom: 25px;
+
+}
+
+.logout-actions {
+
+    display: flex;
+
+    gap: 12px;
+
+}
+
+.cancel-btn,
+.logout-btn {
+
+    flex: 1;
+
+    height: 45px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+}
+
+.cancel-btn {
+
+    background: #eee;
+
+}
+
+.logout-btn {
+
+    background: #d9534f;
+
+    color: #fff;
+
+}
+
+
+/* =====================================================
+   TABLET / MOBILE
+===================================================== */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+
+        position: fixed;
+
+        left: -300px;
+
+        top: 0;
+
+        bottom: 0;
+
+        box-shadow: 10px 0 30px rgba(0,0,0,.15);
+
+    }
+
+    .sidebar.active {
+
+        left: 0;
+
+    }
+
+    .menu-btn {
+
+        display: block;
+
+    }
+
+    .close-btn {
+
+        display: flex;
+
+        position: absolute;
+
+        top: 15px;
+
+        right: 15px;
+
+        width: 36px;
+        height: 36px;
+
+        align-items: center;
+        justify-content: center;
+
+        border: 0;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,.12);
+
+        color: #fff;
+
+        cursor: pointer;
+
+    }
+
+    .overlay {
+
+        display: block;
+
+        position: fixed;
+
+        inset: 0;
+
+        background: rgba(0,0,0,.45);
+
+        z-index: 1900;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .topbar {
+
+        padding: 0 15px;
+
+    }
+
+    .welcome span {
+
+        display: none;
+
+    }
+
+    .welcome h3 {
+
+        font-size: 13px;
+
+    }
+
+    .top-profile div,
+    .top-profile > i {
+
+        display: none;
+
+    }
+
+    .notification-dropdown {
+
+        right: -55px;
+
+    }
+
+}

@@ -1,316 +1,635 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    
-    font-family:'Poppins',sans-serif;
+
+:host {
+    display: block;
+    width: 100%;
+    height: 100vh;
 }
 
-.layout-container{
-    display:flex;
-    height:100vh;
-    overflow: hidden;
-    background:#f8f9fc;
-}
 
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-    width:280px;
+.layout-container {
+    display: flex;
+    width: 100%;
     height: 100vh;
     overflow: hidden;
-    background:linear-gradient(
+    background: #f8f9fc;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+
+    width: 280px;
+    min-width: 280px;
+    height: 100vh;
+
+    background: linear-gradient(
         180deg,
         #F7BFA6 0%,
         #F5E6D3 100%
     );
 
-    color:#333;
+    color: #333;
 
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
 
-    padding:25px 20px;
+    padding: 25px 20px;
 
-    position:relative;
-    transition:.3s ease;
+    position: relative;
 
-    box-shadow:5px 0 30px rgba(0,0,0,.06);
+    transition: all .3s ease;
+
+    box-shadow:
+        5px 0 30px rgba(0, 0, 0, .06);
+
+    z-index: 1000;
 }
 
-/* LOGO */
 
-.logo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    margin-bottom:45px;
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo {
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 40px;
+
+    padding-left: 5px;
 }
 
-.logo img{
-    width:58px;
-    height:58px;
-    object-fit:contain;
+
+.logo img {
+
+    width: 55px;
+    height: 55px;
+
+    object-fit: contain;
 }
 
-.logo h2{
-    font-size:1.2rem;
-    color:#4B2E83;
-    margin-bottom:4px;
+
+.logo h2 {
+
+    font-size: 1.15rem;
+
+    color: #4B2E83;
+
+    margin-bottom: 3px;
+
+    white-space: nowrap;
 }
 
-.logo span{
-    color:#666;
-    font-size:13px;
+
+.logo span {
+
+    color: #666;
+
+    font-size: 12px;
 }
 
-/* NAVIGATION */
 
-nav{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+nav {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    flex: 1;
 }
 
-nav a{
-    text-decoration:none;
-    color:#444;
 
-    display:flex;
-    align-items:center;
-    gap:15px;
+nav a,
+.logout-btn {
 
-    padding:15px 18px;
+    width: 100%;
 
-    border-radius:16px;
+    border: none;
 
-    transition:.3s ease;
+    background: transparent;
 
-    font-weight:500;
+    text-decoration: none;
+
+    color: #444;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 16px;
+
+    border-radius: 15px;
+
+    transition: all .25s ease;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    text-align: left;
 }
 
-nav a i{
-    width:22px;
-    font-size:16px;
+
+nav a i,
+.logout-btn i {
+
+    width: 22px;
+
+    min-width: 22px;
+
+    text-align: center;
+
+    font-size: 16px;
 }
 
-nav a:hover{
-    background:rgba(255,255,255,.6);
-    color:#4B2E83;
-    transform:translateX(5px);
+
+nav a:hover,
+.logout-btn:hover {
+
+    background: rgba(255, 255, 255, .55);
+
+    color: #4B2E83;
+
+    transform: translateX(4px);
 }
 
-nav a.active{
-    background:#4B2E83;
-    color:#fff;
 
-    box-shadow:0 10px 25px rgba(75,46,131,.25);
+nav a.active {
+
+    background: #4B2E83;
+
+    color: #fff;
+
+    box-shadow:
+        0 10px 25px rgba(75, 46, 131, .25);
 }
 
-/* PROFILE CARD */
 
-.profile-card{
-    margin-top:auto;
+/* =====================================================
+   DIVIDER
+===================================================== */
 
-    display:flex;
-    align-items:center;
-    gap:15px;
+.nav-divider {
 
-    padding:16px;
+    height: 1px;
 
-    border-radius:20px;
+    background: rgba(75, 46, 131, .12);
 
-    background:rgba(255,255,255,.45);
-
-    backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.5);
+    margin: 10px 5px;
 }
 
-.profile-card img{
-    width:55px;
-    height:55px;
-    border-radius:50%;
-    object-fit:cover;
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.logout-btn {
+
+    color: #9b2c2c;
 }
 
-.profile-card h4{
-    color:#333;
-    font-size:15px;
+
+.logout-btn:hover {
+
+    background: rgba(155, 44, 44, .08);
+
+    color: #8b1e1e;
+
+    transform: translateX(4px);
 }
 
-.profile-card span{
-    color:#777;
-    font-size:13px;
+
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+
+.profile-card {
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 14px;
+
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, .45);
+
+    backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, .55);
 }
 
-/* ================= MAIN CONTENT ================= */
 
-.main-content{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    height: 100%;
-    overflow: scroll;
+.profile-avatar {
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+
+    color: #4B2E83;
+
+    font-size: 18px;
 }
 
-/* TOPBAR */
 
-.topbar{
-    height:80px;
-    background:#fff;
+.profile-info {
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 30px;
-
-    border-bottom:1px solid #eee;
+    min-width: 0;
 }
 
-.menu-btn{
-    border:none;
-    background:none;
 
-    font-size:24px;
-    color:#4B2E83;
+.profile-info h4 {
 
-    cursor:pointer;
+    color: #333;
 
-    display:none;
+    font-size: 14px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    max-width: 150px;
 }
 
-.top-right{
-    width:100%;
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+.profile-info span {
+
+    color: #777;
+
+    font-size: 12px;
 }
 
-.welcome h3{
-    color:#333;
-    margin-bottom:4px;
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.main-content {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
 }
 
-.welcome span{
-    color:#777;
-    font-size:14px;
+
+/* =====================================================
+   TOPBAR
+===================================================== */
+
+.topbar {
+
+    height: 80px;
+    min-height: 80px;
+
+    background: #fff;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 30px;
+
+    border-bottom: 1px solid #eee;
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, .02);
 }
 
-.top-actions{
-    display:flex;
-    align-items:center;
-    gap:15px;
+
+.top-right {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
 }
 
-.top-actions button{
-    width:45px;
-    height:45px;
 
-    border:none;
-    border-radius:50%;
+.welcome h3 {
 
-    background:#f5f5f5;
+    color: #333;
 
-    cursor:pointer;
+    font-size: 17px;
 
-    transition:.3s;
+    margin-bottom: 4px;
 }
 
-.top-actions button:hover{
-    background:#F5E6D3;
-    color:#4B2E83;
+
+.welcome span {
+
+    color: #777;
+
+    font-size: 13px;
 }
 
-.top-actions img{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    object-fit:cover;
+
+/* =====================================================
+   TOP ACTIONS
+===================================================== */
+
+.top-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
 }
 
-/* ================= CLOSE BUTTON ================= */
 
-.close-btn{
-    display:none;
+.notification-btn,
+.top-profile {
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: .25s ease;
 }
 
-/* ================= MOBILE OVERLAY ================= */
 
-.overlay{
-    display:none;
+.notification-btn {
+
+    background: #f5f5f5;
+
+    color: #555;
+
+    font-size: 16px;
 }
 
-/* ================= RESPONSIVE ================= */
 
-@media(max-width:992px){
+.notification-btn:hover {
 
-    .sidebar{
-        position:fixed;
-        top:0;
-        left:-300px;
-        bottom:0;
+    background: #F5E6D3;
 
-        z-index:1000;
+    color: #4B2E83;
+}
+
+
+.top-profile {
+
+    background: #4B2E83;
+
+    color: #fff;
+
+    font-size: 15px;
+}
+
+
+.top-profile:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(75, 46, 131, .25);
+}
+
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+
+.menu-btn {
+
+    display: none;
+
+    border: none;
+
+    background: none;
+
+    color: #4B2E83;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    margin-right: 18px;
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.close-btn {
+
+    display: none;
+}
+
+
+/* =====================================================
+   PAGE CONTENT
+===================================================== */
+
+.page-content {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+
+/* =====================================================
+   OVERLAY
+===================================================== */
+
+.overlay {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, .45);
+
+    z-index: 999;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+
+        position: fixed;
+
+        top: 0;
+        bottom: 0;
+        left: -300px;
+
+        z-index: 1000;
     }
 
-    .sidebar.active{
-        left:0;
+
+    .sidebar.active {
+
+        left: 0;
+
+        box-shadow:
+            10px 0 40px rgba(0, 0, 0, .15);
     }
 
-    .menu-btn{
-        display:block;
+
+    .menu-btn {
+
+        display: block;
     }
 
-    .close-btn{
-        display:flex;
 
-        align-items:center;
-        justify-content:center;
+    .close-btn {
 
-        position:absolute;
-        top:15px;
-        right:15px;
+        display: flex;
 
-        width:40px;
-        height:40px;
+        align-items: center;
+        justify-content: center;
 
-        border:none;
-        border-radius:50%;
+        position: absolute;
 
-        background:rgba(255,255,255,.5);
+        top: 15px;
+        right: 15px;
 
-        cursor:pointer;
+        width: 38px;
+        height: 38px;
+
+        border: none;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, .6);
+
+        color: #444;
+
+        cursor: pointer;
+
+        z-index: 5;
     }
 
-    .overlay{
-        display:block;
 
-        position:fixed;
-        inset:0;
+    .overlay {
 
-        background:rgba(0,0,0,.45);
-
-        z-index:999;
+        display: block;
     }
 }
 
-@media(max-width:768px){
 
-    .topbar{
-        padding:0 20px;
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .topbar {
+
+        padding: 0 18px;
     }
 
-    .welcome span{
-        display:none;
+
+    .welcome h3 {
+
+        font-size: 15px;
     }
 
-    .welcome h3{
-        font-size:18px;
+
+    .welcome span {
+
+        display: none;
+    }
+
+
+    .notification-btn,
+    .top-profile {
+
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .topbar {
+
+        height: 70px;
+
+        min-height: 70px;
+    }
+
+
+    .menu-btn {
+
+        margin-right: 10px;
+    }
+
+
+    .welcome h3 {
+
+        font-size: 14px;
+    }
+
+
+    .top-actions {
+
+        gap: 7px;
     }
 }

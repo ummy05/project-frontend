@@ -1,23 +1,30 @@
 <div class="reports-page">
 
+    <!-- ================================================= -->
     <!-- HEADER -->
+    <!-- ================================================= -->
 
     <div class="page-header">
 
         <div>
 
-            <h2>Reports & Analytics</h2>
+            <h2>
+                Reports & Analytics
+            </h2>
 
             <p>
-                Analyze system performance, revenue trends and coastal statistics.
+                Analyze system performance, revenue trends
+                and coastal statistics.
             </p>
 
         </div>
+
 
         <div class="header-actions">
 
             <button
                 class="export-btn"
+                type="button"
                 (click)="exportPdf()">
 
                 <i class="fas fa-file-pdf"></i>
@@ -25,13 +32,16 @@
                 Export PDF
 
             </button>
+
+
             <button
                 class="excel-btn"
+                type="button"
                 (click)="exportExcel()">
 
                 <i class="fas fa-file-excel"></i>
 
-                    Export Excel
+                Export Excel
 
             </button>
 
@@ -39,13 +49,18 @@
 
     </div>
 
+
+    <!-- ================================================= -->
     <!-- FILTERS -->
+    <!-- ================================================= -->
 
     <div class="filter-card">
 
         <div class="filter-group">
 
-            <label>From Date</label>
+            <label>
+                From Date
+            </label>
 
             <input
                 type="date"
@@ -53,9 +68,12 @@
 
         </div>
 
+
         <div class="filter-group">
 
-            <label>To Date</label>
+            <label>
+                To Date
+            </label>
 
             <input
                 type="date"
@@ -63,8 +81,10 @@
 
         </div>
 
+
         <button
             class="generate-btn"
+            type="button"
             (click)="generateReport()">
 
             <i class="fas fa-chart-line"></i>
@@ -75,9 +95,14 @@
 
     </div>
 
+
+    <!-- ================================================= -->
     <!-- SUMMARY -->
+    <!-- ================================================= -->
 
     <div class="summary-grid">
+
+        <!-- REVENUE -->
 
         <div class="summary-card">
 
@@ -90,16 +115,20 @@
             <div>
 
                 <h3>
-
-                    TZS {{report.totalRevenue | number}}
-
+                    TZS
+                    {{report.totalRevenue | number}}
                 </h3>
 
-                <span>Total Revenue</span>
+                <span>
+                    Total Revenue
+                </span>
 
             </div>
 
         </div>
+
+
+        <!-- APPROVED LICENSES -->
 
         <div class="summary-card">
 
@@ -112,16 +141,19 @@
             <div>
 
                 <h3>
-
                     {{report.approvedLicenses}}
-
                 </h3>
 
-                <span>Approved Licenses</span>
+                <span>
+                    Approved Licenses
+                </span>
 
             </div>
 
         </div>
+
+
+        <!-- PENDING COMPLAINTS -->
 
         <div class="summary-card">
 
@@ -134,16 +166,19 @@
             <div>
 
                 <h3>
-
                     {{report.pendingComplaints}}
-
                 </h3>
 
-                <span>Pending Complaints</span>
+                <span>
+                    Pending Complaints
+                </span>
 
             </div>
 
         </div>
+
+
+        <!-- RESOLVED -->
 
         <div class="summary-card">
 
@@ -156,12 +191,12 @@
             <div>
 
                 <h3>
-
                     {{report.resolvedComplaints}}
-
                 </h3>
 
-                <span>Resolved Complaints</span>
+                <span>
+                    Resolved Complaints
+                </span>
 
             </div>
 
@@ -169,15 +204,23 @@
 
     </div>
 
-    <!-- FIRST ROW -->
+
+    <!-- ================================================= -->
+    <!-- CHARTS -->
+    <!-- ================================================= -->
 
     <div class="charts-grid">
+
+
+        <!-- REVENUE -->
 
         <div class="chart-card">
 
             <div class="card-header">
 
-                <h3>Revenue Trend</h3>
+                <h3>
+                    Revenue Trend
+                </h3>
 
             </div>
 
@@ -189,11 +232,16 @@
 
         </div>
 
+
+        <!-- LICENSES -->
+
         <div class="chart-card">
 
             <div class="card-header">
 
-                <h3>License Distribution</h3>
+                <h3>
+                    License Distribution
+                </h3>
 
             </div>
 
@@ -207,7 +255,10 @@
 
     </div>
 
-    <!-- SECOND ROW -->
+
+    <!-- ================================================= -->
+    <!-- COMPLAINTS -->
+    <!-- ================================================= -->
 
     <div class="charts-grid">
 
@@ -215,11 +266,14 @@
 
             <div class="card-header">
 
-                <h3>Complaint Statistics</h3>
+                <h3>
+                    Complaint Statistics
+                </h3>
 
             </div>
 
-            <div class="chart-container complaint-chart">
+            <div
+                class="chart-container complaint-chart">
 
                 <canvas id="complaintChart"></canvas>
 
@@ -229,15 +283,21 @@
 
     </div>
 
+
+    <!-- ================================================= -->
     <!-- PERFORMANCE TABLE -->
+    <!-- ================================================= -->
 
     <div class="table-card">
 
         <div class="card-header">
 
-            <h3>Performance Summary</h3>
+            <h3>
+                Monthly Performance
+            </h3>
 
         </div>
+
 
         <table>
 
@@ -245,53 +305,63 @@
 
             <tr>
 
-                <th>Status</th>
+                <th>
+                    Month
+                </th>
 
-                <th>Total Revenue</th>
+                <th>
+                    Revenue
+                </th>
 
-                <th>Licenses</th>
+                <th>
+                    Licenses
+                </th>
 
-                <th>Complaints</th>
+                <th>
+                    Complaints
+                </th>
 
             </tr>
 
             </thead>
 
+
             <tbody>
 
-            <tr *ngFor="let item of performance">
+            <tr
+                *ngFor="let item of performance">
 
                 <td>
-
                     {{item.month}}
-
                 </td>
 
                 <td>
 
-                    <ng-container *ngIf="item.revenue!='-'">
-
-                        TZS {{item.revenue | number}}
-
-                    </ng-container>
-
-                    <ng-container *ngIf="item.revenue=='-'">
-
-                        -
-
-                    </ng-container>
+                    TZS
+                    {{item.revenue | number}}
 
                 </td>
 
                 <td>
-
                     {{item.licenses}}
-
                 </td>
 
                 <td>
-
                     {{item.complaints}}
+                </td>
+
+            </tr>
+
+
+            <tr
+                *ngIf="performance.length === 0">
+
+                <td
+                    colspan="4"
+                    style="text-align:center;">
+
+                    No performance data
+                    available for the selected period.
 
                 </td>
 

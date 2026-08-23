@@ -1,202 +1,1038 @@
 <div class="reports-page">
 
-    <!-- HEADER -->
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
 
     <div class="page-header">
 
-        <div>
-            <h2>My Reports</h2>
-            <p>
-                Track all environmental issues you have reported.
-            </p>
+        <div class="header-content">
+
+            <div class="title-area">
+
+                <div class="title-icon">
+                    <i class="fas fa-file-circle-exclamation"></i>
+                </div>
+
+                <div>
+
+                    <h2>My Reports</h2>
+
+                    <p>
+                        Track environmental issues you have
+                        reported and monitor their progress.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="report-btn"
+                (click)="openReportModal()"
+            >
+
+                <i class="fas fa-plus"></i>
+
+                Report an Issue
+
+            </button>
+
         </div>
 
     </div>
 
-    <!-- SUMMARY -->
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
 
     <div class="summary-grid">
 
-        <div class="summary-card">
 
-            <i class="fas fa-file-alt"></i>
+        <!-- TOTAL -->
+
+        <div class="summary-card total">
+
+            <div class="summary-icon">
+
+                <i class="fas fa-file-alt"></i>
+
+            </div>
 
             <div>
-                <h3>12</h3>
-                <span>Total Reports</span>
+
+                <h3>
+                    {{ totalReports }}
+                </h3>
+
+                <span>
+                    Total Reports
+                </span>
+
             </div>
 
         </div>
 
-        <div class="summary-card">
 
-            <i class="fas fa-clock"></i>
+        <!-- PENDING -->
+
+        <div class="summary-card pending-card">
+
+            <div class="summary-icon">
+
+                <i class="fas fa-clock"></i>
+
+            </div>
 
             <div>
-                <h3>3</h3>
-                <span>Pending</span>
+
+                <h3>
+                    {{ pendingReports }}
+                </h3>
+
+                <span>
+                    Pending
+                </span>
+
             </div>
 
         </div>
 
-        <div class="summary-card">
 
-            <i class="fas fa-check-circle"></i>
+        <!-- UNDER REVIEW -->
+
+        <div class="summary-card review-card">
+
+            <div class="summary-icon">
+
+                <i class="fas fa-spinner"></i>
+
+            </div>
 
             <div>
-                <h3>8</h3>
-                <span>Resolved</span>
+
+                <h3>
+                    {{ inProgressReports }}
+                </h3>
+
+                <span>
+                    Under Review
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESOLVED -->
+
+        <div class="summary-card resolved-card">
+
+            <div class="summary-icon">
+
+                <i class="fas fa-check-circle"></i>
+
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ resolvedReports }}
+                </h3>
+
+                <span>
+                    Resolved
+                </span>
+
             </div>
 
         </div>
 
     </div>
 
-    <!-- FILTER -->
+
+    <!-- =====================================================
+         FILTER
+    ====================================================== -->
 
     <div class="filter-card">
+
 
         <div class="search-box">
 
             <i class="fas fa-search"></i>
 
-            <input type="text"
-                   placeholder="Search report...">
+            <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="onSearch()"
+                placeholder="Search by report number, issue or location..."
+            >
 
         </div>
 
-        <select>
 
-            <option>All Status</option>
-            <option>Pending</option>
-            <option>Under Review</option>
-            <option>Resolved</option>
+        <div class="filter-select">
 
-        </select>
+            <i class="fas fa-filter"></i>
+
+            <select
+                [(ngModel)]="selectedStatus"
+                (change)="onStatusChange()"
+            >
+
+                <option value="ALL">
+                    All Status
+                </option>
+
+                <option value="PENDING">
+                    Pending
+                </option>
+
+                <option value="IN_PROGRESS">
+                    Under Review
+                </option>
+
+                <option value="RESOLVED">
+                    Resolved
+                </option>
+
+                <option value="REJECTED">
+                    Rejected
+                </option>
+
+            </select>
+
+        </div>
 
     </div>
 
-    <!-- TABLE -->
 
-    <div class="table-card">
+    <!-- =====================================================
+         LOADING
+    ====================================================== -->
 
-        <table>
+    <div
+        class="loading-state"
+        *ngIf="loading"
+    >
 
-            <thead>
+        <i class="fas fa-spinner fa-spin"></i>
 
-            <tr>
-                <th>Report ID</th>
-                <th>Issue</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
+        <h3>
+            Loading your reports...
+        </h3>
 
-            </thead>
+        <p>
+            Please wait while we retrieve your reports.
+        </p>
 
-            <tbody>
+    </div>
 
-            <tr *ngFor="let report of reports">
 
-                <td>{{report.id}}</td>
-                <td>{{report.issue}}</td>
-                <td>{{report.location}}</td>
-                <td>{{report.date}}</td>
+    <!-- =====================================================
+         EMPTY STATE
+    ====================================================== -->
 
-                <td>
+    <div
+        class="empty-state"
+        *ngIf="
+            !loading &&
+            filteredReports.length === 0
+        "
+    >
 
-                    <span class="priority"
-                          [ngClass]="{
-                          'critical': report.priority === 'Critical',
-                          'high': report.priority === 'High',
-                          'medium': report.priority === 'Medium'
-                          }">
+        <div class="empty-icon">
 
-                        {{report.priority}}
+            <i class="fas fa-file-circle-exclamation"></i>
 
-                    </span>
+        </div>
 
-                </td>
+        <h3>
+            No Reports Found
+        </h3>
 
-                <td>
+        <p>
+            You have not reported any environmental issues
+            matching your current search or filter.
+        </p>
 
-                    <span class="status"
-                          [ngClass]="{
-                          'resolved': report.status === 'Resolved',
-                          'review': report.status === 'Under Review',
-                          'pending': report.status === 'Pending'
-                          }">
+        <button
+            type="button"
+            class="empty-btn"
+            (click)="openReportModal()"
+        >
 
-                        {{report.status}}
+            <i class="fas fa-plus"></i>
 
-                    </span>
+            Report an Issue
 
-                </td>
+        </button>
 
-                <td>
+    </div>
 
-                    <div class="actions">
 
-                        <button class="view-btn"
-                                (click)="viewReport(report)">
+    <!-- =====================================================
+         TABLE
+    ====================================================== -->
 
-                            <i class="fas fa-eye"></i>
+    <div
+        class="table-card"
+        *ngIf="
+            !loading &&
+            filteredReports.length > 0
+        "
+    >
 
-                        </button>
+        <div class="table-wrapper">
 
-                        <button class="delete-btn">
+            <table>
 
-                            <i class="fas fa-trash"></i>
+                <thead>
 
-                        </button>
+                    <tr>
 
-                    </div>
+                        <th>
+                            Report ID
+                        </th>
 
-                </td>
+                        <th>
+                            Issue
+                        </th>
 
-            </tr>
+                        <th>
+                            Category
+                        </th>
 
-            </tbody>
+                        <th>
+                            Location
+                        </th>
 
-        </table>
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr
+                        *ngFor="
+                            let report of filteredReports
+                        "
+                    >
+
+                        <td>
+
+                            <span class="report-number">
+
+                                {{
+                                    report.complaintNumber
+                                    || '-'
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="issue-cell">
+
+                                <strong>
+                                    {{ report.title }}
+                                </strong>
+
+                                <small>
+                                    {{
+                                        report.description
+                                        | slice:0:55
+                                    }}{{ report.description?.length > 55 ? '...' : '' }}
+                                </small>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="category-badge">
+
+                                {{
+                                    getCategoryLabel(
+                                        report.category
+                                    )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="location-cell">
+
+                                <i class="fas fa-location-dot"></i>
+
+                                <span>
+                                    {{ report.location }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                formatDate(
+                                    report.reportedAt
+                                )
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="status"
+                                [ngClass]="
+                                    getStatusClass(
+                                        report.status
+                                    )
+                                "
+                            >
+
+                                <span class="status-dot"></span>
+
+                                {{
+                                    getStatusLabel(
+                                        report.status
+                                    )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    type="button"
+                                    class="view-btn"
+                                    title="View report"
+                                    (click)="viewReport(report)"
+                                >
+
+                                    <i class="fas fa-eye"></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
 </div>
 
 
-<!-- VIEW MODAL -->
+<!-- =========================================================
+     REPORT ISSUE MODAL
+========================================================= -->
 
-<div class="modal-overlay"
-     *ngIf="showViewModal">
+<div
+    class="modal-overlay"
+    *ngIf="showReportModal"
+    (click)="closeReportModal()"
+>
 
-    <div class="modal">
+    <div
+        class="modal report-modal"
+        (click)="$event.stopPropagation()"
+    >
+
+
+        <!-- HEADER -->
 
         <div class="modal-header">
 
-            <h3>Report Details</h3>
+            <div class="modal-title">
 
-            <button (click)="closeModal()">
+                <div class="modal-icon report">
+
+                    <i class="fas fa-triangle-exclamation"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Report an Environmental Issue
+                    </h3>
+
+                    <p>
+                        Help us protect Zanzibar's coastal environment.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-btn"
+                (click)="closeReportModal()"
+                [disabled]="submitting"
+            >
+
                 <i class="fas fa-times"></i>
+
             </button>
 
         </div>
 
+
+        <!-- FORM -->
+
+        <div class="modal-body">
+
+
+            <!-- TITLE -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Issue Title
+
+                    <span>*</span>
+
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fas fa-heading"></i>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="newComplaint.title"
+                        placeholder="e.g. Beach pollution"
+                        maxlength="150"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Issue Category
+
+                    <span>*</span>
+
+                </label>
+
+                <div class="input-wrapper select-wrapper">
+
+                    <i class="fas fa-layer-group"></i>
+
+                    <select
+                        [(ngModel)]="newComplaint.category"
+                    >
+
+                        <option value="">
+                            Select issue category
+                        </option>
+
+                        <option
+                            *ngFor="
+                                let category of categories
+                            "
+                            [value]="category.value"
+                        >
+
+                            {{ category.label }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOCATION -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Location
+
+                    <span>*</span>
+
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fas fa-location-dot"></i>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="newComplaint.location"
+                        placeholder="e.g. Nungwi Beach"
+                        maxlength="255"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full">
+
+                <label>
+
+                    Description
+
+                    <span>*</span>
+
+                </label>
+
+                <div class="textarea-wrapper">
+
+                    <i class="fas fa-align-left"></i>
+
+                    <textarea
+                        [(ngModel)]="newComplaint.description"
+                        placeholder="Describe what you observed, when it happened and any other useful information..."
+                        rows="5"
+                        maxlength="2000"
+                    ></textarea>
+
+                </div>
+
+                <div class="character-count">
+
+                    {{
+                        newComplaint.description.length
+                    }}
+                    / 2000
+
+                </div>
+
+            </div>
+
+
+            <!-- IMAGE URL -->
+
+            <div class="form-group full">
+
+                <label>
+
+                    Image URL
+
+                    <span class="optional">
+                        Optional
+                    </span>
+
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fas fa-image"></i>
+
+                    <input
+                        type="url"
+                        [(ngModel)]="newComplaint.imageUrl"
+                        placeholder="https://example.com/image.jpg"
+                    >
+
+                </div>
+
+                <small class="field-hint">
+
+                    You may provide a public image URL related
+                    to the reported issue.
+
+                </small>
+
+            </div>
+
+
+            <!-- NOTICE -->
+
+            <div class="report-notice">
+
+                <i class="fas fa-circle-info"></i>
+
+                <div>
+
+                    <strong>
+                        What happens next?
+                    </strong>
+
+                    <p>
+                        Your report will be sent to the administration
+                        team for review. You will receive updates as
+                        your report is processed.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="cancel-modal-btn"
+                (click)="closeReportModal()"
+                [disabled]="submitting"
+            >
+
+                Cancel
+
+            </button>
+
+
+            <button
+                type="button"
+                class="submit-report-btn"
+                (click)="submitComplaint()"
+                [disabled]="submitting"
+            >
+
+                <i
+                    class="fas"
+                    [class.fa-paper-plane]="!submitting"
+                    [class.fa-spinner]="submitting"
+                    [class.fa-spin]="submitting"
+                ></i>
+
+                {{
+                    submitting
+                        ? 'Submitting...'
+                        : 'Submit Report'
+                }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     VIEW REPORT MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    *ngIf="showViewModal"
+    (click)="closeViewModal()"
+>
+
+    <div
+        class="modal view-modal"
+        (click)="$event.stopPropagation()"
+    >
+
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+
+                <div class="modal-icon">
+
+                    <i class="fas fa-file-lines"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Report Details
+                    </h3>
+
+                    <p>
+                        {{
+                            selectedReport?.complaintNumber
+                            || 'Report'
+                        }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-btn"
+                (click)="closeViewModal()"
+            >
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- DETAILS -->
+
         <div class="details">
 
-            <p><strong>ID:</strong> {{selectedReport?.id}}</p>
 
-            <p><strong>Issue:</strong> {{selectedReport?.issue}}</p>
+            <div class="detail-row">
 
-            <p><strong>Location:</strong> {{selectedReport?.location}}</p>
+                <span>
+                    Report Number
+                </span>
 
-            <p><strong>Date:</strong> {{selectedReport?.date}}</p>
+                <strong>
+                    {{
+                        selectedReport?.complaintNumber
+                        || '-'
+                    }}
+                </strong>
 
-            <p><strong>Priority:</strong> {{selectedReport?.priority}}</p>
+            </div>
 
-            <p><strong>Status:</strong> {{selectedReport?.status}}</p>
+
+            <div class="detail-row">
+
+                <span>
+                    Issue
+                </span>
+
+                <strong>
+                    {{
+                        selectedReport?.title
+                        || '-'
+                    }}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Category
+                </span>
+
+                <strong>
+                    {{
+                        getCategoryLabel(
+                            selectedReport?.category
+                        )
+                    }}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Location
+                </span>
+
+                <strong>
+
+                    <i class="fas fa-location-dot"></i>
+
+                    {{
+                        selectedReport?.location
+                        || '-'
+                    }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Date Reported
+                </span>
+
+                <strong>
+                    {{
+                        formatDate(
+                            selectedReport?.reportedAt
+                        )
+                    }}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Status
+                </span>
+
+                <strong>
+
+                    <span
+                        class="status"
+                        [ngClass]="
+                            getStatusClass(
+                                selectedReport?.status
+                            )
+                        "
+                    >
+
+                        <span class="status-dot"></span>
+
+                        {{
+                            getStatusLabel(
+                                selectedReport?.status
+                            )
+                        }}
+
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+            <div class="description-box">
+
+                <label>
+                    Description
+                </label>
+
+                <p>
+                    {{
+                        selectedReport?.description
+                        || 'No description available.'
+                    }}
+                </p>
+
+            </div>
+
+
+            <!-- ADMIN RESPONSE -->
+
+            <div
+                class="admin-response"
+                *ngIf="
+                    selectedReport?.adminResponse
+                "
+            >
+
+                <div class="response-heading">
+
+                    <i class="fas fa-comment-dots"></i>
+
+                    <strong>
+                        Administration Response
+                    </strong>
+
+                </div>
+
+                <p>
+                    {{
+                        selectedReport?.adminResponse
+                    }}
+                </p>
+
+            </div>
+
+
+            <!-- RESOLVED DATE -->
+
+            <div
+                class="resolved-date"
+                *ngIf="
+                    selectedReport?.resolvedAt
+                "
+            >
+
+                <i class="fas fa-calendar-check"></i>
+
+                Closed on
+                {{
+                    formatDate(
+                        selectedReport?.resolvedAt
+                    )
+                }}
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="close-modal-btn"
+                (click)="closeViewModal()"
+            >
+
+                Close
+
+            </button>
 
         </div>
 

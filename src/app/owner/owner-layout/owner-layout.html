@@ -1,154 +1,429 @@
 <div class="layout-container">
 
-    <!-- MOBILE OVERLAY -->
 
-    <div class="overlay"
-         *ngIf="sidebarOpen"
-         (click)="toggleSidebar()">
+    <!-- ================================================= -->
+    <!-- MOBILE OVERLAY -->
+    <!-- ================================================= -->
+
+    <div
+        class="overlay"
+        *ngIf="sidebarOpen"
+        (click)="toggleSidebar()">
     </div>
 
+
+
+    <!-- ================================================= -->
     <!-- SIDEBAR -->
+    <!-- ================================================= -->
 
-    <aside class="sidebar"
-           [class.active]="sidebarOpen">
+    <aside
+        class="sidebar"
+        [class.active]="sidebarOpen">
 
-        <!-- CLOSE BUTTON -->
 
-        <button class="close-btn"
-                (click)="toggleSidebar()">
+        <!-- CLOSE -->
+
+        <button
+            class="close-btn"
+            type="button"
+            (click)="toggleSidebar()">
 
             <i class="fas fa-times"></i>
 
         </button>
 
+
+
         <!-- LOGO -->
 
         <div class="logo">
 
-            <img src="/img/logo-1.png"
-                 alt="Logo">
+            <img
+                src="/img/logo-1.png"
+                alt="Coastal Monitor">
 
             <div>
 
-                <h2>Coastal Monitor</h2>
-                <span>Business Owner</span>
+                <h2>
+                    Coastal Monitor
+                </h2>
+
+                <span>
+                    Business Owner
+                </span>
 
             </div>
 
         </div>
 
+
+
         <!-- NAVIGATION -->
 
         <nav>
 
-            <a routerLink="/owner/dashboard"
-               routerLinkActive="active">
+
+            <!-- DASHBOARD -->
+
+            <a
+                routerLink="/owner/dashboard"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact:true}">
 
                 <i class="fas fa-home"></i>
+
                 Dashboard
 
             </a>
 
-            <a routerLink="/owner/apply-license"
-               routerLinkActive="active">
 
-                <i class="fas fa-file-signature"></i>
-                Apply License
 
-            </a>
+            <!-- LICENSES -->
 
-            <a routerLink="/owner/my-licenses"
-               routerLinkActive="active">
+            <a
+                routerLink="/owner/my-licenses"
+                routerLinkActive="active">
 
                 <i class="fas fa-id-card"></i>
-                My Licenses
+
+                Licenses
 
             </a>
 
-            <a routerLink="/owner/payments"
-               routerLinkActive="active">
+
+
+            <!-- PAYMENTS -->
+
+            <a
+                routerLink="/owner/payments"
+                routerLinkActive="active">
 
                 <i class="fas fa-credit-card"></i>
+
                 Payments
 
             </a>
 
-            <a routerLink="/owner/notifications"
-               routerLinkActive="active">
 
-                <i class="fas fa-bell"></i>
-                Notifications
 
-            </a>
+            <!-- PERMITS -->
 
-            <a routerLink="/owner/profile"
-               routerLinkActive="active">
+            <a
+                routerLink="/owner/permits"
+                routerLinkActive="active">
 
-                <i class="fas fa-user"></i>
-                Profile
+                <i class="fas fa-file-circle-check"></i>
+
+                Permits
 
             </a>
 
-            <a (click)="logout()">
+
+
+            <!-- LOGOUT -->
+
+            <a
+                href="javascript:void(0)"
+                (click)="logout()">
 
                 <i class="fas fa-right-from-bracket"></i>
+
                 Logout
 
             </a>
 
         </nav>
 
+
+
+        <!-- ================================================= -->
         <!-- USER CARD -->
+        <!-- ================================================= -->
 
-        <div class="profile-card">
+        <button
+            type="button"
+            class="profile-card"
+            (click)="openProfile()">
 
-            <img src="/img/businessman.jpg">
+
+            <img
+                [src]="profileImage"
+                alt="Profile">
+
 
             <div>
 
-                <h4>Ali Hassan</h4>
-                <span>Beach Business Owner</span>
+                <h4>
+                    {{ user?.fullName || 'Business Owner' }}
+                </h4>
+
+                <span>
+                    {{ user?.businessName || 'Business Owner' }}
+                </span>
 
             </div>
 
-        </div>
+
+            <i class="fas fa-chevron-right profile-arrow"></i>
+
+        </button>
 
     </aside>
 
 
-    <!-- MAIN CONTENT -->
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
 
     <div class="main-content">
 
-        <!-- TOPBAR -->
+
+        <!-- ================================================= -->
+        <!-- STICKY TOPBAR -->
+        <!-- ================================================= -->
 
         <header class="topbar">
 
-            <button class="menu-btn"
-                    (click)="toggleSidebar()">
+
+            <!-- MOBILE MENU -->
+
+            <button
+                class="menu-btn"
+                type="button"
+                (click)="toggleSidebar()">
 
                 <i class="fas fa-bars"></i>
 
             </button>
 
+
+
             <div class="top-right">
+
+
+                <!-- WELCOME -->
 
                 <div class="welcome">
 
-                    <h3>Welcome Back 👋</h3>
-                    <span>Manage your coastal business</span>
+                    <h3>
+                        Welcome Back 👋
+                    </h3>
+
+                    <span>
+                        Manage your coastal business
+                    </span>
 
                 </div>
 
+
+
+                <!-- ================================================= -->
+                <!-- TOP ACTIONS -->
+                <!-- ================================================= -->
+
                 <div class="top-actions">
 
-                    <button>
 
-                        <i class="fas fa-bell"></i>
+                    <!-- ================================================= -->
+                    <!-- NOTIFICATION -->
+                    <!-- ================================================= -->
+
+                    <div class="notification-wrapper">
+
+
+                        <button
+                            type="button"
+                            class="notification-btn"
+                            title="Notifications"
+                            (click)="toggleNotifications($event)">
+
+
+                            <i class="fas fa-bell"></i>
+
+
+                            <!-- BADGE -->
+
+                            <span
+                                class="notification-badge"
+                                *ngIf="unreadCount > 0">
+
+                                {{
+                                    unreadCount > 99
+                                        ? '99+'
+                                        : unreadCount
+                                }}
+
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- ================================================= -->
+                        <!-- DROPDOWN -->
+                        <!-- ================================================= -->
+
+                        <div
+                            class="notification-dropdown"
+                            *ngIf="notificationOpen">
+
+
+                            <!-- HEADER -->
+
+                            <div class="notification-dropdown-header">
+
+                                <div>
+
+                                    <h4>
+                                        Notifications
+                                    </h4>
+
+                                    <span>
+                                        {{
+                                            unreadCount
+                                        }}
+                                        unread
+                                    </span>
+
+                                </div>
+
+                                <i class="fas fa-bell"></i>
+
+                            </div>
+
+
+
+                            <!-- LIST -->
+
+                            <div
+                                class="notification-list">
+
+
+                                <div
+                                    class="notification-empty"
+                                    *ngIf="
+                                        latestNotifications.length === 0
+                                    ">
+
+                                    <i
+                                        class="fas fa-bell-slash">
+                                    </i>
+
+                                    <p>
+                                        No notifications.
+                                    </p>
+
+                                </div>
+
+
+
+                                <div
+                                    class="notification-item"
+                                    *ngFor="
+                                        let notification
+                                        of latestNotifications
+                                    "
+                                    [class.unread]="
+                                        !notification.read
+                                    "
+                                    (click)="viewAllNotifications()">
+
+
+                                    <div class="notification-item-icon">
+
+                                        <i
+                                            class="fas fa-circle-info">
+                                        </i>
+
+                                    </div>
+
+
+                                    <div class="notification-item-content">
+
+                                        <strong>
+                                            {{ notification.title }}
+                                        </strong>
+
+                                        <p>
+                                            {{
+                                                notification.message
+                                            }}
+                                        </p>
+
+                                        <small>
+                                            {{
+                                                formatDate(
+                                                    notification.createdAt
+                                                )
+                                            }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- FOOTER -->
+
+                            <div class="notification-dropdown-footer">
+
+                                <button
+                                    type="button"
+                                    (click)="viewAllNotifications()">
+
+                                    View All Notifications
+
+                                    <i class="fas fa-arrow-right"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ================================================= -->
+                    <!-- PROFILE BUTTON -->
+                    <!-- ================================================= -->
+
+                    <button
+                        type="button"
+                        class="top-profile"
+                        title="My Profile"
+                        (click)="openProfile()">
+
+
+                        <img
+                            [src]="profileImage"
+                            alt="Profile">
+
+
+                        <span>
+
+                            <strong>
+                                {{
+                                    user?.fullName
+                                    || 'Business Owner'
+                                }}
+                            </strong>
+
+                            <small>
+                                My Profile
+                            </small>
+
+                        </span>
+
+                        <i class="fas fa-chevron-down"></i>
 
                     </button>
-
-                    <img src="/img/businessman.jpg">
 
                 </div>
 
@@ -156,61 +431,81 @@
 
         </header>
 
+
+
+        <!-- ================================================= -->
         <!-- CHILD PAGES -->
+        <!-- ================================================= -->
 
         <router-outlet></router-outlet>
+
 
     </div>
 
 </div>
 
 
+
+<!-- ================================================= -->
 <!-- LOGOUT MODAL -->
+<!-- ================================================= -->
 
 <div
-  class="modal-overlay"
-  *ngIf="showLogoutModal">
+    class="modal-overlay"
+    *ngIf="showLogoutModal">
 
-  <div class="logout-modal">
 
-    <div class="logout-icon">
+    <div class="logout-modal">
 
-      <i class="fas fa-right-from-bracket"></i>
+
+        <div class="logout-icon">
+
+            <i class="fas fa-right-from-bracket"></i>
+
+        </div>
+
+
+        <h3>
+            Sign Out
+        </h3>
+
+
+        <p>
+
+            Are you sure you want to sign out of your account?
+
+            You will need to log in again to continue using
+            the system.
+
+        </p>
+
+
+        <div class="logout-actions">
+
+
+            <button
+                type="button"
+                class="cancel-btn"
+                (click)="showLogoutModal=false">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                type="button"
+                class="logout-btn"
+                (click)="confirmLogout()">
+
+                <i class="fas fa-right-from-bracket"></i>
+
+                Sign Out
+
+            </button>
+
+        </div>
 
     </div>
-
-    <h3>Sign Out</h3>
-
-    <p>
-
-      Are you sure you want to sign out of your account?
-
-      You will need to log in again to continue using the system.
-
-    </p>
-
-    <div class="logout-actions">
-
-      <button
-        class="cancel-btn"
-        (click)="showLogoutModal=false">
-
-        Cancel
-
-      </button>
-
-      <button
-        class="logout-btn"
-        (click)="confirmLogout()">
-
-        <i class="fas fa-right-from-bracket"></i>
-
-        Sign Out
-
-      </button>
-
-    </div>
-
-  </div>
 
 </div>

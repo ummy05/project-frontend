@@ -1,258 +1,1897 @@
 <div class="payments-page">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="page-header">
 
         <div>
-            <h2>Payments</h2>
+
+            <span class="page-label">
+                FINANCIAL MANAGEMENT
+            </span>
+
+            <h2>
+                Payments
+            </h2>
+
             <p>
-                Manage all license payments and receipts.
+                Manage your license and permit payments,
+                payment status and transaction records.
             </p>
+
         </div>
 
-        <button class="payment-btn"
-                (click)="showPaymentModal=true">
 
-            <i class="fas fa-plus"></i>
+        <button
+            class="payment-btn"
+            type="button"
+            (click)="openPaymentModal()">
+
+            <i class="fas fa-credit-card"></i>
+
             Make Payment
 
         </button>
 
     </div>
 
-    <!-- SUMMARY -->
+
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
 
     <div class="summary-grid">
+
+
+        <!-- TOTAL PAID -->
 
         <div class="summary-card">
 
             <div class="icon total">
+
                 <i class="fas fa-coins"></i>
+
             </div>
 
             <div>
-                <h3>TZS 1.3M</h3>
-                <span>Total Paid</span>
+
+                <h3>
+                    TZS {{ totalPaid | number }}
+                </h3>
+
+                <span>
+                    Total Paid
+                </span>
+
             </div>
 
         </div>
+
+
+
+        <!-- PENDING -->
 
         <div class="summary-card">
 
             <div class="icon pending">
+
                 <i class="fas fa-clock"></i>
+
             </div>
 
             <div>
-                <h3>1</h3>
-                <span>Pending Payments</span>
+
+                <h3>
+                    {{ pendingCount }}
+                </h3>
+
+                <span>
+                    Pending Payments
+                </span>
+
             </div>
 
         </div>
+
+
+
+        <!-- APPROVED -->
 
         <div class="summary-card">
 
             <div class="icon receipts">
-                <i class="fas fa-file-invoice"></i>
+
+                <i class="fas fa-circle-check"></i>
+
             </div>
 
             <div>
-                <h3>8</h3>
-                <span>Receipts</span>
+
+                <h3>
+                    {{ approvedCount }}
+                </h3>
+
+                <span>
+                    Approved Payments
+                </span>
+
             </div>
 
         </div>
 
-    </div>
-
-    <!-- TABLE -->
-
-    <div class="table-card">
-
-        <table>
-
-            <thead>
-
-            <tr>
-                <th>Reference</th>
-                <th>License</th>
-                <th>Amount</th>
-                <th>Method</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-
-            </thead>
-
-            <tbody>
-
-            <tr *ngFor="let payment of payments">
-
-                <td>{{payment.id}}</td>
-                <td>{{payment.license}}</td>
-                <td>{{payment.amount}}</td>
-                <td>{{payment.method}}</td>
-                <td>{{payment.date}}</td>
-
-                <td>
-
-                    <span class="status"
-                          [ngClass]="{
-                          'paid': payment.status==='Paid',
-                          'pending-status': payment.status==='Pending',
-                          'failed': payment.status==='Failed'
-                          }">
-
-                        {{payment.status}}
-
-                    </span>
-
-                </td>
-
-                <td>
-
-                    <div class="actions">
-
-                        <button class="view-btn"
-                                (click)="openReceipt(payment)">
-
-                            <i class="fas fa-eye"></i>
-
-                        </button>
-
-                        <button class="download-btn">
-
-                            <i class="fas fa-download"></i>
-
-                        </button>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
-            </tbody>
-
-        </table>
 
     </div>
 
-</div>
 
 
-<!-- MAKE PAYMENT MODAL -->
+    <!-- =====================================================
+         PAYMENT INFORMATION BANNER
+    ====================================================== -->
 
-<div class="modal-overlay"
-     *ngIf="showPaymentModal">
+    <div
+        class="payment-info-banner"
+        *ngIf="payableLicenses.length > 0 || payablePermits.length > 0">
 
-    <div class="modal">
+        <div class="info-icon">
 
-        <div class="modal-header">
-
-            <h3>Make Payment</h3>
-
-            <button (click)="closeModal()">
-                <i class="fas fa-times"></i>
-            </button>
+            <i class="fas fa-circle-info"></i>
 
         </div>
 
-        <div class="form-group">
+        <div>
 
-            <label>License</label>
+            <strong>
+                Payment Available
+            </strong>
 
-            <select>
+            <p>
 
-                <option>Tourism License</option>
-                <option>Boat Service License</option>
-                <option>Water Sports License</option>
+                You have an approved license or permit
+                available for payment.
 
-            </select>
+                Select the applicable application below
+                to continue.
 
-        </div>
-
-        <div class="form-group">
-
-            <label>Payment Method</label>
-
-            <select>
-
-                <option>Mobile Money</option>
-                <option>Bank Transfer</option>
-                <option>Cash</option>
-
-            </select>
+            </p>
 
         </div>
 
-        <div class="form-group">
+    </div>
 
-            <label>Amount</label>
 
-            <input type="text"
-                   placeholder="Enter amount">
+
+    <!-- =====================================================
+         EMPTY STATE
+    ====================================================== -->
+
+    <div
+        class="empty-state"
+        *ngIf="!loading && payments.length === 0">
+
+        <div class="empty-icon">
+
+            <i class="fas fa-receipt"></i>
 
         </div>
 
-        <button class="submit-btn">
+        <h3>
+            No Payments Found
+        </h3>
 
-            Proceed Payment
+        <p>
+            You have not made any payments yet.
+            Approved licenses and permits will appear
+            when they are ready for payment.
+        </p>
+
+        <button
+            class="empty-btn"
+            type="button"
+            (click)="openPaymentModal()">
+
+            <i class="fas fa-credit-card"></i>
+
+            Make Payment
 
         </button>
 
     </div>
 
+
+
+    <!-- =====================================================
+         PAYMENT TABLE
+    ====================================================== -->
+
+    <div
+        class="table-card"
+        *ngIf="payments.length > 0">
+
+
+        <div class="table-header">
+
+            <div>
+
+                <h3>
+                    Payment History
+                </h3>
+
+                <p>
+                    Your recent license and permit
+                    payment transactions.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Reference
+                    </th>
+
+                    <th>
+                        Application
+                    </th>
+
+                    <th>
+                        Type
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Method
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+                <tr
+                    *ngFor="let payment of payments">
+
+
+                    <!-- =====================================
+                         PAYMENT NUMBER
+                    ====================================== -->
+
+                    <td>
+
+                        <strong class="payment-number">
+
+                            {{ payment.paymentNumber }}
+
+                        </strong>
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         APPLICATION NUMBER
+                    ====================================== -->
+
+                    <td>
+
+
+                        <!-- LICENSE -->
+
+                        <span
+                            *ngIf="
+                                payment.licenseNumber &&
+                                !payment.permitNumber
+                            ">
+
+                            {{ payment.licenseNumber }}
+
+                        </span>
+
+
+
+                        <!-- PERMIT -->
+
+                        <span
+                            *ngIf="
+                                payment.permitNumber
+                            ">
+
+                            {{ payment.permitNumber }}
+
+                        </span>
+
+
+
+                        <!-- CONTROL NUMBER -->
+
+                        <small
+                            class="table-control-number"
+                            *ngIf="payment.controlNumber">
+
+                            CN:
+                            {{ payment.controlNumber }}
+
+                        </small>
+
+
+
+                        <!-- UNKNOWN -->
+
+                        <span
+                            class="muted"
+                            *ngIf="
+                                !payment.licenseNumber &&
+                                !payment.permitNumber
+                            ">
+
+                            Payment
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         TYPE
+                    ====================================== -->
+
+                    <td>
+
+                        <span
+                            class="application-type"
+                            [ngClass]="{
+
+                                'license-type':
+                                    payment.licenseNumber &&
+                                    !payment.permitNumber,
+
+                                'permit-type':
+                                    payment.permitNumber
+
+                            }">
+
+
+                            <i
+                                class="fas"
+                                [ngClass]="{
+
+                                    'fa-certificate':
+                                        payment.licenseNumber &&
+                                        !payment.permitNumber,
+
+                                    'fa-file-signature':
+                                        payment.permitNumber,
+
+                                    'fa-receipt':
+                                        !payment.licenseNumber &&
+                                        !payment.permitNumber
+
+                                }">
+                            </i>
+
+
+
+                            <span
+                                *ngIf="
+                                    payment.permitNumber
+                                ">
+
+                                Permit
+
+                            </span>
+
+
+
+                            <span
+                                *ngIf="
+                                    payment.licenseNumber &&
+                                    !payment.permitNumber
+                                ">
+
+                                License
+
+                            </span>
+
+
+
+                            <span
+                                *ngIf="
+                                    !payment.licenseNumber &&
+                                    !payment.permitNumber
+                                ">
+
+                                Payment
+
+                            </span>
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         AMOUNT
+                    ====================================== -->
+
+                    <td>
+
+                        <strong>
+
+                            TZS
+                            {{ payment.amount | number }}
+
+                        </strong>
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         METHOD
+                    ====================================== -->
+
+                    <td>
+
+                        <span class="method">
+
+                            <i
+                                [class]="
+                                    getPaymentMethodIcon(
+                                        payment.paymentMethod
+                                    )
+                                ">
+                            </i>
+
+                            {{
+                                formatPaymentMethod(
+                                    payment.paymentMethod
+                                )
+                            }}
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         DATE
+                    ====================================== -->
+
+                    <td>
+
+                        {{
+                            payment.paymentDate
+                                ? (
+                                    payment.paymentDate
+                                    | date:'dd MMM yyyy, HH:mm'
+                                )
+                                : 'N/A'
+                        }}
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         STATUS
+                    ====================================== -->
+
+                    <td>
+
+                        <span
+                            class="status"
+                            [ngClass]="
+                                getStatusClass(
+                                    payment.status
+                                )
+                            ">
+
+                            <i
+                                [class]="
+                                    getStatusIcon(
+                                        payment.status
+                                    )
+                                ">
+                            </i>
+
+                            {{
+                                formatStatus(
+                                    payment.status
+                                )
+                            }}
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- =====================================
+                         ACTIONS
+                    ====================================== -->
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="view-btn"
+                                type="button"
+                                title="View Payment"
+                                (click)="openReceipt(payment)">
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         QUICK PAYABLE APPLICATIONS
+    ====================================================== -->
+
+    <div
+        class="payable-section"
+        *ngIf="
+            payableLicenses.length > 0 ||
+            payablePermits.length > 0
+        ">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="page-label">
+                    READY FOR PAYMENT
+                </span>
+
+                <h3>
+                    Applications Awaiting Payment
+                </h3>
+
+                <p>
+                    These applications have been approved
+                    and are ready for payment.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="payable-grid">
+
+
+            <!-- =================================================
+                 LICENSES
+            ================================================== -->
+
+            <div
+                class="payable-card license-payable"
+                *ngFor="
+                    let license of payableLicenses
+                ">
+
+                <div class="payable-card-top">
+
+                    <div class="payable-icon">
+
+                        <i class="fas fa-certificate"></i>
+
+                    </div>
+
+                    <span class="approved-mini">
+
+                        Approved
+
+                    </span>
+
+                </div>
+
+
+                <div class="payable-content">
+
+                    <span class="payable-label">
+                        LICENSE
+                    </span>
+
+                    <h4>
+                        {{ license.licenseNumber }}
+                    </h4>
+
+                    <p>
+                        {{
+                            license.licenseType
+                                ?.replace('_', ' ')
+                        }}
+                    </p>
+
+                </div>
+
+
+                <div class="payable-footer">
+
+                    <div>
+
+                        <span>
+                            Amount
+                        </span>
+
+                        <strong>
+                            TZS
+                            {{ license.licenseFee | number }}
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="pay-now-btn"
+                        (click)="
+                            selectLicenseForPayment(
+                                license
+                            )
+                        ">
+
+                        Pay Now
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PERMITS
+            ================================================== -->
+
+            <div
+                class="payable-card permit-payable"
+                *ngFor="
+                    let permit of payablePermits
+                ">
+
+                <div class="payable-card-top">
+
+                    <div class="payable-icon">
+
+                        <i class="fas fa-file-signature"></i>
+
+                    </div>
+
+                    <span class="approved-mini">
+
+                        Approved
+
+                    </span>
+
+                </div>
+
+
+                <div class="payable-content">
+
+                    <span class="payable-label">
+                        OWNER PERMIT
+                    </span>
+
+                    <h4>
+                        {{ permit.permitNumber }}
+                    </h4>
+
+                    <p>
+                        {{ permit.eventName }}
+                    </p>
+
+                    <small
+                        *ngIf="permit.controlNumber">
+
+                        Control Number:
+                        {{ permit.controlNumber }}
+
+                    </small>
+
+                </div>
+
+
+                <div class="payable-footer">
+
+                    <div>
+
+                        <span>
+                            Amount
+                        </span>
+
+                        <strong>
+                            TZS
+                            {{ permit.permitFee | number }}
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="pay-now-btn"
+                        (click)="
+                            selectPermitForPayment(
+                                permit
+                            )
+                        ">
+
+                        Pay Now
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 
-<!-- RECEIPT MODAL -->
 
-<div class="modal-overlay"
-     *ngIf="showReceiptModal">
+<!-- =========================================================
+     MAKE PAYMENT MODAL
+========================================================= -->
 
-    <div class="modal">
+<div
+    class="modal-overlay"
+    *ngIf="showPaymentModal"
+    (click)="closePaymentModal($event)">
+
+
+    <div
+        class="modal payment-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- =================================================
+             MODAL HEADER
+        ================================================== -->
 
         <div class="modal-header">
 
-            <h3>Payment Receipt</h3>
+            <div>
 
-            <button (click)="closeModal()">
+                <span class="modal-label">
+                    PAYMENT
+                </span>
+
+                <h3>
+                    Make Payment
+                </h3>
+
+                <p>
+                    Complete your license or permit payment.
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                type="button"
+                (click)="closePaymentModal()">
+
                 <i class="fas fa-times"></i>
+
             </button>
 
         </div>
 
-        <div class="receipt">
 
-            <h4>{{selectedPayment?.id}}</h4>
+
+        <!-- =================================================
+             NO PAYMENT AVAILABLE
+        ================================================== -->
+
+        <div
+            class="no-license"
+            *ngIf="
+                payableLicenses.length === 0 &&
+                payablePermits.length === 0
+            ">
+
+            <div class="no-license-icon">
+
+                <i class="fas fa-file-circle-check"></i>
+
+            </div>
+
+            <h4>
+                No Application Available for Payment
+            </h4>
 
             <p>
-                <strong>License:</strong>
-                {{selectedPayment?.license}}
+                You can only make payment after your
+                license or permit application has reached
+                the required approval stage.
             </p>
 
-            <p>
-                <strong>Amount:</strong>
-                {{selectedPayment?.amount}}
-            </p>
+            <button
+                type="button"
+                class="secondary-btn"
+                (click)="closePaymentModal()">
 
-            <p>
-                <strong>Method:</strong>
-                {{selectedPayment?.method}}
-            </p>
+                Close
 
-            <p>
-                <strong>Date:</strong>
-                {{selectedPayment?.date}}
-            </p>
+            </button>
 
-            <p>
-                <strong>Status:</strong>
-                {{selectedPayment?.status}}
-            </p>
+        </div>
+
+
+
+        <!-- =================================================
+             PAYMENT FORM
+        ================================================== -->
+
+        <form
+            *ngIf="
+                payableLicenses.length > 0 ||
+                payablePermits.length > 0
+            "
+            (ngSubmit)="submitPayment()">
+
+
+
+            <!-- =================================================
+                 PAYMENT TYPE
+            ================================================== -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Payment For
+
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="select-wrapper">
+
+                    <i class="fas fa-layer-group"></i>
+
+
+                    <select
+                        [(ngModel)]="
+                            paymentForm.paymentType
+                        "
+                        name="paymentType"
+                        (change)="onPaymentTypeChange()"
+                        required>
+
+
+                        <option value="">
+
+                            Select payment type
+
+                        </option>
+
+
+                        <option
+                            *ngIf="
+                                payableLicenses.length > 0
+                            "
+                            value="LICENSE">
+
+                            License
+
+                        </option>
+
+
+                        <option
+                            *ngIf="
+                                payablePermits.length > 0
+                            "
+                            value="PERMIT">
+
+                            Owner Permit
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LICENSE SELECT
+            ================================================== -->
+
+            <div
+                class="form-group"
+                *ngIf="
+                    paymentForm.paymentType === 'LICENSE'
+                ">
+
+                <label>
+
+                    License
+
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="select-wrapper">
+
+                    <i class="fas fa-certificate"></i>
+
+
+                    <select
+                        [(ngModel)]="
+                            paymentForm.licenseId
+                        "
+                        name="licenseId"
+                        (change)="onLicenseChange()"
+                        required>
+
+
+                        <option
+                            [ngValue]="null">
+
+                            Select license
+
+                        </option>
+
+
+                        <option
+                            *ngFor="
+                                let license
+                                of payableLicenses
+                            "
+                            [ngValue]="license.id">
+
+                            {{ license.licenseNumber }}
+
+                            -
+
+                            {{
+                                license.licenseType
+                                    ?.replace('_', ' ')
+                            }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PERMIT SELECT
+            ================================================== -->
+
+            <div
+                class="form-group"
+                *ngIf="
+                    paymentForm.paymentType === 'PERMIT'
+                ">
+
+                <label>
+
+                    Owner Permit
+
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="select-wrapper">
+
+                    <i class="fas fa-file-signature"></i>
+
+
+                    <select
+                        [(ngModel)]="
+                            paymentForm.permitId
+                        "
+                        name="permitId"
+                        (change)="onPermitChange()"
+                        required>
+
+
+                        <option
+                            [ngValue]="null">
+
+                            Select permit
+
+                        </option>
+
+
+                        <option
+                            *ngFor="
+                                let permit
+                                of payablePermits
+                            "
+                            [ngValue]="permit.id">
+
+                            {{ permit.permitNumber }}
+
+                            -
+
+                            {{ permit.eventName }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SELECTED LICENSE
+            ================================================== -->
+
+            <div
+                class="selected-license"
+                *ngIf="
+                    selectedLicense &&
+                    paymentForm.paymentType === 'LICENSE'
+                ">
+
+                <div class="license-mini-icon">
+
+                    <i class="fas fa-certificate"></i>
+
+                </div>
+
+
+                <div class="license-mini-info">
+
+                    <strong>
+                        {{ selectedLicense.licenseNumber }}
+                    </strong>
+
+                    <span>
+                        {{ selectedLicense.businessName }}
+                    </span>
+
+                </div>
+
+
+                <div class="license-mini-status">
+
+                    <span class="approved-mini">
+
+                        Approved
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SELECTED PERMIT
+            ================================================== -->
+
+            <div
+                class="selected-license selected-permit"
+                *ngIf="
+                    selectedPermit &&
+                    paymentForm.paymentType === 'PERMIT'
+                ">
+
+                <div class="license-mini-icon">
+
+                    <i class="fas fa-file-signature"></i>
+
+                </div>
+
+
+                <div class="license-mini-info">
+
+                    <strong>
+                        {{ selectedPermit.permitNumber }}
+                    </strong>
+
+                    <span>
+                        {{ selectedPermit.eventName }}
+                    </span>
+
+                    <small
+                        *ngIf="
+                            selectedPermit.controlNumber
+                        ">
+
+                        Control Number:
+                        {{ selectedPermit.controlNumber }}
+
+                    </small>
+
+                </div>
+
+
+                <div class="license-mini-status">
+
+                    <span class="approved-mini">
+
+                        Approved
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AMOUNT
+            ================================================== -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Amount
+
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="input-wrapper amount-wrapper">
+
+                    <span class="currency">
+                        TZS
+                    </span>
+
+
+                    <input
+                        type="number"
+                        [(ngModel)]="
+                            paymentForm.amount
+                        "
+                        name="amount"
+                        min="1"
+                        readonly
+                        required>
+
+                </div>
+
+
+                <small>
+
+                    Amount is automatically calculated
+                    from the applicable fee.
+
+                </small>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PAYMENT METHOD
+            ================================================== -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Payment Method
+
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="select-wrapper">
+
+                    <i class="fas fa-wallet"></i>
+
+
+                    <select
+                        [(ngModel)]="
+                            paymentForm.paymentMethod
+                        "
+                        name="paymentMethod"
+                        required>
+
+
+                        <option value="">
+
+                            Select payment method
+
+                        </option>
+
+
+                        <option value="MOBILE_MONEY">
+
+                            Mobile Money
+
+                        </option>
+
+
+                        <option value="BANK_TRANSFER">
+
+                            Bank Transfer
+
+                        </option>
+
+
+                        <option value="CASH">
+
+                            Cash
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CONTROL NUMBER
+            ================================================== -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Control Number
+
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="input-wrapper">
+
+                    <i class="fas fa-hashtag"></i>
+
+
+                    <input
+                        type="text"
+                        [(ngModel)]="
+                            paymentForm.controlNumber
+                        "
+                        name="controlNumber"
+                        placeholder="Enter control number"
+                        required>
+
+                </div>
+
+
+                <small>
+
+                    Enter the control number provided
+                    for this license or permit.
+
+                </small>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PAYMENT SUMMARY
+            ================================================== -->
+
+            <div
+                class="payment-summary"
+                *ngIf="
+                    selectedLicense ||
+                    selectedPermit
+                ">
+
+
+                <div>
+
+                    <span>
+                        Application
+                    </span>
+
+
+                    <strong>
+
+                        {{
+                            selectedPermit
+                                ? selectedPermit.permitNumber
+                                : selectedLicense?.licenseNumber
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        Required Fee
+                    </span>
+
+
+                    <strong>
+
+                        TZS
+
+                        {{
+                            (
+                                selectedPermit
+                                    ? selectedPermit.permitFee
+                                    : selectedLicense?.licenseFee
+                            ) | number
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <span>
+                        Amount to Pay
+                    </span>
+
+
+                    <strong>
+
+                        TZS
+                        {{ paymentForm.amount | number }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    (click)="closePaymentModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    [disabled]="
+                        !isPaymentFormValid()
+                    ">
+
+                    <i class="fas fa-credit-card"></i>
+
+                    Submit Payment
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     RECEIPT / PAYMENT DETAILS MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    *ngIf="showReceiptModal"
+    (click)="closeReceiptModal($event)">
+
+
+    <div
+        class="modal receipt-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-label">
+                    TRANSACTION DETAILS
+                </span>
+
+                <h3>
+                    Payment Receipt
+                </h3>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                type="button"
+                (click)="closeReceiptModal()">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             RECEIPT
+        ================================================== -->
+
+        <div
+            class="receipt"
+            *ngIf="selectedPayment">
+
+
+            <!-- ICON -->
+
+            <div class="receipt-icon">
+
+                <i
+                    class="fas"
+                    [ngClass]="{
+
+                        'fa-file-signature':
+                            selectedPayment.permitNumber,
+
+                        'fa-certificate':
+                            !selectedPayment.permitNumber
+
+                    }">
+                </i>
+
+            </div>
+
+
+
+            <!-- PAYMENT NUMBER -->
+
+            <h4>
+
+                {{ selectedPayment.paymentNumber }}
+
+            </h4>
+
+
+
+            <!-- STATUS -->
+
+            <span
+                class="status receipt-status"
+                [ngClass]="
+                    getStatusClass(
+                        selectedPayment.status
+                    )
+                ">
+
+                <i
+                    [class]="
+                        getStatusIcon(
+                            selectedPayment.status
+                        )
+                    ">
+                </i>
+
+                {{
+                    formatStatus(
+                        selectedPayment.status
+                    )
+                }}
+
+            </span>
+
+
+
+            <!-- =================================================
+                 DETAILS
+            ================================================== -->
+
+            <div class="receipt-details">
+
+
+                <!-- TYPE -->
+
+                <div>
+
+                    <span>
+                        Application Type
+                    </span>
+
+
+                    <strong>
+
+                        {{
+                            selectedPayment.permitNumber
+                                ? 'Owner Permit'
+                                : 'License'
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <!-- LICENSE -->
+
+                <div
+                    *ngIf="
+                        selectedPayment.licenseNumber
+                    ">
+
+                    <span>
+                        License
+                    </span>
+
+
+                    <strong>
+                        {{ selectedPayment.licenseNumber }}
+                    </strong>
+
+                </div>
+
+
+
+                <!-- PERMIT -->
+
+                <div
+                    *ngIf="
+                        selectedPayment.permitNumber
+                    ">
+
+                    <span>
+                        Permit
+                    </span>
+
+
+                    <strong>
+                        {{ selectedPayment.permitNumber }}
+                    </strong>
+
+                </div>
+
+
+
+                <!-- CONTROL NUMBER -->
+
+                <div
+                    *ngIf="
+                        selectedPayment.controlNumber
+                    ">
+
+                    <span>
+                        Control Number
+                    </span>
+
+
+                    <strong>
+                        {{ selectedPayment.controlNumber }}
+                    </strong>
+
+                </div>
+
+
+
+                <!-- AMOUNT -->
+
+                <div>
+
+                    <span>
+                        Amount
+                    </span>
+
+
+                    <strong>
+
+                        TZS
+                        {{ selectedPayment.amount | number }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <!-- METHOD -->
+
+                <div>
+
+                    <span>
+                        Payment Method
+                    </span>
+
+
+                    <strong>
+
+                        {{
+                            formatPaymentMethod(
+                                selectedPayment.paymentMethod
+                            )
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <!-- TRANSACTION -->
+
+                <div>
+
+                    <span>
+                        Transaction Number
+                    </span>
+
+
+                    <strong>
+
+                        {{
+                            selectedPayment.transactionNumber
+                                || 'N/A'
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <!-- DATE -->
+
+                <div>
+
+                    <span>
+                        Payment Date
+                    </span>
+
+
+                    <strong>
+
+                        {{
+                            selectedPayment.paymentDate
+                                ? (
+                                    selectedPayment.paymentDate
+                                    | date:'dd MMM yyyy, HH:mm'
+                                )
+                                : 'N/A'
+                        }}
+
+                    </strong>
+
+                </div>
+
+
+
+                <!-- ADMIN REMARKS -->
+
+                <div
+                    *ngIf="
+                        selectedPayment.adminRemarks
+                    ">
+
+                    <span>
+                        Admin Remarks
+                    </span>
+
+
+                    <strong>
+
+                        {{ selectedPayment.adminRemarks }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PENDING
+            ================================================== -->
+
+            <div
+                class="receipt-message pending-message"
+                *ngIf="
+                    selectedPayment.status === 'PENDING'
+                ">
+
+                <i class="fas fa-clock"></i>
+
+
+                <div>
+
+                    <strong>
+                        Payment Under Verification
+                    </strong>
+
+
+                    <p>
+
+                        Your payment has been submitted
+                        successfully and is waiting for
+                        administrator verification.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 APPROVED
+            ================================================== -->
+
+            <div
+                class="receipt-message approved-message"
+                *ngIf="
+                    selectedPayment.status === 'APPROVED'
+                ">
+
+                <i class="fas fa-circle-check"></i>
+
+
+                <div>
+
+                    <strong>
+                        Payment Approved
+                    </strong>
+
+
+                    <p>
+
+                        This payment has been successfully
+                        verified by the administrator.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 REJECTED
+            ================================================== -->
+
+            <div
+                class="receipt-message rejected-message"
+                *ngIf="
+                    selectedPayment.status === 'REJECTED'
+                ">
+
+                <i class="fas fa-circle-xmark"></i>
+
+
+                <div>
+
+                    <strong>
+                        Payment Rejected
+                    </strong>
+
+
+                    <p>
+
+                        {{
+                            selectedPayment.adminRemarks
+                                ||
+                            'This payment was rejected by the administrator.'
+                        }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CLOSE -->
+
+            <button
+                type="button"
+                class="receipt-close-btn"
+                (click)="closeReceiptModal()">
+
+                Close
+
+            </button>
 
         </div>
 

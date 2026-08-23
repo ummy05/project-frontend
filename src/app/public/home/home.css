@@ -691,3 +691,138 @@ html{
         padding:20px;
     }
 }
+
+/* ==================================================
+   LANGUAGE SWITCHER
+================================================== */
+
+.language-switcher{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:5px;
+
+    background:#f8f5f2;
+
+    border:1px solid #ebe3de;
+
+    border-radius:12px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.04);
+
+}
+
+
+/* LANGUAGE BUTTON */
+
+.language-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:5px;
+
+    min-width:52px;
+
+    height:38px;
+
+    padding:0 9px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:transparent;
+
+    color:#555;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+.language-btn:hover{
+
+    background:#fde6dc;
+
+    color:#ea7b58;
+
+}
+
+
+/* ACTIVE LANGUAGE */
+
+.language-btn.active{
+
+    background:#ea7b58;
+
+    color:white;
+
+    box-shadow:0 4px 10px rgba(234,123,88,.25);
+
+}
+
+
+/* FLAG */
+
+.language-btn .flag{
+
+    font-size:17px;
+
+    line-height:1;
+
+}
+
+
+/* DIVIDER */
+
+.language-divider{
+
+    color:#c8beb8;
+
+    font-size:13px;
+
+    user-select:none;
+
+}
+
+
+/* ==================================================
+   RESPONSIVE LANGUAGE SWITCHER
+================================================== */
+
+@media(max-width:992px){
+
+    .language-switcher{
+
+        width:90%;
+
+        justify-content:center;
+
+        margin-top:10px;
+
+    }
+
+
+    .language-btn{
+
+        flex:1;
+
+        max-width:100px;
+
+    }
+
+}
