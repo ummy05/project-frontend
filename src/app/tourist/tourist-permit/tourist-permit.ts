@@ -305,179 +305,218 @@ export class TouristPermit implements OnInit {
 
   }
 
+ // =====================================================
+// APPLY FOR PERMIT
+// =====================================================
 
-  // =====================================================
-  // APPLY FOR PERMIT
-  // =====================================================
+applyForPermit(): void {
 
-  applyForPermit(): void {
+  // -----------------------------------------------------
+  // VALIDATE FORM
+  // -----------------------------------------------------
 
-    // -----------------------------------------------------
-    // VALIDATE FORM
-    // -----------------------------------------------------
+  if (
+    !this.application.permitType ||
+    !this.application.eventName.trim() ||
+    !this.application.description.trim() ||
+    !this.application.eventDate ||
+    !this.application.eventTime ||
+    !this.application.location.trim() ||
+    !this.application.shehia.trim()
+  ) {
 
-    if (
-      !this.application.permitType ||
-      !this.application.eventName.trim() ||
-      !this.application.description.trim() ||
-      !this.application.eventDate ||
-      !this.application.eventTime ||
-      !this.application.location.trim() ||
-      !this.application.shehia.trim()
-    ) {
-
-      this.alertService.warning(
-
-        'Incomplete Form',
-
-        'Please fill in all required permit information.'
-
-      );
-
-      return;
-
-    }
-
-
-    // -----------------------------------------------------
-    // TYPE-SAFE PERMIT TYPE
-    // -----------------------------------------------------
-
-    const permitType: Permit['permitType'] =
-      this.application.permitType;
-
-
-    // -----------------------------------------------------
-    // START LOADING
-    // -----------------------------------------------------
-
-    this.submitting = true;
-
-    this.alertService.loading(
-      'Submitting permit application...'
+    this.alertService.warning(
+      'Incomplete Form',
+      'Please fill in all required permit information.'
     );
 
-
-    // -----------------------------------------------------
-    // REQUEST
-    // -----------------------------------------------------
-
-    const request: {
-      permitType: Permit['permitType'];
-      eventName: string;
-      description: string;
-      eventDate: string;
-      eventTime: string;
-      location: string;
-      shehia: string;
-    } = {
-
-      permitType: permitType,
-
-      eventName:
-        this.application.eventName.trim(),
-
-      description:
-        this.application.description.trim(),
-
-      eventDate:
-        this.application.eventDate,
-
-      eventTime:
-        this.application.eventTime,
-
-      location:
-        this.application.location.trim(),
-
-      shehia:
-        this.application.shehia.trim()
-
-    };
+    return;
+  }
 
 
-    // -----------------------------------------------------
-    // SEND REQUEST
-    // -----------------------------------------------------
+  // -----------------------------------------------------
+  // TYPE-SAFE PERMIT TYPE
+  // -----------------------------------------------------
 
-    this.permitService
-      .applyPermit(request)
-      .subscribe({
-
-        next: (permit: Permit) => {
-
-          this.submitting = false;
-
-          this.alertService.close();
+  const permitType: Permit['permitType'] =
+    this.application.permitType;
 
 
-          // Add new permit to list
+  // -----------------------------------------------------
+  // BUILD REQUEST BEFORE CLOSING MODAL
+  // -----------------------------------------------------
 
-          this.permits = [
+  const request: {
+    permitType: Permit['permitType'];
+    eventName: string;
+    description: string;
+    eventDate: string;
+    eventTime: string;
+    location: string;
+    shehia: string;
+  } = {
 
-            permit,
+    permitType,
 
-            ...this.permits
+    eventName:
+      this.application.eventName.trim(),
 
-          ];
+    description:
+      this.application.description.trim(),
+
+    eventDate:
+      this.application.eventDate,
+
+    eventTime:
+      this.application.eventTime,
+
+    location:
+      this.application.location.trim(),
+
+    shehia:
+      this.application.shehia.trim()
+
+  };
 
 
-          // Close form
+  // -----------------------------------------------------
+  // START SUBMISSION STATE
+  // -----------------------------------------------------
 
-          this.showApplicationForm = false;
-
-
-          // Reset form
-
-          this.resetApplication();
+  this.submitting = true;
 
 
-          this.cdr.detectChanges();
+  // -----------------------------------------------------
+  // CLOSE APPLICATION MODAL FIRST
+  // -----------------------------------------------------
+
+  this.showApplicationForm = false;
+
+  this.cdr.detectChanges();
 
 
-          // Success alert
+  // -----------------------------------------------------
+  // NOW SHOW LOADING
+  // -----------------------------------------------------
+
+  this.alertService.loading(
+    'Submitting permit application...'
+  );
+
+
+  // -----------------------------------------------------
+  // SEND REQUEST
+  // -----------------------------------------------------
+
+  this.permitService
+    .applyPermit(request)
+    .subscribe({
+
+      // =================================================
+      // SUCCESS
+      // =================================================
+
+      next: (permit: Permit) => {
+
+        this.submitting = false;
+
+
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alertService.close();
+
+
+        // -----------------------------------------------
+        // ADD NEW PERMIT TO LIST
+        // -----------------------------------------------
+
+        this.permits = [
+          permit,
+          ...this.permits
+        ];
+
+
+        // -----------------------------------------------
+        // RESET FORM
+        // -----------------------------------------------
+
+        this.resetApplication();
+
+
+        // -----------------------------------------------
+        // UPDATE VIEW
+        // -----------------------------------------------
+
+        this.cdr.detectChanges();
+
+
+        // -----------------------------------------------
+        // SHOW SUCCESS ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
 
           this.alertService.success(
-
             'Application Submitted',
-
             `Your permit application has been created successfully. ` +
             `Please make payment using control number ` +
             `${permit.controlNumber}.`
-
           );
 
-        },
+        }, 100);
+
+      },
 
 
-        error: (error) => {
+      // =================================================
+      // ERROR
+      // =================================================
 
-          this.submitting = false;
+      error: (error) => {
 
-          this.alertService.close();
-
-          this.cdr.detectChanges();
+        this.submitting = false;
 
 
-          const message =
-            error?.error;
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
 
+        this.alertService.close();
+
+
+        // -----------------------------------------------
+        // UPDATE VIEW
+        // -----------------------------------------------
+
+        this.cdr.detectChanges();
+
+
+        const message =
+          error?.error;
+
+
+        // -----------------------------------------------
+        // SHOW ERROR
+        // -----------------------------------------------
+
+        setTimeout(() => {
 
           this.alertService.error(
-
             'Application Failed',
-
             typeof message === 'string'
               ? message
               : 'Unable to submit permit application. Please try again.'
-
           );
 
-        }
+        }, 100);
 
-      });
+      }
 
-  }
+    });
 
+}
 
   // =====================================================
   // OPEN PAYMENT

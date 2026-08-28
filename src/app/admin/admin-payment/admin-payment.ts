@@ -114,13 +114,24 @@ export class AdminPayment implements OnInit {
   // LOAD PAYMENTS
   // =====================================================
 
-  loadPayments(): void {
+  loadPayments(
+    showLoadingAlert: boolean = true
+  ): void {
 
     this.loading = true;
 
-    this.alertService.loading(
-      'Loading payments...'
-    );
+
+    // -----------------------------------------------------
+    // Show loading alert only when requested
+    // -----------------------------------------------------
+
+    if (showLoadingAlert) {
+
+      this.alertService.loading(
+        'Loading payments...'
+      );
+
+    }
 
 
     this.paymentService
@@ -138,7 +149,13 @@ export class AdminPayment implements OnInit {
 
           this.loading = false;
 
-          this.alertService.close();
+
+          if (showLoadingAlert) {
+
+            this.alertService.close();
+
+          }
+
 
           this.cdr.detectChanges();
 
@@ -149,20 +166,34 @@ export class AdminPayment implements OnInit {
 
           this.loading = false;
 
-          this.alertService.close();
+
+          if (showLoadingAlert) {
+
+            this.alertService.close();
+
+          }
+
 
           console.error(
             'Load payments error:',
             error
           );
 
-          this.alertService.error(
-            'Failed to Load Payments',
-            this.getErrorMessage(
-              error,
-              'Unable to retrieve payment records.'
-            )
-          );
+
+          if (showLoadingAlert) {
+
+            this.alertService.error(
+              'Failed to Load Payments',
+              this.getErrorMessage(
+                error,
+                'Unable to retrieve payment records.'
+              )
+            );
+
+          }
+
+
+          this.cdr.detectChanges();
 
         }
 
@@ -396,6 +427,26 @@ export class AdminPayment implements OnInit {
     );
 
 
+    // =====================================================
+    // CLOSE REVIEW MODAL IMMEDIATELY
+    // =====================================================
+    // IMPORTANT:
+    // The modal MUST be closed BEFORE confirm().
+    // Otherwise the confirmation alert appears behind
+    // the review modal.
+    // =====================================================
+
+    this.showEditModal = false;
+
+    this.selectedPayment = null;
+
+    this.cdr.detectChanges();
+
+
+    // =====================================================
+    // CONFIRM
+    // =====================================================
+
     const confirmed =
       await this.alertService.confirm(
 
@@ -415,9 +466,9 @@ export class AdminPayment implements OnInit {
     }
 
 
-    // =================================================
+    // =====================================================
     // LOADING
-    // =================================================
+    // =====================================================
 
     this.alertService.loading(
       'Approving payment...'
@@ -427,9 +478,9 @@ export class AdminPayment implements OnInit {
     this.loading = true;
 
 
-    // =================================================
+    // =====================================================
     // API
-    // =================================================
+    // =====================================================
 
     this.paymentService
       .approve(
@@ -466,6 +517,7 @@ export class AdminPayment implements OnInit {
           if (index !== -1) {
 
             this.payments[index] = {
+
               ...this.payments[index],
 
               status:
@@ -494,34 +546,31 @@ export class AdminPayment implements OnInit {
           this.filterPayments();
 
 
-          // ===========================================
-          // CLOSE MODAL
-          // ===========================================
-
-          this.closeModals();
-
-
           this.cdr.detectChanges();
 
 
           // ===========================================
-          // SUCCESS
+          // SUCCESS ALERT
           // ===========================================
 
-          this.alertService.success(
+          setTimeout(() => {
 
-            'Payment Approved',
+            this.alertService.success(
 
-            `${paymentNumber} has been approved successfully.`
+              'Payment Approved',
 
-          );
+              `${paymentNumber} has been approved successfully.`
+
+            );
+
+          }, 50);
 
 
           // ===========================================
-          // RELOAD FROM DATABASE
+          // SILENT DATABASE REFRESH
           // ===========================================
 
-          this.loadPayments();
+          this.loadPayments(false);
 
         },
 
@@ -539,16 +588,27 @@ export class AdminPayment implements OnInit {
           );
 
 
-          this.alertService.error(
+          // ===========================================
+          // ERROR ALERT
+          // ===========================================
 
-            'Approval Failed',
+          setTimeout(() => {
 
-            this.getErrorMessage(
-              error,
-              'Unable to approve this payment.'
-            )
+            this.alertService.error(
 
-          );
+              'Approval Failed',
+
+              this.getErrorMessage(
+                error,
+                'Unable to approve this payment.'
+              )
+
+            );
+
+          }, 50);
+
+
+          this.cdr.detectChanges();
 
         }
 
@@ -598,6 +658,24 @@ export class AdminPayment implements OnInit {
         .paymentNumber;
 
 
+    // =====================================================
+    // CLOSE REVIEW MODAL IMMEDIATELY
+    // =====================================================
+    // IMPORTANT:
+    // Close the review modal BEFORE opening confirmation.
+    // =====================================================
+
+    this.showEditModal = false;
+
+    this.selectedPayment = null;
+
+    this.cdr.detectChanges();
+
+
+    // =====================================================
+    // CONFIRM
+    // =====================================================
+
     const confirmed =
       await this.alertService.confirm(
 
@@ -617,6 +695,10 @@ export class AdminPayment implements OnInit {
     }
 
 
+    // =====================================================
+    // LOADING
+    // =====================================================
+
     this.alertService.loading(
       'Rejecting payment...'
     );
@@ -624,6 +706,10 @@ export class AdminPayment implements OnInit {
 
     this.loading = true;
 
+
+    // =====================================================
+    // API
+    // =====================================================
 
     this.paymentService
       .reject(
@@ -644,6 +730,10 @@ export class AdminPayment implements OnInit {
 
           this.alertService.close();
 
+
+          // ===========================================
+          // UPDATE CURRENT PAYMENT IMMEDIATELY
+          // ===========================================
 
           const index =
             this.payments.findIndex(
@@ -676,27 +766,40 @@ export class AdminPayment implements OnInit {
           }
 
 
+          // ===========================================
+          // RECALCULATE UI
+          // ===========================================
+
           this.calculateSummary();
 
           this.filterPayments();
 
 
-          this.closeModals();
-
-
           this.cdr.detectChanges();
 
 
-          this.alertService.success(
+          // ===========================================
+          // SUCCESS ALERT
+          // ===========================================
 
-            'Payment Rejected',
+          setTimeout(() => {
 
-            `${paymentNumber} has been rejected successfully.`
+            this.alertService.success(
 
-          );
+              'Payment Rejected',
+
+              `${paymentNumber} has been rejected successfully.`
+
+            );
+
+          }, 50);
 
 
-          this.loadPayments();
+          // ===========================================
+          // SILENT DATABASE REFRESH
+          // ===========================================
+
+          this.loadPayments(false);
 
         },
 
@@ -714,16 +817,27 @@ export class AdminPayment implements OnInit {
           );
 
 
-          this.alertService.error(
+          // ===========================================
+          // ERROR ALERT
+          // ===========================================
 
-            'Rejection Failed',
+          setTimeout(() => {
 
-            this.getErrorMessage(
-              error,
-              'Unable to reject this payment.'
-            )
+            this.alertService.error(
 
-          );
+              'Rejection Failed',
+
+              this.getErrorMessage(
+                error,
+                'Unable to reject this payment.'
+              )
+
+            );
+
+          }, 50);
+
+
+          this.cdr.detectChanges();
 
         }
 

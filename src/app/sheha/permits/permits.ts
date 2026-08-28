@@ -16,14 +16,19 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-permits',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './permits.html',
   styleUrl: './permits.css'
 })
 export class Permits implements OnInit {
 
   private permitService = inject(PermitService);
+
   private alert = inject(AlertService);
+
   private cdr = inject(ChangeDetectorRef);
 
 
@@ -80,11 +85,26 @@ export class Permits implements OnInit {
   // LOAD SHEHA PERMITS
   // =====================================================
 
-  loadPermits(): void {
+  loadPermits(
+    showLoadingAlert: boolean = true
+  ): void {
 
     this.loading = true;
 
-    this.alert.loading('Loading permit applications...');
+
+    // -----------------------------------------------------
+    // Only show loading alert when explicitly requested.
+    // This prevents refresh after approve/reject from
+    // covering the success alert.
+    // -----------------------------------------------------
+
+    if (showLoadingAlert) {
+
+      this.alert.loading(
+        'Loading permit applications...'
+      );
+
+    }
 
 
     this.permitService
@@ -97,26 +117,45 @@ export class Permits implements OnInit {
 
           this.applyFilters();
 
+
           this.loading = false;
 
-          this.alert.close();
+
+          if (showLoadingAlert) {
+
+            this.alert.close();
+
+          }
+
 
           this.cdr.detectChanges();
 
         },
 
+
         error: (err: unknown) => {
 
-          console.error('Failed to load permits:', err);
+          console.error(
+            'Failed to load permits:',
+            err
+          );
+
 
           this.loading = false;
 
-          this.alert.close();
 
-          this.alert.error(
-            'Failed to Load Permits',
-            'Unable to retrieve permit applications. Please try again.'
-          );
+          if (showLoadingAlert) {
+
+            this.alert.close();
+
+
+            this.alert.error(
+              'Failed to Load Permits',
+              'Unable to retrieve permit applications. Please try again.'
+            );
+
+          }
+
 
           this.cdr.detectChanges();
 
@@ -133,54 +172,63 @@ export class Permits implements OnInit {
 
   applyFilters(): void {
 
-    const search = this.searchTerm
-      .trim()
-      .toLowerCase();
+    const search =
+      this.searchTerm
+        .trim()
+        .toLowerCase();
 
 
-    this.filteredPermits = this.permits.filter(
-      permit => {
+    this.filteredPermits =
+      this.permits.filter(
+        permit => {
 
-        const matchesSearch =
-          !search ||
+          const matchesSearch =
 
-          (permit.permitNumber || '')
-            .toLowerCase()
-            .includes(search) ||
+            !search ||
 
-          (permit.businessName || '')
-            .toLowerCase()
-            .includes(search) ||
+            (permit.permitNumber || '')
+              .toLowerCase()
+              .includes(search) ||
 
-          (permit.ownerName || '')
-            .toLowerCase()
-            .includes(search) ||
+            (permit.businessName || '')
+              .toLowerCase()
+              .includes(search) ||
 
-          (permit.eventName || '')
-            .toLowerCase()
-            .includes(search) ||
+            (permit.ownerName || '')
+              .toLowerCase()
+              .includes(search) ||
 
-          (permit.location || '')
-            .toLowerCase()
-            .includes(search) ||
+            (permit.eventName || '')
+              .toLowerCase()
+              .includes(search) ||
 
-          (permit.shehia || '')
-            .toLowerCase()
-            .includes(search);
+            (permit.location || '')
+              .toLowerCase()
+              .includes(search) ||
 
-
-        const matchesStatus =
-          this.selectedStatus === 'ALL' ||
-          permit.status === this.selectedStatus;
+            (permit.shehia || '')
+              .toLowerCase()
+              .includes(search);
 
 
-        return matchesSearch && matchesStatus;
+          const matchesStatus =
 
-      }
-    );
+            this.selectedStatus === 'ALL' ||
+
+            permit.status === this.selectedStatus;
+
+
+          return (
+            matchesSearch &&
+            matchesStatus
+          );
+
+        }
+      );
 
 
     this.currentPage = 1;
+
 
     this.cdr.detectChanges();
 
@@ -228,7 +276,9 @@ export class Permits implements OnInit {
   // VIEW DETAILS
   // =====================================================
 
-  viewDetails(permit: Permit): void {
+  viewDetails(
+    permit: Permit
+  ): void {
 
     this.selectedPermit = permit;
 
@@ -253,14 +303,47 @@ export class Permits implements OnInit {
 
   }
 
-
   // =====================================================
-  // APPROVE
-  // =====================================================
+// APPROVE
+// =====================================================
 
-  async approvePermit(permit: Permit): Promise<void> {
+async approvePermit(
+  permit: Permit
+): Promise<void> {
 
-    const confirmed = await this.alert.confirm(
+  // -----------------------------------------------------
+  // CLOSE DETAILS MODAL IMMEDIATELY
+  // -----------------------------------------------------
+
+  this.showDetailsModal = false;
+
+  this.selectedPermit = null;
+
+  this.cdr.detectChanges();
+
+
+  // -----------------------------------------------------
+  // WAIT FOR ANGULAR TO REMOVE MODAL FROM DOM
+  // BEFORE OPENING CONFIRMATION ALERT
+  // -----------------------------------------------------
+
+  await new Promise<void>(resolve => {
+
+    setTimeout(() => {
+
+      resolve();
+
+    }, 0);
+
+  });
+
+
+  // -----------------------------------------------------
+  // CONFIRM APPROVAL
+  // -----------------------------------------------------
+
+  const confirmed =
+    await this.alert.confirm(
 
       'Approve Permit?',
 
@@ -271,62 +354,171 @@ export class Permits implements OnInit {
     );
 
 
-    if (!confirmed) {
+  // -----------------------------------------------------
+  // USER CANCELLED
+  // -----------------------------------------------------
 
-      return;
+  if (!confirmed) {
 
-    }
-
-
-    this.alert.loading('Approving permit...');
-
-
-    this.permitService
-      .approve(permit.id)
-      .subscribe({
-
-        next: () => {
-
-          this.alert.close();
-
-          this.alert.success(
-            'Permit Approved',
-            `Permit ${permit.permitNumber} has been approved successfully.`
-          );
-
-          this.closeDetails();
-
-          this.loadPermits();
-
-        },
-
-        error: (err: unknown) => {
-
-          console.error('Approve permit error:', err);
-
-          this.alert.close();
-
-          this.alert.error(
-            'Approval Failed',
-            'The permit could not be approved. Please try again.'
-          );
-
-          this.cdr.detectChanges();
-
-        }
-
-      });
+    return;
 
   }
 
 
-  // =====================================================
-  // REJECT
-  // =====================================================
+  // -----------------------------------------------------
+  // START LOADING
+  // -----------------------------------------------------
 
-  async rejectPermit(permit: Permit): Promise<void> {
+  this.alert.loading(
+    'Approving permit...'
+  );
 
-    const confirmed = await this.alert.confirm(
+
+  // -----------------------------------------------------
+  // API REQUEST
+  // -----------------------------------------------------
+
+  this.permitService
+    .approve(permit.id)
+    .subscribe({
+
+      // =================================================
+      // SUCCESS
+      // =================================================
+
+      next: () => {
+
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alert.close();
+
+
+        // -----------------------------------------------
+        // UPDATE LOCAL PERMIT
+        // -----------------------------------------------
+
+        permit.status = 'APPROVED';
+
+
+        this.applyFilters();
+
+
+        this.cdr.detectChanges();
+
+
+        // -----------------------------------------------
+        // SHOW SUCCESS ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
+
+          this.alert.success(
+
+            'Permit Approved',
+
+            `Permit ${permit.permitNumber} has been approved successfully.`
+
+          );
+
+        }, 50);
+
+
+        // -----------------------------------------------
+        // SILENT REFRESH
+        // -----------------------------------------------
+
+        this.loadPermits(false);
+
+      },
+
+
+      // =================================================
+      // ERROR
+      // =================================================
+
+      error: (err: unknown) => {
+
+        console.error(
+          'Approve permit error:',
+          err
+        );
+
+
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alert.close();
+
+
+        this.cdr.detectChanges();
+
+
+        // -----------------------------------------------
+        // SHOW ERROR ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
+
+          this.alert.error(
+
+            'Approval Failed',
+
+            'The permit could not be approved. Please try again.'
+
+          );
+
+        }, 50);
+
+      }
+
+    });
+
+}
+
+
+// =====================================================
+// REJECT
+// =====================================================
+
+async rejectPermit(
+  permit: Permit
+): Promise<void> {
+
+  // -----------------------------------------------------
+  // CLOSE DETAILS MODAL IMMEDIATELY
+  // -----------------------------------------------------
+
+  this.showDetailsModal = false;
+
+  this.selectedPermit = null;
+
+  this.cdr.detectChanges();
+
+
+  // -----------------------------------------------------
+  // WAIT FOR ANGULAR TO REMOVE MODAL FROM DOM
+  // -----------------------------------------------------
+
+  await new Promise<void>(resolve => {
+
+    setTimeout(() => {
+
+      resolve();
+
+    }, 0);
+
+  });
+
+
+  // -----------------------------------------------------
+  // CONFIRM REJECTION
+  // -----------------------------------------------------
+
+  const confirmed =
+    await this.alert.confirm(
 
       'Reject Permit?',
 
@@ -337,79 +529,167 @@ export class Permits implements OnInit {
     );
 
 
-    if (!confirmed) {
+  // -----------------------------------------------------
+  // USER CANCELLED
+  // -----------------------------------------------------
 
-      return;
+  if (!confirmed) {
 
-    }
-
-
-    this.alert.loading('Rejecting permit...');
-
-
-    this.permitService
-      .reject(permit.id)
-      .subscribe({
-
-        next: () => {
-
-          this.alert.close();
-
-          this.alert.success(
-            'Permit Rejected',
-            `Permit ${permit.permitNumber} has been rejected.`
-          );
-
-          this.closeDetails();
-
-          this.loadPermits();
-
-        },
-
-        error: (err: unknown) => {
-
-          console.error('Reject permit error:', err);
-
-          this.alert.close();
-
-          this.alert.error(
-            'Rejection Failed',
-            'The permit could not be rejected. Please try again.'
-          );
-
-          this.cdr.detectChanges();
-
-        }
-
-      });
+    return;
 
   }
 
+
+  // -----------------------------------------------------
+  // START LOADING
+  // -----------------------------------------------------
+
+  this.alert.loading(
+    'Rejecting permit...'
+  );
+
+
+  // -----------------------------------------------------
+  // API REQUEST
+  // -----------------------------------------------------
+
+  this.permitService
+    .reject(permit.id)
+    .subscribe({
+
+      // =================================================
+      // SUCCESS
+      // =================================================
+
+      next: () => {
+
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alert.close();
+
+
+        // -----------------------------------------------
+        // UPDATE LOCAL PERMIT
+        // -----------------------------------------------
+
+        permit.status = 'REJECTED';
+
+
+        this.applyFilters();
+
+
+        this.cdr.detectChanges();
+
+
+        // -----------------------------------------------
+        // SHOW SUCCESS ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
+
+          this.alert.success(
+
+            'Permit Rejected',
+
+            `Permit ${permit.permitNumber} has been rejected.`
+
+          );
+
+        }, 50);
+
+
+        // -----------------------------------------------
+        // SILENT REFRESH
+        // -----------------------------------------------
+
+        this.loadPermits(false);
+
+      },
+
+
+      // =================================================
+      // ERROR
+      // =================================================
+
+      error: (err: unknown) => {
+
+        console.error(
+          'Reject permit error:',
+          err
+        );
+
+
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alert.close();
+
+
+        this.cdr.detectChanges();
+
+
+        // -----------------------------------------------
+        // SHOW ERROR ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
+
+          this.alert.error(
+
+            'Rejection Failed',
+
+            'The permit could not be rejected. Please try again.'
+
+          );
+
+        }, 50);
+
+      }
+
+    });
+
+}
 
   // =====================================================
   // STATUS LABEL
   // =====================================================
 
-  getStatusLabel(status: Permit['status']): string {
+  getStatusLabel(
+    status: Permit['status']
+  ): string {
 
     switch (status) {
 
       case 'WAITING_PAYMENT':
+
         return 'Waiting Payment';
 
+
       case 'PENDING':
+
         return 'Pending';
 
+
       case 'APPROVED':
+
         return 'Approved';
 
+
       case 'REJECTED':
+
         return 'Rejected';
 
+
       case 'EXPIRED':
+
         return 'Expired';
 
+
       default:
+
         return status;
 
     }
@@ -426,8 +706,13 @@ export class Permits implements OnInit {
   ): string {
 
     return type
+
       .replace(/_/g, ' ')
-      .replace(/\b\w/g, char => char.toUpperCase());
+
+      .replace(
+        /\b\w/g,
+        char => char.toUpperCase()
+      );
 
   }
 
@@ -436,15 +721,25 @@ export class Permits implements OnInit {
   // FORMAT MONEY
   // =====================================================
 
-  formatMoney(amount: number): string {
+  formatMoney(
+    amount: number
+  ): string {
 
     return new Intl.NumberFormat(
+
       'en-TZ',
+
       {
         minimumFractionDigits: 0,
+
         maximumFractionDigits: 0
       }
-    ).format(amount || 0);
+
+    ).format(
+
+      amount || 0
+
+    );
 
   }
 
@@ -453,7 +748,9 @@ export class Permits implements OnInit {
   // FORMAT DATE
   // =====================================================
 
-  formatDate(date: string | null): string {
+  formatDate(
+    date: string | null
+  ): string {
 
     if (!date) {
 
@@ -462,10 +759,15 @@ export class Permits implements OnInit {
     }
 
 
-    const parsedDate = new Date(date);
+    const parsedDate =
+      new Date(date);
 
 
-    if (isNaN(parsedDate.getTime())) {
+    if (
+      isNaN(
+        parsedDate.getTime()
+      )
+    ) {
 
       return date;
 
@@ -473,12 +775,17 @@ export class Permits implements OnInit {
 
 
     return new Intl.DateTimeFormat(
+
       'en-GB',
+
       {
         day: '2-digit',
+
         month: 'short',
+
         year: 'numeric'
       }
+
     ).format(parsedDate);
 
   }
@@ -498,7 +805,10 @@ export class Permits implements OnInit {
   get pendingPermits(): number {
 
     return this.permits.filter(
-      permit => permit.status === 'PENDING'
+
+      permit =>
+        permit.status === 'PENDING'
+
     ).length;
 
   }
@@ -507,7 +817,10 @@ export class Permits implements OnInit {
   get approvedPermits(): number {
 
     return this.permits.filter(
-      permit => permit.status === 'APPROVED'
+
+      permit =>
+        permit.status === 'APPROVED'
+
     ).length;
 
   }
@@ -516,7 +829,10 @@ export class Permits implements OnInit {
   get rejectedPermits(): number {
 
     return this.permits.filter(
-      permit => permit.status === 'REJECTED'
+
+      permit =>
+        permit.status === 'REJECTED'
+
     ).length;
 
   }
@@ -529,7 +845,10 @@ export class Permits implements OnInit {
   get totalPages(): number {
 
     return Math.ceil(
-      this.filteredPermits.length / this.pageSize
+
+      this.filteredPermits.length /
+      this.pageSize
+
     );
 
   }
@@ -538,12 +857,16 @@ export class Permits implements OnInit {
   get paginatedPermits(): Permit[] {
 
     const start =
-      (this.currentPage - 1) * this.pageSize;
+      (this.currentPage - 1) *
+      this.pageSize;
 
 
     return this.filteredPermits.slice(
+
       start,
+
       start + this.pageSize
+
     );
 
   }
@@ -551,7 +874,10 @@ export class Permits implements OnInit {
 
   nextPage(): void {
 
-    if (this.currentPage < this.totalPages) {
+    if (
+      this.currentPage <
+      this.totalPages
+    ) {
 
       this.currentPage++;
 
@@ -564,7 +890,9 @@ export class Permits implements OnInit {
 
   previousPage(): void {
 
-    if (this.currentPage > 1) {
+    if (
+      this.currentPage > 1
+    ) {
 
       this.currentPage--;
 
@@ -575,11 +903,16 @@ export class Permits implements OnInit {
   }
 
 
-  goToPage(page: number): void {
+  goToPage(
+    page: number
+  ): void {
 
     if (
+
       page >= 1 &&
+
       page <= this.totalPages
+
     ) {
 
       this.currentPage = page;
@@ -595,15 +928,21 @@ export class Permits implements OnInit {
 
     const pages: number[] = [];
 
+
     for (
+
       let i = 1;
+
       i <= this.totalPages;
+
       i++
+
     ) {
 
       pages.push(i);
 
     }
+
 
     return pages;
 

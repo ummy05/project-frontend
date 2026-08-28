@@ -76,7 +76,10 @@ export class UserService {
   delete(id: number) {
 
     return this.http.delete(
-      `${this.api}/${id}`
+      `${this.api}/${id}`,
+      {
+        responseType: 'text'
+      }
     );
   }
 
@@ -122,23 +125,24 @@ export class UserService {
     );
   }
 
+
   // =====================================================
-// UPLOAD MY PROFILE IMAGE
-// =====================================================
+  // UPLOAD MY PROFILE IMAGE
+  // =====================================================
 
-uploadProfileImage(file: File) {
+  uploadProfileImage(file: File) {
 
-  const formData = new FormData();
+    const formData = new FormData();
 
-  formData.append(
-    'file',
-    file
-  );
+    formData.append(
+      'file',
+      file
+    );
 
-  return this.http.post<any>(
-    `${this.api}/me/profile-image`,
-    formData
-  );
-}
+    return this.http.post<any>(
+      `${this.api}/me/profile-image`,
+      formData
+    );
+  }
 
 }

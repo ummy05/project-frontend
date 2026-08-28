@@ -336,144 +336,203 @@ export class OwnerPermits implements OnInit {
 
 
   // =====================================================
-  // APPLY PERMIT
-  // =====================================================
+// APPLY PERMIT
+// =====================================================
 
-  submitApplication(): void {
+submitApplication(): void {
 
-    if (
+  // -----------------------------------------------------
+  // VALIDATE FORM
+  // -----------------------------------------------------
 
-      !this.permitForm.permitType ||
+  if (
+    !this.permitForm.permitType ||
+    !this.permitForm.eventName.trim() ||
+    !this.permitForm.description.trim() ||
+    !this.permitForm.eventDate ||
+    !this.permitForm.eventTime ||
+    !this.permitForm.location.trim() ||
+    !this.permitForm.shehia.trim()
+  ) {
 
-      !this.permitForm.eventName.trim() ||
-
-      !this.permitForm.description.trim() ||
-
-      !this.permitForm.eventDate ||
-
-      !this.permitForm.eventTime ||
-
-      !this.permitForm.location.trim() ||
-
-      !this.permitForm.shehia.trim()
-
-    ) {
-
-      this.alertService.warning(
-
-        'Incomplete Form',
-
-        'Please fill in all required permit information.'
-
-      );
-
-      return;
-
-    }
-
-
-    /*
-     * At this point Angular has already
-     * checked that permitType exists.
-     *
-     * No "as Permit[...]" is required.
-     */
-
-    const permitType =
-      this.permitForm.permitType;
-
-
-    if (!permitType) {
-
-      return;
-
-    }
-
-
-    const request = {
-
-      permitType: permitType,
-
-      eventName:
-        this.permitForm.eventName.trim(),
-
-      description:
-        this.permitForm.description.trim(),
-
-      eventDate:
-        this.permitForm.eventDate,
-
-      eventTime:
-        this.permitForm.eventTime,
-
-      location:
-        this.permitForm.location.trim(),
-
-      shehia:
-        this.permitForm.shehia.trim()
-
-    };
-
-
-    this.alertService.loading(
-      'Submitting permit application...'
+    this.alertService.warning(
+      'Incomplete Form',
+      'Please fill in all required permit information.'
     );
 
-
-    this.permitService
-      .applyPermit(request)
-      .subscribe({
-
-        next: (permit) => {
-
-          this.alertService.close();
-
-          this.showApplyModal = false;
-
-          this.resetForm();
+    return;
+  }
 
 
-          /*
-           * Put newly created permit
-           * at the beginning of the list.
-           */
+  // -----------------------------------------------------
+  // GET PERMIT TYPE
+  // -----------------------------------------------------
 
-          this.permits.unshift(permit);
+  const permitType =
+    this.permitForm.permitType;
 
+
+  if (!permitType) {
+
+    return;
+
+  }
+
+
+  // -----------------------------------------------------
+  // BUILD REQUEST BEFORE CLOSING MODAL
+  // -----------------------------------------------------
+
+  const request = {
+
+    permitType,
+
+    eventName:
+      this.permitForm.eventName.trim(),
+
+    description:
+      this.permitForm.description.trim(),
+
+    eventDate:
+      this.permitForm.eventDate,
+
+    eventTime:
+      this.permitForm.eventTime,
+
+    location:
+      this.permitForm.location.trim(),
+
+    shehia:
+      this.permitForm.shehia.trim()
+
+  };
+
+
+  // -----------------------------------------------------
+  // CLOSE APPLY MODAL FIRST
+  // -----------------------------------------------------
+
+  this.showApplyModal = false;
+
+  this.cdr.detectChanges();
+
+
+  // -----------------------------------------------------
+  // SHOW LOADING AFTER MODAL IS CLOSED
+  // -----------------------------------------------------
+
+  this.alertService.loading(
+    'Submitting permit application...'
+  );
+
+
+  // -----------------------------------------------------
+  // SEND REQUEST
+  // -----------------------------------------------------
+
+  this.permitService
+    .applyPermit(request)
+    .subscribe({
+
+      // =================================================
+      // SUCCESS
+      // =================================================
+
+      next: (permit) => {
+
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alertService.close();
+
+
+        // -----------------------------------------------
+        // RESET FORM
+        // -----------------------------------------------
+
+        this.resetForm();
+
+
+        // -----------------------------------------------
+        // ADD NEW PERMIT TO LIST
+        // -----------------------------------------------
+
+        this.permits.unshift(permit);
+
+
+        // -----------------------------------------------
+        // UPDATE VIEW
+        // -----------------------------------------------
+
+        this.cdr.detectChanges();
+
+
+        // -----------------------------------------------
+        // SHOW SUCCESS ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
 
           this.alertService.success(
 
             'Application Submitted',
 
-            `Your permit application has been created successfully. Control Number: ${permit.controlNumber}. Please proceed to payment.`
+            `Your permit application has been created successfully. ` +
+            `Control Number: ${permit.controlNumber}. ` +
+            `Please proceed to payment.`
 
           );
 
-        },
+        }, 100);
+
+      },
 
 
-        error: (error) => {
+      // =================================================
+      // ERROR
+      // =================================================
 
-          this.alertService.close();
+      error: (error) => {
 
-          console.error(
-            'Permit application error:',
-            error
-          );
+        // -----------------------------------------------
+        // CLOSE LOADING
+        // -----------------------------------------------
+
+        this.alertService.close();
 
 
-          const message =
+        // -----------------------------------------------
+        // UPDATE VIEW
+        // -----------------------------------------------
 
-            typeof error?.error === 'string'
+        this.cdr.detectChanges();
 
-              ? error.error
 
-              : error?.error?.message
+        console.error(
+          'Permit application error:',
+          error
+        );
 
-                ? error.error.message
 
-                : 'Unable to submit permit application.';
+        const message =
 
+          typeof error?.error === 'string'
+
+            ? error.error
+
+            : error?.error?.message
+
+              ? error.error.message
+
+              : 'Unable to submit permit application.';
+
+
+        // -----------------------------------------------
+        // SHOW ERROR ALERT
+        // -----------------------------------------------
+
+        setTimeout(() => {
 
           this.alertService.error(
 
@@ -483,12 +542,13 @@ export class OwnerPermits implements OnInit {
 
           );
 
-        }
+        }, 100);
 
-      });
+      }
 
-  }
+    });
 
+}
 
   // =====================================================
   // OPEN PAYMENT
